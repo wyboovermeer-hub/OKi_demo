@@ -207,7 +207,7 @@ input:checked+.slider:before{transform:translateX(18px)}
 .refresh-note{text-align:center;font-size:9px;color:#333;margin-bottom:4px;flex-shrink:0}
 
 .footer{text-align:center;padding-top:4px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:6px}
-.footer-demo{display:flex;align-items:center;gap:8px;margin-bottom:2px}
+.footer-demo{display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:2px}
 .footer-demo-label{font-size:clamp(9px,1.6vw,11px);color:#6a8aa0;letter-spacing:0.1em;font-weight:600}
 .demo-section{border-top:1px solid #2b313c;margin-top:8px;padding-top:8px}
 .demo-label{text-align:center;font-size:10px;color:#6a8aa0;margin-bottom:8px;letter-spacing:0.12em;font-weight:bold}
@@ -297,7 +297,7 @@ input:checked+.slider:before{transform:translateX(18px);background:#00d4ff}
 .refresh-note{text-align:center;font-size:9px;color:#1a3a5a;margin-bottom:4px;flex-shrink:0}
 
 .footer{text-align:center;padding-top:4px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:6px}
-.footer-demo{display:flex;align-items:center;gap:8px;margin-bottom:2px}
+.footer-demo{display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:2px}
 .footer-demo-label{font-size:clamp(9px,1.6vw,11px);color:#6a8aa0;letter-spacing:0.1em;font-weight:600}
 .demo-section{border-top:1px solid #2b313c;margin-top:8px;padding-top:8px}
 .demo-label{text-align:center;font-size:10px;color:#6a8aa0;margin-bottom:8px;letter-spacing:0.12em;font-weight:bold}
@@ -406,7 +406,7 @@ def render_footer():
     return (
         '<div class="footer">'
         '<div class="footer-demo">'
-        '<span class="footer-demo-label">DEMO</span>'
+        '<div class="footer-demo-label">DEMO</div>'
         + toggle +
         '</div>'
         '<a href="/" onclick="logoTap(); return false;"><img src="/static/oki_logo.png" alt="OKi"></a>'
