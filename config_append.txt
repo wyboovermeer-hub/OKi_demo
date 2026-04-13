@@ -1,0 +1,10 @@
+
+# ============================================================
+# OKi – Waveshare 4inch 720x720 HDMI Capacitive Touch Display
+# ============================================================
+[all]
+hdmi_group=2
+hdmi_mode=87
+hdmi_cvt=720 720 60 6 0 0 0
+hdmi_drive=2
+display_rotate=0

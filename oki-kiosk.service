@@ -1,0 +1,15 @@
+[Unit]
+Description=OKi Kiosk Browser
+After=oki.service graphical.target
+Wants=oki.service
+
+[Service]
+User=oki
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/home/oki/.Xauthority
+ExecStart=/home/oki/OKi/kiosk.sh
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=graphical.target

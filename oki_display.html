@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>OKi — Onboard Knowledge Interface</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     OKi Visual System v1.5
+     WMC Colour Palette:
+       Deep Navy   #0e487b
+       Mid Blue    #548bac
+       Light Blue  #cad8e3
+       Steel Blue  #81a4c4
+       Muted Blue  #84acc4
+     Background: #05070A (near black)
+  ============================================================ */
+
+  :root {
+    --bg:             #05070A;
+    --bg-card:        #0d1520;
+    --wmc-deep:       #0e487b;
+    --wmc-mid:        #548bac;
+    --wmc-light:      #cad8e3;
+    --wmc-steel:      #81a4c4;
+    --wmc-muted:      #84acc4;
+    --text-primary:   #e8eef4;
+    --text-secondary: #7a9ab5;
+    --text-dim:       #3a5570;
+    --green:          #2ecc71;
+    --green-dim:      #1a5c35;
+    --orange:         #f39c12;
+    --orange-dim:     #6b4500;
+    --red:            #e74c3c;
+    --red-dim:        #5c1a1a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    height: 100%;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  #app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  /* =====================================================
+     HEADER
+     Layout: [left-col] [logo-centre] [right-col]
+
+     left-col:
+       row 1: "FOCUS" label
+       row 2: [LED LED LED] [toggle-switch]
+
+     right-col:
+       row 1: "DEV" label  (right-aligned)
+       row 2: [toggle-switch] [LED LED LED]
+       row 3: clock  (right-aligned)
+       row 4: date   (right-aligned)
+  ===================================================== */
+
+  #header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    border-bottom: 1px solid rgba(84,139,172,0.15);
+    flex-shrink: 0;
+  }
+
+  .h-col {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 96px;
+  }
+  .h-col.right { align-items: flex-end; }
+
+  /* Label row — sits above the control row */
+  .h-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    transition: color 0.3s;
+    line-height: 1;
+  }
+  .h-label.on { color: var(--wmc-light); }
+
+  /* Control row — LEDs + toggle on one horizontal line */
+  .h-control {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  /* LEDs */
+  .led-group { display: flex; gap: 5px; align-items: center; }
+  .led {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--text-dim);
+    opacity: 0.3;
+    transition: background 0.4s, opacity 0.4s, box-shadow 0.4s;
+  }
+  .led.green  { background: var(--green);  opacity: 1; box-shadow: 0 0 5px var(--green); }
+  .led.amber  { background: var(--orange); opacity: 1; box-shadow: 0 0 5px var(--orange); }
+  .led.red    { background: var(--red);    opacity: 1; box-shadow: 0 0 5px var(--red); animation: ledpulse 1.5s ease-in-out infinite; }
+  .led.pulse  { background: var(--green);  opacity: 1; box-shadow: 0 0 5px var(--green); animation: ledpulse 2.5s ease-in-out infinite; }
+  @keyframes ledpulse { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+  /* Toggle switch */
+  .toggle-sw {
+    width: 30px; height: 16px;
+    border-radius: 8px;
+    background: var(--bg-card);
+    border: 1px solid rgba(84,139,172,0.25);
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .toggle-sw.on { background: rgba(84,139,172,0.28); border-color: var(--wmc-mid); }
+  .toggle-knob {
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--text-dim);
+    transition: transform 0.25s, background 0.25s;
+  }
+  .toggle-sw.on .toggle-knob { transform: translateX(14px); background: var(--wmc-light); }
+
+  /* Logo */
+  #logo-block { text-align: center; flex: 1; }
+  #logo-text {
+    font-family: 'Orbitron', monospace;
+    font-size: 22px; font-weight: 700;
+    color: var(--wmc-mid); letter-spacing: 3px;
+  }
+  #logo-sub {
+    font-size: 9px; letter-spacing: 2.5px;
+    color: var(--text-dim); text-transform: uppercase; margin-top: 2px;
+  }
+  #vessel-name {
+    font-size: 11px; letter-spacing: 1.5px;
+    color: var(--wmc-steel); text-transform: uppercase; margin-top: 3px;
+  }
+
+  /* Clock */
+  #clock {
+    font-family: 'Space Mono', monospace;
+    font-size: 14px; color: var(--wmc-light);
+    letter-spacing: 1px; text-align: right;
+  }
+  #date { font-size: 9px; color: var(--text-dim); text-align: right; margin-top: 1px; }
+
+  /* ── DEV BAR ── */
+  #dev-bar {
+    display: none;
+    padding: 7px 20px;
+    gap: 8px;
+    border-bottom: 1px solid rgba(84,139,172,0.10);
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+  #dev-bar.visible { display: flex; }
+  .dev-btn {
+    background: transparent;
+    border: 1px solid rgba(84,139,172,0.20);
+    border-radius: 5px;
+    color: var(--text-dim);
+    font-family: 'Space Mono', monospace;
+    font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 4px 10px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .dev-btn:hover  { border-color: var(--wmc-mid); color: var(--wmc-light); }
+  .dev-btn.active { border-color: var(--wmc-mid); color: var(--wmc-light); background: rgba(84,139,172,0.10); }
+
+  /* ── MAIN ── */
+  #main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 16px 20px;
+    gap: 13px;
+    overflow: hidden;
+  }
+
+  .section-label {
+    font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--text-dim); font-family: 'Space Mono', monospace;
+    margin-bottom: 5px;
+  }
+
+  /* Primary state */
+  #primary-message {
+    font-size: 16px; font-weight: 300;
+    color: var(--text-primary);
+    line-height: 1.6; letter-spacing: 0.2px;
+    white-space: pre-line;
+  }
+  #primary-message.survival { color: #fff; }
+
+  .divider { height: 1px; background: rgba(84,139,172,0.10); }
+
+  /* Battery */
+  #bat-header {
+    display: flex; justify-content: space-between;
+    align-items: baseline; margin-bottom: 8px;
+  }
+  #soc-readout {
+    font-family: 'Orbitron', monospace;
+    font-size: 34px; font-weight: 500;
+    letter-spacing: 1px; line-height: 1;
+    transition: color 0.8s;
+  }
+  #soc-unit { font-size: 15px; color: var(--text-secondary); margin-left: 2px; }
+
+  #soc-bar-track {
+    height: 26px; background: var(--bg-card);
+    border-radius: 4px; border: 1px solid rgba(84,139,172,0.12); overflow: hidden;
+  }
+  #soc-bar-fill {
+    height: 100%; border-radius: 4px;
+    transition: width 1.2s ease, background-color 0.8s;
+  }
+  #soc-bar-fill.charging    { animation: breathe-out 2.8s ease-in-out infinite; }
+  #soc-bar-fill.discharging { animation: breathe-in  3.5s ease-in-out infinite; }
+  @keyframes breathe-out { 0%,100%{opacity:1} 50%{opacity:0.80} }
+  @keyframes breathe-in  { 0%,100%{opacity:0.88} 50%{opacity:0.68} }
+
+  #bat-meta { display: flex; gap: 20px; margin-top: 9px; align-items: flex-end; }
+  .meta-item { display: flex; flex-direction: column; gap: 2px; }
+  .meta-lbl { font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); }
+  .meta-val { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--wmc-light); }
+
+  #energy-mode {
+    font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+    font-family: 'Space Mono', monospace;
+    padding: 3px 9px; border-radius: 4px; margin-left: auto;
+  }
+  .mode-charging    { color: var(--green);  border: 1px solid var(--green-dim); }
+  .mode-discharging { color: var(--orange); border: 1px solid var(--orange-dim); }
+  .mode-idle        { color: var(--text-dim); border: 1px solid var(--text-dim); }
+
+  /* Health */
+  #health-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; }
+  #health-readout { font-family: 'Space Mono', monospace; font-size: 13px; color: var(--wmc-mid); }
+  #health-bar-track { height: 5px; background: var(--bg-card); border-radius: 3px; overflow: hidden; }
+  #health-bar-fill  { height: 100%; border-radius: 3px; background: var(--wmc-mid); transition: width 1.2s, background 0.8s; }
+
+  /* Context */
+  #ctx-block {
+    border-left: 2px solid rgba(84,139,172,0.22);
+    padding-left: 12px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .ctx-line { font-size: 11px; color: var(--text-secondary); line-height: 1.4; }
+
+  /* Question */
+  #question-text {
+    font-size: 13px; color: var(--wmc-steel);
+    letter-spacing: 0.3px; line-height: 1.5; margin-bottom: 9px;
+  }
+  #options-row { display: flex; flex-direction: column; gap: 6px; }
+  .opt-btn {
+    background: transparent;
+    border: 1px solid rgba(84,139,172,0.20);
+    border-radius: 8px; color: var(--wmc-light);
+    font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 400;
+    letter-spacing: 0.3px; padding: 11px 16px;
+    text-align: left; cursor: pointer; width: 100%;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .opt-btn:hover  { background: rgba(84,139,172,0.10); border-color: rgba(84,139,172,0.45); }
+  .opt-btn:active { transform: scale(0.99); }
+
+  /* Focus hide */
+  .focus-hide.hidden { display: none !important; }
+
+  /* Footer */
+  #footer {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 20px 12px;
+    border-top: 1px solid rgba(84,139,172,0.09);
+    flex-shrink: 0;
+  }
+  #refresh-note { font-size: 9px; color: var(--text-dim); letter-spacing: 0.5px; }
+  #nav-links { display: flex; gap: 16px; }
+  .nav-link {
+    font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--text-dim); text-decoration: none; cursor: pointer;
+    transition: color 0.2s;
+  }
+  .nav-link:hover  { color: var(--wmc-steel); }
+  .nav-link.active { color: var(--wmc-mid); }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- HEADER -->
+  <div id="header">
+
+    <!-- LEFT: FOCUS label, then [LEDs + toggle] -->
+    <div class="h-col">
+      <span class="h-label" id="focus-lbl">Focus</span>
+      <div class="h-control">
+        <div class="led-group">
+          <div class="led" id="ls1"></div>
+          <div class="led" id="ls2"></div>
+          <div class="led" id="ls3"></div>
+        </div>
+        <div class="toggle-sw" id="focus-sw" onclick="toggleFocus()">
+          <div class="toggle-knob"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTRE: Logo -->
+    <div id="logo-block">
+      <div id="logo-text">OKi</div>
+      <div id="logo-sub">Onboard Knowledge Interface</div>
+      <div id="vessel-name">ALUNA</div>
+    </div>
+
+    <!-- RIGHT: DEV label, then [toggle + LEDs], then clock -->
+    <div class="h-col right">
+      <span class="h-label" id="dev-lbl">Dev</span>
+      <div class="h-control">
+        <div class="toggle-sw" id="dev-sw" onclick="toggleDev()">
+          <div class="toggle-knob"></div>
+        </div>
+        <div class="led-group">
+          <div class="led" id="lb1"></div>
+          <div class="led" id="lb2"></div>
+          <div class="led" id="lb3"></div>
+        </div>
+      </div>
+      <div id="clock">--:--:--</div>
+      <div id="date"></div>
+    </div>
+
+  </div>
+
+  <!-- DEV SCENARIO BAR -->
+  <div id="dev-bar">
+    <button class="dev-btn active" onclick="loadScenario(0,this)">Anchor</button>
+    <button class="dev-btn"        onclick="loadScenario(1,this)">Casa Azul</button>
+    <button class="dev-btn"        onclick="loadScenario(2,this)">Drain</button>
+    <button class="dev-btn"        onclick="loadScenario(3,this)">Survival</button>
+    <button class="dev-btn"        onclick="loadScenario(4,this)">Blackout</button>
+  </div>
+
+  <!-- MAIN -->
+  <div id="main">
+
+    <!-- Primary state -->
+    <div id="primary-block">
+      <div class="section-label" id="priority-lbl">System Status</div>
+      <div id="primary-message">Loading system state...</div>
+    </div>
+
+    <div class="divider" id="div1"></div>
+
+    <!-- Battery -->
+    <div id="battery-block">
+      <div id="bat-header">
+        <div class="section-label" style="margin:0;">Battery</div>
+        <div><span id="soc-readout">--</span><span id="soc-unit">%</span></div>
+      </div>
+      <div id="soc-bar-track">
+        <div id="soc-bar-fill" style="width:0%;background:var(--green);"></div>
+      </div>
+      <div id="bat-meta">
+        <div class="meta-item">
+          <span class="meta-lbl">Voltage</span>
+          <span class="meta-val" id="m-v">-- V</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-lbl">Current</span>
+          <span class="meta-val" id="m-a">-- A</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-lbl">Power</span>
+          <span class="meta-val" id="m-w">-- W</span>
+        </div>
+        <div id="energy-mode" class="mode-idle">Idle</div>
+      </div>
+    </div>
+
+    <!-- Health -->
+    <div id="health-block">
+      <div id="health-header">
+        <div class="section-label" style="margin:0;">System Health</div>
+        <div id="health-readout">--%</div>
+      </div>
+      <div id="health-bar-track">
+        <div id="health-bar-fill" style="width:0%;"></div>
+      </div>
+    </div>
+
+    <div class="divider focus-hide" id="div2"></div>
+
+    <!-- Secondary context -->
+    <div class="focus-hide" id="ctx-section">
+      <div id="ctx-block">
+        <div class="ctx-line" id="ctx-1" style="display:none;"></div>
+        <div class="ctx-line" id="ctx-2" style="display:none;"></div>
+        <div class="ctx-line" id="ctx-3" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- Question -->
+    <div class="focus-hide" id="question-block" style="margin-top:auto;">
+      <div id="question-text"></div>
+      <div id="options-row"></div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div id="footer">
+    <div id="refresh-note">Auto-refresh every 3s</div>
+    <nav id="nav-links">
+      <a class="nav-link active" href="/">Home</a>
+      <a class="nav-link" href="/care">Care</a>
+      <a class="nav-link" href="/knowledge">Knowledge</a>
+    </nav>
+  </div>
+
+</div>
+<script>
+/* ============================================================
+   OKi Display Engine v1.5
+   - Fetches /api/state every 3 seconds
+   - Renders attention_engine output
+   - FOCUS toggle: hides context + question (helm view)
+   - DEV toggle:   reveals scenario buttons
+============================================================ */
+
+const REFRESH_MS = 3000;
+let focusOn = false;
+let devOn   = false;
+
+/* ── CLOCK ── */
+function tickClock() {
+  const n    = new Date();
+  const p    = v => String(v).padStart(2,'0');
+  const DAYS = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  const MONS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  document.getElementById('clock').textContent =
+    `${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;
+  document.getElementById('date').textContent  =
+    `${DAYS[n.getDay()]} ${p(n.getDate())} ${MONS[n.getMonth()]} ${n.getFullYear()}`;
+}
+setInterval(tickClock, 1000);
+tickClock();
+
+/* ── FOCUS TOGGLE ── */
+function toggleFocus() {
+  focusOn = !focusOn;
+  document.getElementById('focus-sw').classList.toggle('on', focusOn);
+  document.getElementById('focus-lbl').classList.toggle('on', focusOn);
+  document.querySelectorAll('.focus-hide').forEach(el => {
+    el.classList.toggle('hidden', focusOn);
+  });
+}
+
+/* ── DEV TOGGLE ── */
+function toggleDev() {
+  devOn = !devOn;
+  document.getElementById('dev-sw').classList.toggle('on', devOn);
+  document.getElementById('dev-lbl').classList.toggle('on', devOn);
+  document.getElementById('dev-bar').classList.toggle('visible', devOn);
+}
+
+/* ── LED ── */
+function setLed(id, state) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.className = 'led';
+  if (state) el.classList.add(state);
+}
+
+/* ── SOC COLOUR ── */
+function socColor(soc) {
+  return soc > 30 ? 'var(--green)' : soc > 10 ? 'var(--orange)' : 'var(--red)';
+}
+
+/* ── RENDER ── */
+function render(state) {
+  const bat      = state.Battery        || {};
+  const sys      = state.System         || {};
+  const derived  = state.Derived        || {};
+  const attn     = state.Attention      || {};
+  const op       = state.Operator       || {};
+
+  const soc      = parseFloat(bat.SoC      || 0);
+  const voltage  = parseFloat(bat.Voltage  || 0);
+  const current  = parseFloat(bat.Current  || 0);
+  const power    = parseFloat(derived.DCPower || (voltage * current) || 0);
+  const mode     = (derived.EnergyMode     || 'IDLE').toUpperCase();
+  const health   = parseFloat(sys.SystemHealth || 0);
+  const sev      = sys.Severity;
+  const priority = attn.PriorityLabel      || 'STABLE';
+
+  /* Priority label */
+  const LABELS = {
+    STABLE: 'System Status', BACKGROUND: 'Background Notice',
+    DECISION: 'Input Required', TIME_CRITICAL: 'Time Critical', SURVIVAL: 'Critical Alert',
+  };
+  document.getElementById('priority-lbl').textContent = LABELS[priority] || 'System Status';
+
+  /* Primary message */
+  const msgEl = document.getElementById('primary-message');
+  msgEl.textContent = attn.PrimaryState || sys.Recommendation || 'System loading...';
+  msgEl.className   = priority === 'SURVIVAL' ? 'survival' : '';
+
+  /* SoC bar */
+  const color = socColor(soc);
+  document.getElementById('soc-readout').textContent = Math.round(soc);
+  document.getElementById('soc-readout').style.color = color;
+  const bar = document.getElementById('soc-bar-fill');
+  bar.style.width           = Math.min(100, Math.max(0, soc)) + '%';
+  bar.style.backgroundColor = color;
+  bar.className             = mode === 'CHARGING' ? 'charging' : mode === 'DISCHARGING' ? 'discharging' : '';
+
+  /* Battery meta */
+  document.getElementById('m-v').textContent = voltage.toFixed(1) + ' V';
+  document.getElementById('m-a').textContent = current.toFixed(1) + ' A';
+  document.getElementById('m-w').textContent = Math.round(power)  + ' W';
+  const modeEl = document.getElementById('energy-mode');
+  modeEl.textContent = mode.charAt(0) + mode.slice(1).toLowerCase();
+  modeEl.className   = mode === 'CHARGING' ? 'mode-charging' : mode === 'DISCHARGING' ? 'mode-discharging' : 'mode-idle';
+
+  /* Health bar */
+  const hp = Math.round(health);
+  document.getElementById('health-readout').textContent = hp + '%';
+  const hbar = document.getElementById('health-bar-fill');
+  hbar.style.width      = hp + '%';
+  hbar.style.background = hp >= 70 ? 'var(--wmc-mid)' : hp >= 40 ? 'var(--orange)' : 'var(--red)';
+
+  /* LEDs system left */
+  if (sev === 'CRITICAL') {
+    setLed('ls1','red');   setLed('ls2','red');   setLed('ls3','red');
+  } else if (sev === 'WARNING') {
+    setLed('ls1','green'); setLed('ls2','amber'); setLed('ls3','');
+  } else {
+    setLed('ls1','green'); setLed('ls2','green'); setLed('ls3','green');
+  }
+
+  /* LEDs battery right */
+  if (soc < 15) {
+    setLed('lb1','red');   setLed('lb2','red');   setLed('lb3','red');
+  } else if (soc < 30) {
+    setLed('lb1','amber'); setLed('lb2','amber'); setLed('lb3','');
+  } else if (mode === 'CHARGING') {
+    setLed('lb1','pulse'); setLed('lb2','pulse'); setLed('lb3','pulse');
+  } else {
+    setLed('lb1','green'); setLed('lb2','green'); setLed('lb3','green');
+  }
+
+  /* Secondary context */
+  const ctx = attn.SecondaryContext || [];
+  [1,2,3].forEach(i => {
+    const el  = document.getElementById('ctx-' + i);
+    const txt = ctx[i-1];
+    el.textContent   = txt || '';
+    el.style.display = txt ? 'block' : 'none';
+  });
+
+  /* Active question */
+  const aq   = attn.ActiveQuestion || {};
+  const qTxt = aq.text    || op.ActiveQuestionText || '';
+  const qOpt = aq.options || op.Options            || [];
+  document.getElementById('question-text').textContent = qTxt;
+  const optRow = document.getElementById('options-row');
+  optRow.innerHTML = '';
+  qOpt.forEach((opt, idx) => {
+    const btn       = document.createElement('button');
+    btn.className   = 'opt-btn';
+    btn.textContent = opt;
+    btn.onclick     = () => sendAnswer(idx, aq.context || op.QuestionContext || '');
+    optRow.appendChild(btn);
+  });
+}
+
+/* ── ANSWER ── */
+async function sendAnswer(idx, context) {
+  try {
+    await fetch('/api/operator_response', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ choice: String.fromCharCode(65 + idx), context }),
+    });
+  } catch (e) {}
+  setTimeout(fetchAndRender, 200);
+}
+
+/* ── DEV SCENARIOS ── */
+const SCENARIOS = [
+  {
+    Battery: { SoC: 63, Voltage: 25.1, Current: -8.0 },
+    Derived: { EnergyMode: 'DISCHARGING', DCPower: -200.8 },
+    System:  { SystemHealth: 70, Severity: null },
+    Attention: {
+      PriorityLabel: 'STABLE',
+      PrimaryState:  'System stable. Battery at 63%, discharging at anchor.',
+      SecondaryContext: ['Solar active — 280W', 'Net energy: +80W — battery gaining', 'Vessel at anchor'],
+      ActiveQuestion: { text: 'Would you like to improve the system health score?', options: ['Yes', 'No'] },
+    },
+    Blackout: { BlackoutMode: false }, Operator: {},
+  },
+  {
+    Battery: { SoC: 72, Voltage: 26.8, Current: 12.0 },
+    Derived: { EnergyMode: 'CHARGING', DCPower: 321.6 },
+    System:  { SystemHealth: 95, Severity: null },
+    Attention: {
+      PriorityLabel: 'STABLE',
+      PrimaryState:  'System stable. Battery at 72%, charging via shore power.',
+      SecondaryContext: ['Solar active — 850W — sunset in 4h 20m', 'Net energy: +650W — battery gaining', 'Vessel at dock — shore power available'],
+      ActiveQuestion: { text: 'Would you like to improve the system health score?', options: ['Yes', 'No'] },
+    },
+    Blackout: { BlackoutMode: false }, Operator: {},
+  },
+  {
+    Battery: { SoC: 18, Voltage: 23.8, Current: -22.0 },
+    Derived: { EnergyMode: 'DISCHARGING', DCPower: -523.6 },
+    System:  { SystemHealth: 45, Severity: 'WARNING' },
+    Attention: {
+      PriorityLabel: 'TIME_CRITICAL',
+      PrimaryState:  'Battery at 18% with no sufficient charging source.\nEstimated time to blackout: 3h 40m.',
+      SecondaryContext: ['Solar input not available — night', 'Net energy: -524W — battery losing'],
+      ActiveQuestion: {
+        text:    'Battery is low and discharging fast with no charging source detected. What is the situation?',
+        options: ['Expected', 'Investigating', 'Unexpected'],
+      },
+    },
+    Blackout: { BlackoutMode: false }, Operator: {},
+  },
+  {
+    Battery: { SoC: 14, Voltage: 23.5, Current: -12.0 },
+    Derived: { EnergyMode: 'DISCHARGING', DCPower: -282 },
+    System:  { SystemHealth: 20, Severity: 'CRITICAL' },
+    Attention: {
+      PriorityLabel: 'SURVIVAL',
+      PrimaryState:  'Power is critically low.\nEstimated time to blackout: 1h 48m.\nOKi operational after blackout: up to 48h.',
+      SecondaryContext: ['Solar input not available — night', 'Net energy: -282W — battery losing'],
+      ActiveQuestion: {
+        text:    'Battery is critically low with no charging source active. What is the situation?',
+        options: ['Expected', 'Investigating', 'Unexpected'],
+      },
+    },
+    Blackout: { BlackoutMode: false }, Operator: {},
+  },
+  {
+    Battery: { SoC: 5, Voltage: 12.0, Current: 0.0 },
+    Derived: { EnergyMode: 'IDLE', DCPower: 0 },
+    System:  { SystemHealth: 10, Severity: 'CRITICAL' },
+    Attention: {
+      PriorityLabel: 'SURVIVAL',
+      PrimaryState:  'Vessel power has been lost.\nOKi operational on backup battery: 9h 12m remaining.',
+      SecondaryContext: ['Solar input not available — night', 'Net energy: -10W — battery losing'],
+      ActiveQuestion: {
+        text:    'Vessel power has been lost. What is the current situation?',
+        options: ['Investigating power source', 'Fault known — resolving', 'Unexpected'],
+      },
+    },
+    Blackout: { BlackoutMode: true }, Operator: {},
+  },
+];
+
+function loadScenario(idx, btn) {
+  document.querySelectorAll('.dev-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  render(SCENARIOS[idx]);
+}
+
+/* ── FETCH LOOP ── */
+async function fetchAndRender() {
+  try {
+    const resp  = await fetch('/api/state');
+    const state = await resp.json();
+    render(state);
+  } catch (e) {
+    if (!devOn) {
+      document.getElementById('primary-message').textContent =
+        'Connection to OKi lost. Retrying...';
+    }
+  }
+}
+
+(async () => {
+  try {
+    const resp  = await fetch('/api/state');
+    const state = await resp.json();
+    render(state);
+  } catch (e) {
+    render(SCENARIOS[0]);
+  }
+  setInterval(fetchAndRender, REFRESH_MS);
+})();
+</script>
+</body>
+</html>

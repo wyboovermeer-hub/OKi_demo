@@ -1,0 +1,10 @@
+{
+  "case_id": "SOLAR_NO_CHARGE",
+  "title": "Solar panels detected but battery not charging",
+  "symptoms": [
+    "Solar voltage present",
+    "Solar power near zero"
+  ],
+  "root_cause": "Open solar circuit or blown fuse",
+  "solution": "Inspect wiring and fuse between panels and MPPT"
+}

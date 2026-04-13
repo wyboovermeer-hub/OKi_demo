@@ -1,0 +1,46 @@
+{
+  "case_id": "SB-001",
+  "title": "Parallel MultiPlus + MG Master Communication & Deep Discharge Cascade",
+  "system_type": "2x Victron MultiPlus + MG Master LV + SmartLink",
+  "initial_state": {
+    "SoC": "<5%",
+    "charging": "unstable",
+    "masters": "no contactor clack",
+    "vebus_visible_nodes": 1,
+    "service_voltage": "<12V"
+  },
+  "symptoms": [
+    "Very low SoC",
+    "Only one MultiPlus visible",
+    "Masters not engaging",
+    "No consistent float",
+    "Service battery collapse risk"
+  ],
+  "root_causes": [
+    "Seasonal deep discharge",
+    "Mechanical MultiPlus button instability",
+    "VE.Bus topology mismatch",
+    "Master contactor disengaged",
+    "Configuration drift in parallel inverter setup"
+  ],
+  "recovery_actions": [
+    "Stabilize physical switch",
+    "Reboot SmartLink (3 seconds)",
+    "Verify VE.Bus RJ45 cabling",
+    "Ensure both MultiPlus units active",
+    "Allow controlled charge to 60% minimum"
+  ],
+  "risk_patterns": [
+    "Winter lay-up without charging",
+    "Parallel inverter desynchronization",
+    "Deep discharge cascade",
+    "Human hesitation during high-voltage handling"
+  ],
+  "supervisory_lessons": [
+    "Topology awareness is required",
+    "Hardware instability can mimic logic failure",
+    "Contactor confirmation should be explicit",
+    "Parallel inverter systems require full node visibility",
+    "Deep discharge should escalate priority"
+  ]
+}

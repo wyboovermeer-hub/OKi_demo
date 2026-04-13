@@ -1,0 +1,39 @@
+{
+  "case_id": "FN-001",
+  "title": "Service Battery Collapse & Remote Recovery Coordination",
+  "system_type": "Mixed AC/DC boat system with service battery dependency",
+  "initial_state": {
+    "service_voltage": "11.9V",
+    "charging": "uncertain",
+    "operator_concern": "Risk of 0% discharge"
+  },
+  "symptoms": [
+    "Service battery below 12V",
+    "Charging inconsistency",
+    "Fear of total collapse",
+    "Uncertainty about disconnection steps"
+  ],
+  "root_causes": [
+    "Insufficient winter maintenance",
+    "Energy management neglect",
+    "Partial charging strategy",
+    "Configuration uncertainty"
+  ],
+  "recovery_actions": [
+    "Controlled shutdown of service bank",
+    "Maintain router power for remote intervention",
+    "Stabilize inverter state",
+    "Prevent further deep-cycle damage"
+  ],
+  "risk_patterns": [
+    "Low voltage panic reaction",
+    "Confusion between AC and DC domains",
+    "Energy dependency on communication infrastructure"
+  ],
+  "supervisory_lessons": [
+    "Service battery collapse should trigger advisory",
+    "Remote intervention requires communication preservation",
+    "Human risk perception affects shutdown decisions",
+    "Low voltage should escalate advisory tier"
+  ]
+}

@@ -1,0 +1,6251 @@
+{
+  "Battery": {
+    "SoC": 78,
+    "Voltage": 25.6,
+    "Current": -3.0,
+    "Temperature": 25,
+    "ContactorState": null
+  },
+  "AC": {
+    "Shore": false,
+    "GridVoltage": null,
+    "GridCurrent": null,
+    "GridPower": null,
+    "GridEnergyTotal": null,
+    "ShellyStatus": "OFFLINE",
+    "State": "UNKNOWN"
+  },
+  "Solar": {
+    "Power": null,
+    "Voltage": null,
+    "Current": null,
+    "Detected": false
+  },
+  "Charger": {
+    "ChargeCurrent": null,
+    "State": null
+  },
+  "Inverter": {
+    "On": null,
+    "ACLoad": null
+  },
+  "Derived": {
+    "DCPower": -76.8,
+    "EnergyMode": "DISCHARGING",
+    "CausalConfidence": 0.9
+  },
+  "Communication": {
+    "LastCANMessage": null,
+    "CANHealthy": false
+  },
+  "Care": {
+    "SystemCareScore": 70,
+    "OperatorCareScore": 95,
+    "CareIndex": 80,
+    "LastCareAction": null,
+    "LastCareTimestamp": null
+  },
+  "Operator": {
+    "InteractionState": "AwaitingResponse",
+    "ActiveQuestionText": "Inconsistency detected: CAN communication inactive; AC measurement source (Shelly) offline. Confirm?",
+    "OptionA": "Expected",
+    "OptionB": "Investigating",
+    "OptionC": "Unexpected",
+    "LastAnswerText": "Recorded: Investigating",
+    "AnswerTimestamp": 1773935292.5625484,
+    "LastQuestionTime": 1773935294.5091975
+  },
+  "System": {
+    "PiTemperature": null,
+    "DevMode": false,
+    "SystemHealth": 70,
+    "Inconsistency": [
+      "CAN communication inactive",
+      "AC measurement source (Shelly) offline"
+    ],
+    "Advisory": null,
+    "Severity": "CRITICAL",
+    "Recommendation": "System operating normally.",
+    "RecommendationReason": null,
+    "RecommendationRule": null,
+    "LastSnapshotSignature": [
+      null,
+      null,
+      "DISCHARGING",
+      70
+    ]
+  },
+  "Memory": [
+    {
+      "timestamp": "2026-03-04T00:23:53.496990",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:23:55.535369",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:23:57.562891",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:23:59.593112",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:24:01.622281",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:24:03.658584",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:24:05.687587",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:24:07.723804",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:24:09.753286",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:24:11.784917",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:24:13.817986",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:24:15.865625",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:24:17.888376",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:24:19.912672",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:24:21.943312",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:24:23.969483",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:24:26.001188",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:24:28.037286",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:24:30.081600",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:24:32.116417",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:24:34.147579",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:24:36.182597",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:24:38.221505",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:24:40.267868",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:24:42.294860",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:24:44.322723",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:24:46.353209",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:24:48.380192",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:24:50.411241",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:24:52.433313",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:24:54.455890",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:24:56.495800",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:24:58.523960",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:25:00.554112",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:25:02.582037",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:25:04.605623",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:25:06.639484",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:25:08.669835",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:25:10.703434",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:25:12.731157",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:25:14.762966",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:25:16.797093",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:25:18.819562",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:25:20.854190",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:25:22.886797",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:25:24.912386",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:25:26.936408",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:25:28.970462",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:25:30.989389",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:25:33.023619",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:25:35.058117",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:25:37.089959",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:25:39.113085",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:25:41.146698",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:25:43.179186",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:25:45.202014",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:25:47.229581",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:25:49.270287",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:25:51.301271",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:25:53.332712",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:25:55.363294",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:25:57.389844",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:25:59.415000",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:26:01.443222",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:26:03.467113",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:26:05.489067",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:26:07.517961",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:26:09.570226",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:26:11.607781",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:26:13.642868",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:26:15.673614",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:26:17.702989",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:26:19.737087",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:26:21.771792",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:26:23.803533",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:26:25.838386",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:26:27.863778",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:26:29.896959",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:26:31.921177",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:26:33.952638",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:26:35.980829",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:26:38.013640",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:26:40.043532",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:26:42.083404",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:26:44.117303",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:26:46.140342",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:26:48.163943",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:26:50.184266",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:26:52.214089",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:26:54.232156",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:26:56.260790",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:26:58.298216",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:27:00.329221",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:27:02.361088",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:27:04.388404",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:27:06.429306",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:27:08.457533",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:27:10.480273",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:27:12.506274",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:27:14.526374",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:27:16.558379",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:27:18.593450",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:27:20.631277",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:27:22.665963",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:27:24.707613",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:27:26.741412",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:27:28.781845",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:27:30.814174",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:27:32.841939",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:27:34.875298",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:27:36.909586",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:27:38.947004",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:27:40.980032",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:27:43.000142",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:27:45.026708",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:27:47.062038",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:27:49.091189",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:27:51.122326",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:27:53.159574",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:27:55.199352",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:27:57.231829",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:27:59.258980",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:28:01.279712",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:28:03.309010",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:28:05.338061",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:28:07.374026",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:28:09.401723",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:28:11.427726",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:28:13.454922",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:28:15.485105",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:28:17.512871",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:28:19.538689",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:28:21.569426",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:28:23.610443",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:28:25.641338",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:28:27.668271",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:28:29.701270",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:28:31.722305",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:28:33.750912",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:28:35.783420",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:28:37.815330",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:28:39.840045",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:28:41.870423",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:28:43.902138",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:28:45.926048",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:28:47.952283",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:28:49.989667",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:28:52.014080",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:28:54.047322",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:28:56.079759",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:28:58.114155",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:29:00.143665",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:29:02.175990",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:29:04.207592",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:29:06.240375",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:29:08.276007",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:29:10.306658",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:29:12.338759",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:29:14.372939",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:29:16.409127",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:29:18.435498",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:29:20.455058",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:29:22.480811",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:29:24.513247",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:29:26.546740",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:29:28.580357",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:29:30.604484",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:29:32.652785",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:29:34.686263",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:29:36.717892",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:29:38.750441",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:29:40.770671",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:29:42.804073",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:29:44.829697",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:29:46.859395",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:29:48.882813",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:29:50.904651",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:29:52.938082",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:29:54.963993",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:29:56.996781",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:29:59.031851",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:30:01.070429",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:30:03.107043",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:30:05.137155",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:30:07.173342",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:30:09.196100",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:30:11.232393",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:30:13.267545",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:30:15.302245",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:30:17.339852",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:30:19.363384",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:30:21.397464",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:30:23.424709",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:30:25.447012",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:30:27.472515",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:30:29.508898",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:30:31.536402",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:30:33.559330",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:30:35.590522",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:30:37.614298",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:30:39.657301",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:30:41.686023",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:30:43.715663",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:30:45.749587",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:30:47.782646",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:30:49.816597",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:30:51.847711",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:30:53.880791",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:30:55.903679",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:30:57.929233",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:30:59.952627",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:31:01.987593",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:31:04.013353",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:31:06.047556",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:31:08.076907",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:31:10.111500",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:31:12.144699",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:31:14.176865",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:31:16.203540",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:31:18.234353",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:31:20.271835",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:31:22.303984",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:31:24.327862",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:31:26.357541",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:31:28.392698",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:31:30.425675",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:31:32.455040",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:31:34.481660",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:31:36.507239",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:31:38.526895",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:31:40.556661",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:31:42.591754",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:31:44.617718",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:31:46.659170",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:31:48.680106",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:31:50.700396",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:31:52.723140",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:31:54.747825",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:31:56.777995",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:31:58.802844",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:32:00.822048",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:32:02.858272",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:32:04.881696",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:32:06.922083",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:32:08.953673",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:32:10.981409",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:32:13.009154",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:32:15.053678",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:32:17.084695",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:32:19.110934",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:32:21.141852",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:32:23.167697",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:32:25.191153",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:32:27.220523",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:32:29.253672",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:32:31.300786",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:32:33.334285",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:32:35.360628",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:32:37.390023",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:32:39.418705",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:32:41.446373",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:32:43.472643",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:32:45.506899",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:32:47.536136",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:32:49.566592",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:32:51.594404",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:32:53.626185",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:32:55.666377",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:32:57.691754",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:32:59.723177",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:33:01.760745",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:33:03.795893",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:33:05.827882",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:33:07.863030",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:33:09.887755",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:33:11.919286",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:33:13.960131",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:33:15.985844",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:33:18.022151",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:33:20.064922",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:33:22.097554",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:33:24.128240",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:33:26.154526",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:33:28.176493",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:33:30.202738",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:33:32.231267",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:33:34.267672",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:33:36.299589",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:33:38.321658",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:33:40.358394",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:33:42.389274",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:33:44.421459",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:33:46.443743",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:33:48.475195",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:33:50.505197",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:33:52.527129",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:33:54.558072",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:33:56.589278",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:33:58.616151",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:34:00.641196",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:34:02.671752",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:34:04.702959",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:34:06.739284",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:34:08.765796",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:34:10.805241",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:34:12.831897",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:34:14.867201",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:34:16.900962",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:34:18.933817",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:34:20.973490",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:34:23.003116",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:34:25.045195",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:34:27.087959",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:34:29.118166",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:34:31.144009",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:34:33.176222",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:34:35.211988",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:34:37.243737",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:34:39.286755",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:34:41.340766",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:34:43.362385",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:34:45.390533",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:34:47.411694",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:34:49.443638",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:34:51.474994",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:34:53.498046",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:34:55.535194",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:34:57.573576",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:34:59.599274",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:35:01.652033",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:35:03.673930",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:35:05.709027",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:35:07.743291",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:35:09.778050",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:35:11.806863",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:35:13.842978",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:35:15.881090",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:35:17.914024",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:35:19.944651",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:35:21.969542",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:35:23.998010",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:35:26.030118",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:35:28.064884",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:35:30.103820",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:35:32.136070",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:35:34.178440",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:35:36.207177",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:35:38.240071",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:35:40.279229",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:35:42.312735",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:35:44.337054",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:35:46.372111",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:35:48.413305",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:35:50.447993",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:35:52.483028",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:35:54.516822",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:35:56.541332",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:35:58.576464",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:36:00.614771",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:36:02.654417",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:36:04.681032",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:36:06.713902",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:36:08.749022",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:36:10.788344",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:36:12.820779",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:36:14.853193",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:36:16.886582",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:36:18.918728",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:36:20.946704",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:36:22.975612",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:36:25.008065",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:36:27.053916",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:36:29.090448",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:36:31.122055",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:36:33.157276",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:36:35.194185",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:36:37.224494",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:36:39.262657",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:36:41.297488",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:36:43.318343",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:36:45.348165",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:36:47.384963",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:36:49.421476",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:36:51.456131",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:36:53.495123",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:36:55.527114",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:36:57.554386",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:36:59.589292",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:37:01.628387",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:37:03.652513",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:37:05.674259",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:37:07.695342",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:37:09.719712",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:37:11.740155",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:37:13.770996",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:37:15.792042",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:37:17.811013",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:37:19.854392",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:37:21.887136",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:37:23.918958",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:37:25.951832",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:37:27.986851",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:37:30.019054",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:37:32.059924",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:37:34.097733",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:37:36.127891",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:37:38.161436",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:37:40.193512",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:37:42.230393",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:37:44.265455",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:37:46.297812",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:37:48.329632",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:37:50.368835",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:37:52.410296",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:37:54.438790",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:37:56.468453",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:37:58.516211",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:38:00.550215",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:38:02.586917",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:38:04.613720",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:38:06.643855",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:38:08.669586",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:38:10.706365",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:38:12.738140",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:38:14.768911",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:38:16.795191",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:38:18.823430",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:38:20.851695",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:38:22.861644",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:38:24.871742",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:38:26.887043",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T00:38:28.910507",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 80,
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T01:01:11.956926",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T01:07:57.166561",
+      "SoC": 80,
+      "Voltage": 25.4,
+      "Current": -5.0,
+      "Mode": "DISCHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T01:08:23.396504",
+      "SoC": 63,
+      "Voltage": 25.1,
+      "Current": -8.0,
+      "Mode": "DISCHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T01:08:25.409401",
+      "SoC": 78,
+      "Voltage": 25.6,
+      "Current": -3.0,
+      "Mode": "DISCHARGING",
+      "Health": 55,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "Discharge detected while shore power present"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T01:08:29.445083",
+      "SoC": 72,
+      "Voltage": 26.8,
+      "Current": 12.0,
+      "Mode": "CHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T01:08:31.461833",
+      "SoC": 63,
+      "Voltage": 25.1,
+      "Current": -8.0,
+      "Mode": "DISCHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T01:08:37.504915",
+      "SoC": 78,
+      "Voltage": 25.6,
+      "Current": -3.0,
+      "Mode": "DISCHARGING",
+      "Health": 55,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "Discharge detected while shore power present"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T01:08:39.531201",
+      "SoC": 63,
+      "Voltage": 25.1,
+      "Current": -8.0,
+      "Mode": "DISCHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T01:09:38.058131",
+      "SoC": 78,
+      "Voltage": 25.6,
+      "Current": -3.0,
+      "Mode": "DISCHARGING",
+      "Health": 55,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "Discharge detected while shore power present"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T01:18:54.621550",
+      "SoC": 78,
+      "Voltage": 25.6,
+      "Current": -3.0,
+      "Mode": "DISCHARGING",
+      "Health": 55,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "Discharge detected while shore power present"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T01:19:04.725086",
+      "SoC": 63,
+      "Voltage": 25.1,
+      "Current": -8.0,
+      "Mode": "DISCHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T01:19:06.748991",
+      "SoC": 72,
+      "Voltage": 26.8,
+      "Current": 12.0,
+      "Mode": "CHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T01:19:10.779317",
+      "SoC": 78,
+      "Voltage": 25.6,
+      "Current": -3.0,
+      "Mode": "DISCHARGING",
+      "Health": 55,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "Discharge detected while shore power present"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T01:32:15.970454",
+      "SoC": 78,
+      "Voltage": 25.6,
+      "Current": -3.0,
+      "Mode": "DISCHARGING",
+      "Health": 55,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "Discharge detected while shore power present"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T01:46:52.059381",
+      "SoC": 78,
+      "Voltage": 25.6,
+      "Current": -3.0,
+      "Mode": "DISCHARGING",
+      "Health": 55,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "Discharge detected while shore power present"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T02:03:42.807089",
+      "SoC": 78,
+      "Voltage": 25.6,
+      "Current": -3.0,
+      "Mode": "DISCHARGING",
+      "Health": 55,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "Discharge detected while shore power present"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T02:05:25.159977",
+      "SoC": 78,
+      "Voltage": 25.6,
+      "Current": -3.0,
+      "Mode": "DISCHARGING",
+      "Health": 55,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "Discharge detected while shore power present"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T02:10:19.459253",
+      "SoC": 78,
+      "Voltage": 25.6,
+      "Current": -3.0,
+      "Mode": "DISCHARGING",
+      "Health": 55,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "Discharge detected while shore power present"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T02:30:10.228816",
+      "SoC": 78,
+      "Voltage": 25.6,
+      "Current": -3.0,
+      "Mode": "DISCHARGING",
+      "Health": 55,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "Discharge detected while shore power present"
+      ],
+      "Advisory": null
+    },
+    {
+      "timestamp": "2026-03-04T02:50:19.323662",
+      "SoC": 78,
+      "Voltage": 25.6,
+      "Current": -3.0,
+      "Mode": "DISCHARGING",
+      "Health": 55,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "Discharge detected while shore power present"
+      ],
+      "Advisory": null,
+      "Recommendation": "Battery discharging while shore power is present. Check charger or AC breaker.",
+      "RecommendationRule": "DISCHARGE_WITH_SHORE"
+    },
+    {
+      "timestamp": "2026-03-04T02:50:49.630409",
+      "SoC": 72,
+      "Voltage": 26.8,
+      "Current": 12.0,
+      "Mode": "CHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally.",
+      "RecommendationRule": null
+    },
+    {
+      "timestamp": "2026-03-04T02:50:51.653700",
+      "SoC": 63,
+      "Voltage": 25.1,
+      "Current": -8.0,
+      "Mode": "DISCHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally.",
+      "RecommendationRule": null
+    },
+    {
+      "timestamp": "2026-03-04T12:20:44.213678",
+      "SoC": 63,
+      "Voltage": 25.1,
+      "Current": -8.0,
+      "Mode": "DISCHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally.",
+      "RecommendationRule": null
+    },
+    {
+      "timestamp": "2026-03-04T12:23:17.604782",
+      "SoC": 72,
+      "Voltage": 26.8,
+      "Current": 12.0,
+      "Mode": "CHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally.",
+      "RecommendationRule": null
+    },
+    {
+      "timestamp": "2026-03-04T12:23:19.621960",
+      "SoC": 78,
+      "Voltage": 25.6,
+      "Current": -3.0,
+      "Mode": "DISCHARGING",
+      "Health": 55,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "Discharge detected while shore power present"
+      ],
+      "Advisory": null,
+      "Recommendation": "Battery discharging while shore power is present. Check charger or AC breaker.",
+      "RecommendationRule": "DISCHARGE_WITH_SHORE"
+    },
+    {
+      "timestamp": "2026-03-04T12:27:01.335556",
+      "SoC": 78,
+      "Voltage": 25.6,
+      "Current": -3.0,
+      "Mode": "DISCHARGING",
+      "Health": 55,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "Discharge detected while shore power present"
+      ],
+      "Advisory": null,
+      "Recommendation": "Battery discharging while shore power is present. Check charger or AC breaker.",
+      "RecommendationRule": "DISCHARGE_WITH_SHORE"
+    },
+    {
+      "timestamp": "2026-03-04T12:27:13.444247",
+      "SoC": 72,
+      "Voltage": 26.8,
+      "Current": 12.0,
+      "Mode": "CHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally.",
+      "RecommendationRule": null
+    },
+    {
+      "timestamp": "2026-03-04T12:27:17.485010",
+      "SoC": 78,
+      "Voltage": 25.6,
+      "Current": -3.0,
+      "Mode": "DISCHARGING",
+      "Health": 55,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "Discharge detected while shore power present"
+      ],
+      "Advisory": null,
+      "Recommendation": "Battery discharging while shore power is present. Check charger or AC breaker.",
+      "RecommendationRule": "DISCHARGE_WITH_SHORE"
+    },
+    {
+      "timestamp": "2026-03-04T12:43:44.909172",
+      "SoC": 78,
+      "Voltage": 25.6,
+      "Current": -3.0,
+      "Mode": "DISCHARGING",
+      "Health": 55,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "Discharge detected while shore power present"
+      ],
+      "Advisory": null,
+      "Recommendation": "Battery discharging while shore power is present. Check charger or AC breaker.",
+      "RecommendationRule": "DISCHARGE_WITH_SHORE"
+    },
+    {
+      "timestamp": "2026-03-04T12:48:05.948179",
+      "SoC": 78,
+      "Voltage": 25.6,
+      "Current": -3.0,
+      "Mode": "DISCHARGING",
+      "Health": 55,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "Discharge detected while shore power present"
+      ],
+      "Advisory": null,
+      "Recommendation": "Battery discharging while shore power is present. Check charger or AC breaker.",
+      "RecommendationRule": "DISCHARGE_WITH_SHORE"
+    },
+    {
+      "timestamp": "2026-03-04T12:52:34.626047",
+      "SoC": 78,
+      "Voltage": 25.6,
+      "Current": -3.0,
+      "Mode": "DISCHARGING",
+      "Health": 55,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "Discharge detected while shore power present"
+      ],
+      "Advisory": null,
+      "Recommendation": "Battery discharging while shore power is present. Check charger or AC breaker.",
+      "RecommendationRule": "DISCHARGE_WITH_SHORE"
+    },
+    {
+      "timestamp": "2026-03-04T13:15:47.480883",
+      "SoC": 78,
+      "Voltage": 25.6,
+      "Current": -3.0,
+      "Mode": "DISCHARGING",
+      "Health": 55,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "Discharge detected while shore power present"
+      ],
+      "Advisory": null,
+      "Recommendation": "Battery discharging while shore power is present. Check charger or AC breaker.",
+      "RecommendationRule": "DISCHARGE_WITH_SHORE"
+    },
+    {
+      "timestamp": "2026-03-04T13:22:06.372310",
+      "SoC": 78,
+      "Voltage": 25.6,
+      "Current": -3.0,
+      "Mode": "DISCHARGING",
+      "Health": 55,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "Discharge detected while shore power present"
+      ],
+      "Advisory": null,
+      "Recommendation": "Battery discharging while shore power is present. Check charger or AC breaker.",
+      "RecommendationRule": "DISCHARGE_WITH_SHORE"
+    },
+    {
+      "timestamp": "2026-03-04T15:21:05.004076",
+      "SoC": 78,
+      "Voltage": 25.6,
+      "Current": -3.0,
+      "Mode": "DISCHARGING",
+      "Health": 55,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "Discharge detected while shore power present"
+      ],
+      "Advisory": null,
+      "Recommendation": "Battery discharging while shore power is present. Check charger or AC breaker.",
+      "RecommendationRule": "DISCHARGE_WITH_SHORE"
+    },
+    {
+      "timestamp": "2026-03-04T15:49:46.545527",
+      "SoC": 78,
+      "Voltage": 25.6,
+      "Current": -3.0,
+      "Mode": "DISCHARGING",
+      "Health": 55,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "Discharge detected while shore power present"
+      ],
+      "Advisory": null,
+      "Recommendation": "Battery discharging while shore power is present. Check charger or AC breaker.",
+      "RecommendationRule": "DISCHARGE_WITH_SHORE"
+    },
+    {
+      "timestamp": "2026-03-04T15:57:16.641044",
+      "SoC": 78,
+      "Voltage": 25.6,
+      "Current": -3.0,
+      "Mode": "DISCHARGING",
+      "Health": 55,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "Discharge detected while shore power present"
+      ],
+      "Advisory": null,
+      "Recommendation": "Battery discharging while shore power is present. Check charger or AC breaker.",
+      "RecommendationRule": "DISCHARGE_WITH_SHORE"
+    },
+    {
+      "timestamp": "2026-03-04T16:03:36.819748",
+      "SoC": 78,
+      "Voltage": 25.6,
+      "Current": -3.0,
+      "Mode": "DISCHARGING",
+      "Health": 55,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "Discharge detected while shore power present"
+      ],
+      "Advisory": null,
+      "Recommendation": "Battery discharging while shore power is present. Check charger or AC breaker.",
+      "RecommendationRule": "DISCHARGE_WITH_SHORE"
+    },
+    {
+      "timestamp": "2026-03-06T17:39:43.726162",
+      "SoC": 78,
+      "Voltage": 25.6,
+      "Current": -3.0,
+      "Mode": "DISCHARGING",
+      "Health": 55,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "Discharge detected while shore power present"
+      ],
+      "Advisory": null,
+      "Recommendation": "Battery discharging while shore power is present. Check charger or AC breaker.",
+      "RecommendationRule": "DISCHARGE_WITH_SHORE"
+    },
+    {
+      "timestamp": "2026-03-06T17:42:42.059148",
+      "SoC": 72,
+      "Voltage": 26.8,
+      "Current": 12.0,
+      "Mode": "CHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally.",
+      "RecommendationRule": null
+    },
+    {
+      "timestamp": "2026-03-06T17:43:36.933615",
+      "SoC": 78,
+      "Voltage": 25.6,
+      "Current": -3.0,
+      "Mode": "DISCHARGING",
+      "Health": 55,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "Discharge detected while shore power present"
+      ],
+      "Advisory": null,
+      "Recommendation": "Battery discharging while shore power is present. Check charger or AC breaker.",
+      "RecommendationRule": "DISCHARGE_WITH_SHORE"
+    },
+    {
+      "timestamp": "2026-03-06T17:44:48.012267",
+      "SoC": 63,
+      "Voltage": 25.1,
+      "Current": -8.0,
+      "Mode": "DISCHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally.",
+      "RecommendationRule": null
+    },
+    {
+      "timestamp": "2026-03-06T17:44:50.040150",
+      "SoC": 72,
+      "Voltage": 26.8,
+      "Current": 12.0,
+      "Mode": "CHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally.",
+      "RecommendationRule": null
+    },
+    {
+      "timestamp": "2026-03-06T17:44:54.097436",
+      "SoC": 78,
+      "Voltage": 25.6,
+      "Current": -3.0,
+      "Mode": "DISCHARGING",
+      "Health": 55,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "Discharge detected while shore power present"
+      ],
+      "Advisory": null,
+      "Recommendation": "Battery discharging while shore power is present. Check charger or AC breaker.",
+      "RecommendationRule": "DISCHARGE_WITH_SHORE"
+    },
+    {
+      "timestamp": "2026-03-06T17:45:00.211565",
+      "SoC": 72,
+      "Voltage": 26.8,
+      "Current": 12.0,
+      "Mode": "CHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally.",
+      "RecommendationRule": null
+    },
+    {
+      "timestamp": "2026-03-06T17:45:06.312172",
+      "SoC": 63,
+      "Voltage": 25.1,
+      "Current": -8.0,
+      "Mode": "DISCHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally.",
+      "RecommendationRule": null
+    },
+    {
+      "timestamp": "2026-03-06T17:50:09.009373",
+      "SoC": 72,
+      "Voltage": 26.8,
+      "Current": 12.0,
+      "Mode": "CHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally.",
+      "RecommendationRule": null
+    },
+    {
+      "timestamp": "2026-03-06T17:50:11.043779",
+      "SoC": 78,
+      "Voltage": 25.6,
+      "Current": -3.0,
+      "Mode": "DISCHARGING",
+      "Health": 55,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "Discharge detected while shore power present"
+      ],
+      "Advisory": null,
+      "Recommendation": "Battery discharging while shore power is present. Check charger or AC breaker.",
+      "RecommendationRule": "DISCHARGE_WITH_SHORE"
+    },
+    {
+      "timestamp": "2026-03-06T19:21:48.364898",
+      "SoC": 78,
+      "Voltage": 25.6,
+      "Current": -3.0,
+      "Mode": "DISCHARGING",
+      "Health": 55,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "Discharge detected while shore power present"
+      ],
+      "Advisory": null,
+      "Recommendation": "Battery discharging while shore power is present. Check charger or AC breaker.",
+      "RecommendationRule": "DISCHARGE_WITH_SHORE"
+    },
+    {
+      "timestamp": "2026-03-06T19:24:13.416384",
+      "SoC": 72,
+      "Voltage": 26.8,
+      "Current": 12.0,
+      "Mode": "CHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally.",
+      "RecommendationRule": null
+    },
+    {
+      "timestamp": "2026-03-10T10:21:22.857199",
+      "SoC": 72,
+      "Voltage": 26.8,
+      "Current": 12.0,
+      "Mode": "CHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally.",
+      "RecommendationRule": null
+    },
+    {
+      "timestamp": "2026-03-10T12:50:40.953801",
+      "ACVoltage": null,
+      "ACPower": null,
+      "Mode": "CHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally."
+    },
+    {
+      "timestamp": "2026-03-10T12:53:02.747182",
+      "ACVoltage": null,
+      "ACPower": null,
+      "Mode": "CHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally."
+    },
+    {
+      "timestamp": "2026-03-13T21:29:59.570887",
+      "ACVoltage": null,
+      "ACPower": null,
+      "Mode": "CHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally."
+    },
+    {
+      "timestamp": "2026-03-13T21:33:32.171230",
+      "ACVoltage": null,
+      "ACPower": null,
+      "Mode": "CHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally."
+    },
+    {
+      "timestamp": "2026-03-13T21:35:57.625793",
+      "ACVoltage": null,
+      "ACPower": null,
+      "Mode": "CHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally."
+    },
+    {
+      "timestamp": "2026-03-13T21:39:51.560357",
+      "ACVoltage": null,
+      "ACPower": null,
+      "Mode": "CHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally."
+    },
+    {
+      "timestamp": "2026-03-13T21:45:05.600133",
+      "ACVoltage": null,
+      "ACPower": null,
+      "Mode": "CHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "AC measurement source (Shelly) offline"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally."
+    },
+    {
+      "timestamp": "2026-03-13T21:48:56.755861",
+      "ACVoltage": null,
+      "ACPower": null,
+      "Mode": "CHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "AC measurement source (Shelly) offline"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally."
+    },
+    {
+      "timestamp": "2026-03-13T21:51:56.790697",
+      "ACVoltage": null,
+      "ACPower": null,
+      "Mode": "DISCHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "AC measurement source (Shelly) offline"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally."
+    },
+    {
+      "timestamp": "2026-03-13T21:52:50.064218",
+      "ACVoltage": null,
+      "ACPower": null,
+      "Mode": "DISCHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "AC measurement source (Shelly) offline"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally."
+    },
+    {
+      "timestamp": "2026-03-13T22:00:09.401727",
+      "ACVoltage": null,
+      "ACPower": null,
+      "Mode": "DISCHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "AC measurement source (Shelly) offline"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally."
+    },
+    {
+      "timestamp": "2026-03-13T22:02:31.173611",
+      "ACVoltage": null,
+      "ACPower": null,
+      "Mode": "DISCHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "AC measurement source (Shelly) offline"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally."
+    },
+    {
+      "timestamp": "2026-03-13T22:04:34.909400",
+      "ACVoltage": null,
+      "ACPower": null,
+      "Mode": "DISCHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "AC measurement source (Shelly) offline"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally."
+    },
+    {
+      "timestamp": "2026-03-13T22:06:40.656745",
+      "ACVoltage": null,
+      "ACPower": null,
+      "Mode": "DISCHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "AC measurement source (Shelly) offline"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally."
+    },
+    {
+      "timestamp": "2026-03-13T22:08:39.517062",
+      "ACVoltage": null,
+      "ACPower": null,
+      "Mode": "DISCHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "AC measurement source (Shelly) offline"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally."
+    },
+    {
+      "timestamp": "2026-03-13T22:11:46.431547",
+      "ACVoltage": null,
+      "ACPower": null,
+      "Mode": "DISCHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "AC measurement source (Shelly) offline"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally."
+    },
+    {
+      "timestamp": "2026-03-13T22:14:47.594662",
+      "ACVoltage": null,
+      "ACPower": null,
+      "Mode": "DISCHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "AC measurement source (Shelly) offline"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally."
+    },
+    {
+      "timestamp": "2026-03-18T12:26:19.942235",
+      "ACVoltage": null,
+      "ACPower": null,
+      "Mode": "DISCHARGING",
+      "Health": 70,
+      "Severity": "CRITICAL",
+      "Inconsistency": [
+        "CAN communication inactive",
+        "AC measurement source (Shelly) offline"
+      ],
+      "Advisory": null,
+      "Recommendation": "System operating normally."
+    }
+  ]
+}
