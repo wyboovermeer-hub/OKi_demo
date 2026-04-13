@@ -66,10 +66,20 @@ except Exception as _klib_err:
         def all_cases(self): return []
     CASE_LIBRARY = _EmptyLibrary()
 
-# ── Startup — load demo so UI is never blank ───────────────────────────────────
+# ── Startup — initialise state_manager and load demo ──────────────────────────
 @app.on_event("startup")
 def _startup():
-    if _ENGINE_AVAILABLE:
+    # Create state_manager if it doesn't exist (Render / standalone deployment)
+    if not hasattr(app.state, "state_manager") or app.state.state_manager is None:
+        try:
+            from state_manager import StateManager
+            app.state.state_manager = StateManager()
+            print("[OKi] StateManager initialised")
+        except Exception as _sme:
+            print(f"[OKi] Warning — StateManager init failed: {_sme}")
+            app.state.state_manager = None
+
+    if _ENGINE_AVAILABLE and app.state.state_manager is not None:
         try:
             load_scenario(app.state.state_manager, "generator_failure")
             print("[OKi] Demo scenario loaded: generator_failure")
@@ -77,7 +87,12 @@ def _startup():
             print(f"[OKi] Demo scenario skipped: {_se}")
 
 def get_state():
-    return app.state.state_manager.get()
+    try:
+        return app.state.state_manager.get()
+    except Exception:
+        from state_schema import STATE_SCHEMA
+        from copy import deepcopy
+        return deepcopy(STATE_SCHEMA)
 
 def safe_float(value, default="—"):
     try:
