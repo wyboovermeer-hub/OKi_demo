@@ -1,17 +1,19 @@
 # ============================================================
 # OKi – Onboard Knowledge Interface
-# ENTERPRISE WEB LAYER v20.1
+# ENTERPRISE WEB LAYER v20.2
 # ============================================================
 #
-# Changelog v20.1
+# Changelog v20.2
 # ----------------
-# • Engine import wrapped in try/except — never crashes on Render
-# • KNOWLEDGE_PATH uses parents[1] — correct for 05_OKi_Engine/ sibling layout
-# • Startup event loads "generator_failure" demo scenario
-# • render_knowledge_page() uses correct Case fields: root_cause, solution
-# • render_supervisory_view() checks Attention["Silence"] before rendering
-#   operator question — questions no longer leak through on stable state
-# • __main__ block added — reads $PORT env var, falls back to 10000
+# • DEV mode block fully implemented — raw state data displayed:
+#     - Raw Vessel Data (Battery, Solar, AC, Generator, Fuel, Derived)
+#     - System Intelligence (SituationType, DecisionWindow, Severity,
+#       HealthCategories, Diagnostic state)
+#     - Last 10 Memory snapshots from the engine
+#     - Scenario buttons (anchor, casa, drain, generator_failure)
+# • Boat name subtitle corrected: "OKi" branding (O and K caps, i lower)
+# • StateManager self-initialises on Render (no main.py needed)
+# • get_state() crash-safe fallback to schema defaults
 #
 # ============================================================
 
@@ -37,19 +39,17 @@ except Exception as _engine_err:
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="."), name="static")
 
-FOCUS_MODE      = False
+FOCUS_MODE       = False
 PSYCHEDELIC_MODE = False
+DEMO_MODE        = False
 
 # ── Knowledge path ─────────────────────────────────────────────────────────────
-# Layout:  15_OKi/
-#          ├── 05_OKi_Engine/   ← this file  (parents[0])
-#          └── 02_OKi_Knowledge/              (parents[1] / "02_OKi_Knowledge")
+# Pi layout:  15_OKi/05_OKi_Engine/ ← parents[0], 02_OKi_Knowledge ← parents[1]
+# Render layout: flat — all files in same directory
 KNOWLEDGE_PATH = Path(__file__).resolve().parents[1] / "02_OKi_Knowledge"
-
 if KNOWLEDGE_PATH.exists() and str(KNOWLEDGE_PATH) not in sys.path:
     sys.path.insert(0, str(KNOWLEDGE_PATH))
 elif not KNOWLEDGE_PATH.exists():
-    # Flat-layout fallback (all files in same directory)
     _flat = Path(__file__).resolve().parent
     if str(_flat) not in sys.path:
         sys.path.insert(0, str(_flat))
@@ -69,7 +69,6 @@ except Exception as _klib_err:
 # ── Startup — initialise state_manager and load demo ──────────────────────────
 @app.on_event("startup")
 def _startup():
-    # Create state_manager if it doesn't exist (Render / standalone deployment)
     if not hasattr(app.state, "state_manager") or app.state.state_manager is None:
         try:
             from state_manager import StateManager
@@ -86,6 +85,7 @@ def _startup():
         except Exception as _se:
             print(f"[OKi] Demo scenario skipped: {_se}")
 
+# ── State access ──────────────────────────────────────────────────────────────
 def get_state():
     try:
         return app.state.state_manager.get()
@@ -94,6 +94,7 @@ def get_state():
         from copy import deepcopy
         return deepcopy(STATE_SCHEMA)
 
+# ── Safe value helpers ────────────────────────────────────────────────────────
 def safe_float(value, default="—"):
     try:
         return round(float(value), 1)
@@ -106,6 +107,16 @@ def safe_int(value, default=0):
     except (TypeError, ValueError):
         return default
 
+def v(val, unit="", default="—"):
+    """Format a value with optional unit, safe default."""
+    if val is None:
+        return default
+    try:
+        return f"{round(float(val), 1)}{unit}"
+    except (TypeError, ValueError):
+        return str(val)
+
+# ── Visual helpers ────────────────────────────────────────────────────────────
 def soc_bar_html(soc, mode):
     mode_upper = (mode or "").upper()
     is_charging    = "CHARG" in mode_upper
@@ -122,7 +133,7 @@ def soc_bar_html(soc, mode):
     return f'<div class="soc-bar-outer"><div class="soc-bar-fill {animation_class}" style="width:{soc}%; background:{bar_color};"></div></div>'
 
 def soc_css_class(soc):
-    if soc < 15:  return "soc-number soc-red"
+    if soc < 15:   return "soc-number soc-red"
     elif soc < 30: return "soc-number soc-amber"
     return "soc-number soc-green"
 
@@ -130,6 +141,10 @@ def bar_color_for_health(health):
     if health < 50: return "red"
     elif health < 75: return "amber"
     return "green"
+
+# ══════════════════════════════════════════════════════════════════════════════
+# STYLES
+# ══════════════════════════════════════════════════════════════════════════════
 
 PROF_STYLE = """<style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -190,10 +205,25 @@ input:checked+.slider:before{transform:translateX(18px)}
 .advisory{font-size:clamp(10px,1.8vw,12px);color:#ffb300;margin-top:8px;padding:6px 10px;background:#2a2000;border-radius:6px;border-left:3px solid #ffb300}
 .reason{font-size:clamp(10px,1.8vw,11px);color:#6a8aa0;margin-top:5px}
 .refresh-note{text-align:center;font-size:9px;color:#333;margin-bottom:4px;flex-shrink:0}
-.footer{text-align:center;padding-top:4px;flex-shrink:0}
+
+.footer{text-align:center;padding-top:4px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:6px}
+.footer-demo{display:flex;align-items:center;gap:8px;margin-bottom:2px}
+.footer-demo-label{font-size:clamp(9px,1.6vw,11px);color:#6a8aa0;letter-spacing:0.1em;font-weight:600}
+.demo-section{border-top:1px solid #2b313c;margin-top:8px;padding-top:8px}
+.demo-label{text-align:center;font-size:10px;color:#6a8aa0;margin-bottom:8px;letter-spacing:0.12em;font-weight:bold}
+.demo-scenario-btn{display:inline-block;margin:5px;padding:10px 20px;background:#1a2030;color:#7ab8d4;border:1px solid #2b3a50;border-radius:20px;font-size:clamp(11px,2vw,13px);text-decoration:none;cursor:pointer;font-weight:600}
+.demo-scenario-btn:hover{background:#2b3a50;color:#cad8e3}
 .footer img{width:clamp(50px,10vw,70px);opacity:0.7;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.dev-section{border-top:1px solid #2b313c;margin-top:6px;padding-top:6px}
-.dev-label{text-align:center;font-size:10px;color:#444;margin-bottom:4px}
+.dev-section{border-top:2px solid #1f6fb5;margin-top:10px;padding-top:8px}
+.dev-label{text-align:center;font-size:10px;color:#1f6fb5;margin-bottom:8px;letter-spacing:0.15em;font-weight:bold}
+.dev-panel{background:#111318;border:1px solid #2b313c;border-radius:8px;padding:10px;margin-bottom:8px}
+.dev-panel-title{font-size:clamp(9px,1.6vw,11px);color:#1f6fb5;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:6px;font-weight:bold}
+.dev-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px 10px;font-size:clamp(10px,1.8vw,12px)}
+.dev-grid .dk{color:#6a8aa0;font-size:clamp(9px,1.5vw,11px)}.dev-grid .dv{color:#cad8e3;font-family:monospace}
+.dev-memory{font-size:clamp(9px,1.5vw,11px);color:#6a8aa0;font-family:monospace;line-height:1.6}
+.dev-memory span{color:#cad8e3}
+.dev-scenario-btn{display:inline-block;margin:4px;padding:6px 14px;background:#1a2030;color:#7ab8d4;border:1px solid #2b3a50;border-radius:16px;font-size:clamp(10px,1.8vw,12px);text-decoration:none;cursor:pointer}
+.dev-scenario-btn:hover{background:#2b3a50;color:#cad8e3}
 @media(max-width:400px){.button,.op-button{width:100%}}
 </style>"""
 
@@ -265,10 +295,25 @@ input:checked+.slider:before{transform:translateX(18px);background:#00d4ff}
 .advisory{font-size:clamp(10px,1.8vw,12px);color:#ffb300;margin-top:8px;padding:6px 10px;background:linear-gradient(135deg,#2a1500,#1a0d00);border-radius:6px;border-left:2px solid #ffb300}
 .reason{font-size:clamp(10px,1.8vw,11px);color:#3a6a8a;margin-top:5px}
 .refresh-note{text-align:center;font-size:9px;color:#1a3a5a;margin-bottom:4px;flex-shrink:0}
-.footer{text-align:center;padding-top:4px;flex-shrink:0}
+
+.footer{text-align:center;padding-top:4px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:6px}
+.footer-demo{display:flex;align-items:center;gap:8px;margin-bottom:2px}
+.footer-demo-label{font-size:clamp(9px,1.6vw,11px);color:#6a8aa0;letter-spacing:0.1em;font-weight:600}
+.demo-section{border-top:1px solid #2b313c;margin-top:8px;padding-top:8px}
+.demo-label{text-align:center;font-size:10px;color:#6a8aa0;margin-bottom:8px;letter-spacing:0.12em;font-weight:bold}
+.demo-scenario-btn{display:inline-block;margin:5px;padding:10px 20px;background:#1a2030;color:#7ab8d4;border:1px solid #2b3a50;border-radius:20px;font-size:clamp(11px,2vw,13px);text-decoration:none;cursor:pointer;font-weight:600}
+.demo-scenario-btn:hover{background:#2b3a50;color:#cad8e3}
 .footer img{width:clamp(50px,10vw,70px);opacity:0.7;filter:drop-shadow(0 0 6px rgba(31,111,181,0.4));cursor:pointer;-webkit-tap-highlight-color:transparent}
-.dev-section{border-top:1px solid #1a2a3a;margin-top:6px;padding-top:6px}
-.dev-label{text-align:center;font-size:9px;color:#2a4a6a;margin-bottom:4px;font-family:'Orbitron',monospace}
+.dev-section{border-top:2px solid #1f6fb5;margin-top:10px;padding-top:8px}
+.dev-label{text-align:center;font-size:10px;color:#1f6fb5;margin-bottom:8px;letter-spacing:0.15em;font-weight:bold;font-family:'Orbitron',monospace}
+.dev-panel{background:#050810;border:1px solid #1a2a3a;border-radius:8px;padding:10px;margin-bottom:8px}
+.dev-panel-title{font-size:clamp(9px,1.6vw,11px);color:#4a9fd4;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:6px;font-weight:bold;font-family:'Orbitron',monospace}
+.dev-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px 10px;font-size:clamp(10px,1.8vw,12px)}
+.dev-grid .dk{color:#3a6a8a;font-size:clamp(9px,1.5vw,11px)}.dev-grid .dv{color:#cad8e3;font-family:monospace}
+.dev-memory{font-size:clamp(9px,1.5vw,11px);color:#3a6a8a;font-family:monospace;line-height:1.6}
+.dev-memory span{color:#cad8e3}
+.dev-scenario-btn{display:inline-block;margin:4px;padding:6px 14px;background:#0a1525;color:#7ab8d4;border:1px solid #1f4a6a;border-radius:16px;font-size:clamp(10px,1.8vw,12px);text-decoration:none;cursor:pointer;font-family:'Orbitron',monospace;letter-spacing:0.08em}
+.dev-scenario-btn:hover{background:#1a3a5a;color:#00d4ff}
 @media(max-width:400px){.button,.op-button{width:100%}}
 </style>"""
 
@@ -295,6 +340,10 @@ function logoTap(){
   if(_taps>=7){_taps=0;window.location.href='/toggle-psychedelic';}
 }
 </script>"""
+
+# ══════════════════════════════════════════════════════════════════════════════
+# RENDER HELPERS
+# ══════════════════════════════════════════════════════════════════════════════
 
 def led_classes_system(health, severity):
     if severity == "CRITICAL" or health < 50:
@@ -343,25 +392,197 @@ def render_header():
     bg, ba, br = led_classes_battery(soc)
     return f"""<div class="header">
   <div class="header-left">{render_led_strip(sg,sa,sr)}{render_toggle("FOCUS",FOCUS_MODE,"toggle-focus")}</div>
-  <div class="title-block"><div class="title-oki">OKi</div><div class="title-sub">Onboard Knowledge Interface</div><div class="boat-name-center">&#9875; Casa Azul</div></div>
+  <div class="title-block">
+    <div class="title-oki">OKi</div>
+    <div class="title-sub">Onboard Knowledge Interface</div>
+    <div class="boat-name-center">&#9875; Casa Azul</div>
+  </div>
   <div class="header-right">{render_led_strip(bg,ba,br)}{render_toggle("DEV",dev_mode,"toggle-dev")}<div class="clock" id="clock">--:--:--</div><div class="clock-date" id="clock-date">--- -- --- ----</div></div>
 </div>"""
 
 def render_footer():
-    return '<div class="footer"><a href="/" onclick="logoTap(); return false;"><img src="/static/oki_logo.png" alt="OKi"></a></div>'
+    demo_checked = "checked" if DEMO_MODE else ""
+    toggle = f'<label class="switch"><input type="checkbox" {demo_checked} onchange="window.location.href=\'/toggle-demo\'"><span class="slider"></span></label>'
+    return (
+        '<div class="footer">'
+        '<div class="footer-demo">'
+        '<span class="footer-demo-label">DEMO</span>'
+        + toggle +
+        '</div>'
+        '<a href="/" onclick="logoTap(); return false;"><img src="/static/oki_logo.png" alt="OKi"></a>'
+        '</div>'
+    )
+
+# ══════════════════════════════════════════════════════════════════════════════
+# DEV BLOCK — raw state data
+# ══════════════════════════════════════════════════════════════════════════════
+
+def render_dev_block(state: dict) -> str:
+    """
+    Full raw data block shown when DEV mode is ON.
+    Sections:
+      1. Raw Vessel Data    — Battery, Solar, AC, Generator, Fuel, Derived
+      2. System Intelligence — SituationType, DecisionWindow, Health, Diagnostic
+      3. Memory             — last 10 snapshots
+      4. Scenarios          — quick-load buttons
+    """
+
+    def row(key, val):
+        return f'<div class="dk">{key}</div><div class="dv">{val}</div>'
+
+    def dev_panel(title, inner):
+        return (
+            f'<div class="dev-panel">'
+            f'<div class="dev-panel-title">{title}</div>'
+            f'{inner}'
+            f'</div>'
+        )
+
+    # ── 1. Raw Vessel Data ────────────────────────────────────────────────────
+    bat  = state.get("Battery", {})
+    sol  = state.get("Solar", {})
+    ac   = state.get("AC", {})
+    gen  = state.get("Generator", {})
+    fuel = state.get("Fuel", {})
+    der  = state.get("Derived", {})
+    comm = state.get("Communication", {})
+
+    vessel_html = '<div class="dev-grid">'
+    vessel_html += row("BAT SoC",      v(bat.get("SoC"), "%"))
+    vessel_html += row("BAT Voltage",  v(bat.get("Voltage"), " V"))
+    vessel_html += row("BAT Current",  v(bat.get("Current"), " A"))
+    vessel_html += row("BAT Temp",     v(bat.get("Temperature"), " °C"))
+    vessel_html += row("DC Power",     v(der.get("DCPower"), " W"))
+    vessel_html += row("Energy Mode",  der.get("EnergyMode") or "—")
+    vessel_html += row("Solar Power",  v(sol.get("Power"), " W"))
+    vessel_html += row("Solar State",  sol.get("State") or "—")
+    vessel_html += row("Solar V",      v(sol.get("Voltage"), " V"))
+    vessel_html += row("AC Voltage",   v(ac.get("GridVoltage"), " V"))
+    vessel_html += row("AC Power",     v(ac.get("GridPower"), " W"))
+    vessel_html += row("AC State",     ac.get("State") or "—")
+    vessel_html += row("Shore",        str(ac.get("Shore") or "—"))
+    vessel_html += row("Shelly",       ac.get("ShellyStatus") or "—")
+    vessel_html += row("Generator",    "ON" if gen.get("Running") else "OFF")
+    vessel_html += row("Gen Expected", str(gen.get("Expected", "—")))
+    vessel_html += row("Gen Error",    gen.get("ErrorCode") or "none")
+    vessel_html += row("Fuel Level",   v(fuel.get("LevelPercent"), "%"))
+    vessel_html += row("Fuel State",   fuel.get("State") or "—")
+    vessel_html += row("Fuel Sensor",  "OK" if fuel.get("SensorReliable") else "unreliable")
+    vessel_html += row("CAN Healthy",  str(comm.get("CANHealthy") or "—"))
+    vessel_html += '</div>'
+
+    if fuel.get("Inconsistency"):
+        vessel_html += f'<div class="reason" style="margin-top:6px;">&#9888; {fuel["Inconsistency"]}</div>'
+
+    # ── 2. System Intelligence ────────────────────────────────────────────────
+    sys    = state.get("System", {})
+    energy = state.get("Energy", {})
+    diag   = state.get("Diagnostic", {})
+    vessel = state.get("VesselState", {})
+    cats   = sys.get("HealthCategories") or {}
+
+    intel_html = '<div class="dev-grid">'
+    intel_html += row("Situation",      sys.get("SituationType") or "—")
+    intel_html += row("Decision Win.",  sys.get("DecisionWindow") or "—")
+    intel_html += row("System Mode",    sys.get("Mode") or "—")
+    intel_html += row("Severity",       sys.get("Severity") or "none")
+    intel_html += row("Health Score",   f'{sys.get("SystemHealth") or "—"}%')
+    intel_html += row("Cat A (Integrity)", f'-{cats.get("A_SystemIntegrity", 0)}pt')
+    intel_html += row("Cat B (Energy)",    f'-{cats.get("B_EnergyBattery", 0)}pt')
+    intel_html += row("Cat C (Stress)",    f'-{cats.get("C_OperationalStress", 0)}pt')
+    intel_html += row("Cat F (Power)",     f'-{cats.get("F_PowerContinuity", 0)}pt')
+    intel_html += row("Time→Critical",  v(energy.get("TimeToCriticalHours"), " h"))
+    intel_html += row("Time→Shutdown",  v(energy.get("TimeToShutdownHours"), " h"))
+    intel_html += row("Discharge Rate", v(energy.get("DischargeRate"), " %/h"))
+    intel_html += row("Vessel Move",    vessel.get("MovementState") or "—")
+    intel_html += row("Location",       vessel.get("LocationContext") or "—")
+    intel_html += row("Survival Mode",  "YES" if vessel.get("SurvivalMode") else "no")
+    intel_html += row("Diag Step",      diag.get("Step") or "—")
+    intel_html += row("Diag State",     diag.get("DiagnosticState") or "—")
+    intel_html += row("Diag Primary",   (diag.get("PrimaryState") or "—")[:30])
+    intel_html += row("Active Q",       "yes" if diag.get("ActiveQuestion") else "none")
+    intel_html += '</div>'
+
+    penalties = sys.get("HealthPenalties") or []
+    if penalties:
+        intel_html += '<div style="margin-top:6px;">'
+        for p in penalties[:5]:
+            intel_html += f'<div class="reason">&#9888; {p}</div>'
+        intel_html += '</div>'
+
+    # ── 3. Memory — last 10 snapshots ─────────────────────────────────────────
+    memory = state.get("Memory", [])
+    last10 = memory[-10:] if memory else []
+
+    if last10:
+        mem_html = '<div class="dev-memory">'
+        for entry in reversed(last10):
+            ts    = str(entry.get("timestamp", ""))[:19].replace("T", " ")
+            mode  = entry.get("Mode") or "—"
+            hlth  = entry.get("Health") or "—"
+            sev   = entry.get("Severity") or "ok"
+            mem_html += f'<div>{ts} &nbsp; <span>{mode}</span> &nbsp; health:<span>{hlth}%</span> &nbsp; <span>{sev}</span></div>'
+        mem_html += '</div>'
+    else:
+        mem_html = '<div class="dev-memory">No memory snapshots yet.</div>'
+
+    # ── 4. Scenarios ──────────────────────────────────────────────────────────
+    scenarios_html = (
+        '<div style="text-align:center;padding-top:4px;">'
+        '<a class="dev-scenario-btn" href="/scenario/casa">Casa Azul</a>'
+        '<a class="dev-scenario-btn" href="/scenario/anchor">Anchor</a>'
+        '<a class="dev-scenario-btn" href="/scenario/drain">Drain</a>'
+        '<a class="dev-scenario-btn" href="/scenario/generator_failure">Gen Failure</a>'
+        '</div>'
+    )
+
+    # ── Assemble ──────────────────────────────────────────────────────────────
+    return (
+        '<div class="dev-section">'
+        '<div class="dev-label">&#128295; DEV — RAW STATE DATA</div>'
+        + dev_panel("&#9889; Vessel Data", vessel_html)
+        + dev_panel("&#129302; System Intelligence", intel_html)
+        + dev_panel("&#128257; Memory — Last 10 Snapshots", mem_html)
+        + dev_panel("&#127918; Load Scenario", scenarios_html)
+        + '</div>'
+    )
+
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# DEMO BLOCK — scenario loader
+# ══════════════════════════════════════════════════════════════════════════════
+
+def render_demo_block() -> str:
+    """Shown when DEMO mode is ON. Centered scenario buttons."""
+    return (
+        '<div class="demo-section">'
+        '<div class="demo-label">&#127918; DEMO — Load Scenario</div>'
+        '<div style="text-align:center;">'
+        '<a class="demo-scenario-btn" href="/scenario/casa">&#128211; Casa Azul</a>'
+        '<a class="demo-scenario-btn" href="/scenario/anchor">&#9875; Anchor</a>'
+        '<a class="demo-scenario-btn" href="/scenario/drain">&#9889; Suspicious Drain</a>'
+        '<a class="demo-scenario-btn" href="/scenario/generator_failure">&#128268; Generator Failure</a>'
+        '</div>'
+        '</div>'
+    )
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# PAGE VIEWS
+# ══════════════════════════════════════════════════════════════════════════════
 
 def render_supervisory_view(state):
     content  = ""
     dev_mode = state["System"].get("DevMode", False)
     operator = state["Operator"]
 
-    # ── Silence rule — only show question when attention engine says not silent ──
-    # Check Attention["Silence"] first; fall back to legacy InteractionState check.
-    attention = state.get("Attention", {})
-    is_silent = attention.get("Silence", False)
-    has_active_question = operator.get("InteractionState") == "AwaitingResponse"
+    # Silence rule — only show question when attention engine says not silent
+    attention        = state.get("Attention", {})
+    is_silent        = attention.get("Silence", False)
+    has_active_q     = operator.get("InteractionState") == "AwaitingResponse"
 
-    if has_active_question and not is_silent:
+    if has_active_q and not is_silent:
         q  = f"<div style='font-size:clamp(12px,2.5vw,14px);margin-bottom:8px;color:#cad8e3;'><b>{operator['ActiveQuestionText']}</b></div>"
         q += render_op_button(operator["OptionA"], "/answer/A")
         q += render_op_button(operator["OptionB"], "/answer/B")
@@ -388,8 +609,8 @@ def render_supervisory_view(state):
 
     rec = state["System"].get("Recommendation")
     if rec:
-        reason  = state["System"].get("RecommendationReason")
-        advisory= state["System"].get("Advisory")
+        reason   = state["System"].get("RecommendationReason")
+        advisory = state["System"].get("Advisory")
         r = f"<div style='font-size:clamp(12px,2vw,13px);'>{rec}</div>"
         if reason:   r += f'<div class="reason">Reason: {reason}</div>'
         if advisory: r += f'<div class="advisory">&#128203; {advisory}</div>'
@@ -413,13 +634,13 @@ def render_supervisory_view(state):
     content += render_button("CARE", "/care")
     content += render_button("KNOWLEDGE", "/knowledge")
 
+    # DEMO block — scenario loader
+    if DEMO_MODE:
+        content += render_demo_block()
+
+    # DEV block — full raw data
     if dev_mode:
-        content += '<div class="dev-section"><div class="dev-label">DEV — Scenarios</div>'
-        content += render_button("Scenario: Anchor", "/scenario/anchor")
-        content += render_button("Scenario: Casa Azul", "/scenario/casa")
-        content += render_button("Scenario: Suspicious Drain", "/scenario/drain")
-        content += render_button("Scenario: Generator Failure", "/scenario/generator_failure")
-        content += "</div>"
+        content += render_dev_block(state)
 
     return content
 
@@ -449,6 +670,15 @@ def render_focus_view(state):
     if rec:
         content += render_panel("Status", f"<div style='font-size:clamp(12px,2vw,13px);'>{rec}</div>")
     content += render_button("CARE", "/care")
+
+    # DEMO block
+    if DEMO_MODE:
+        content += render_demo_block()
+
+    # DEV block visible in focus mode too
+    if system.get("DevMode", False):
+        content += render_dev_block(state)
+
     return content
 
 def render_care_page():
@@ -467,7 +697,6 @@ def render_care_page():
     return panel
 
 def render_knowledge_page():
-    # Case fields: case_id, title, root_cause, solution, symptoms, conditions, actions
     cases = list(CASE_LIBRARY.cases.values()) if hasattr(CASE_LIBRARY, 'cases') else []
     if not cases:
         content = "<div style='color:#6a8aa0;'>No cases loaded yet.</div>"
@@ -477,7 +706,6 @@ def render_knowledge_page():
             case_id    = getattr(case, "case_id",    "?")
             title      = getattr(case, "title",      "?")
             root_cause = getattr(case, "root_cause", "") or ""
-            # Show root_cause as the description snippet (correct field name)
             snippet    = root_cause[:120] + "..." if len(root_cause) > 120 else root_cause
             content += (
                 f'<div style="margin-bottom:8px;padding:10px;background:#0f1115;border-radius:8px;">'
@@ -505,6 +733,10 @@ def render_layout(content, auto_refresh=True):
         + "</div></div></body></html>"
     )
 
+# ══════════════════════════════════════════════════════════════════════════════
+# ROUTES
+# ══════════════════════════════════════════════════════════════════════════════
+
 @app.get("/")
 def home():
     state   = get_state()
@@ -520,6 +752,12 @@ def toggle_focus():
 @app.get("/toggle-dev")
 def toggle_dev():
     toggle_dev_mode(app.state.state_manager)
+    return RedirectResponse("/", 302)
+
+@app.get("/toggle-demo")
+def toggle_demo():
+    global DEMO_MODE
+    DEMO_MODE = not DEMO_MODE
     return RedirectResponse("/", 302)
 
 @app.get("/toggle-psychedelic")
@@ -551,7 +789,7 @@ def care_task():
 def knowledge_page():
     return render_layout(render_knowledge_page(), auto_refresh=False)
 
-# ── Entrypoint — reads $PORT env var, falls back to 10000 ─────────────────────
+# ── Entrypoint ────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 10000))
