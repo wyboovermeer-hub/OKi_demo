@@ -1,9 +1,9 @@
 # ============================================================
 # OKi – Onboard Knowledge Interface
-# ENTERPRISE WEB LAYER v20.2
+# ENTERPRISE WEB LAYER v20.3
 # ============================================================
 #
-# Changelog v20.2
+# Changelog v20.3
 # ----------------
 # • DEV mode block fully implemented — raw state data displayed:
 #     - Raw Vessel Data (Battery, Solar, AC, Generator, Fuel, Derived)
@@ -718,12 +718,28 @@ def render_knowledge_page():
     return panel
 
 def render_layout(content, auto_refresh=True):
-    refresh = '<meta http-equiv="refresh" content="3">' if auto_refresh else ""
+    # JS refresh preserves scroll position — no more jumping to top
+    refresh_js = """<script>
+(function(){
+  var c=document.querySelector('.content');
+  if(c){
+    var k='oki_scroll';
+    var saved=sessionStorage.getItem(k);
+    if(saved) c.scrollTop=parseInt(saved,10);
+    c.addEventListener('scroll',function(){sessionStorage.setItem(k,c.scrollTop);});
+  }
+})();
+setTimeout(function(){
+  var c=document.querySelector('.content');
+  if(c) sessionStorage.setItem('oki_scroll',c.scrollTop);
+  location.reload();
+},3000);
+</script>""" if auto_refresh else ""
     style   = PSYCH_STYLE if PSYCHEDELIC_MODE else PROF_STYLE
     return HTMLResponse(
         "<html><head><title>OKi – Casa Azul</title>"
         "<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5'>"
-        + refresh + style + SCRIPTS +
+        + style + SCRIPTS + refresh_js +
         "</head><body><div class='outer'><div class='frame'>"
         + render_header()
         + "<div class='divider'></div>"
