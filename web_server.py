@@ -1,6 +1,6 @@
 # ============================================================
 # OKi – Onboard Knowledge Interface
-# ENTERPRISE WEB LAYER v21.3
+# ENTERPRISE WEB LAYER v21.4
 # ============================================================
 #
 # Changelog v20.7
@@ -579,10 +579,7 @@ function logoTap(){
   _tapTimer=setTimeout(function(){_taps=0;},3000);
   if(_taps>=7){
     _taps=0;
-    fetch('/api/toggle-wicked').then(function(){
-      WICKED_ACTIVE=!WICKED_ACTIVE;
-      location.reload();
-    });
+    wickedActivate();
   }
 }
 
@@ -644,25 +641,42 @@ function logoRelease(){
 }
 
 function cinematicActivate(){
-  // Show full-screen flash overlay
+  // Immediate black cover — paint it before anything else
+  document.documentElement.style.background='#000';
+  document.body.style.background='#000';
+  var cover=document.createElement('div');
+  cover.id='psych-cover';
+  cover.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99999;transition:opacity 0.3s;';
+  document.body.appendChild(cover);
+
+  // Neon flash on top of cover
   var overlay=document.getElementById('psych-overlay');
   if(overlay) overlay.classList.add('flash');
 
-  // Cover the page so reload doesn't flash white/logo
-  var cover=document.createElement('div');
-  cover.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99998;';
-  document.body.appendChild(cover);
-
-  // Turn off wicked mode if active, then turn on psychedelic, then reload
+  // Turn off wicked if active, turn on psychedelic, then navigate
   var p1 = WICKED_ACTIVE ? fetch('/api/toggle-wicked') : Promise.resolve();
   p1.then(function(){
     return fetch('/api/toggle-psychedelic');
   }).then(function(){
-    setTimeout(function(){ location.href='/'; },600);
+    // Short delay so flash is visible, then navigate
+    setTimeout(function(){ window.location.replace('/'); },700);
   });
 }
 
-// Track wicked state in JS so cinematicActivate knows whether to turn it off
+function wickedActivate(){
+  // Black cover
+  document.documentElement.style.background='#000';
+  document.body.style.background='#000';
+  var cover=document.createElement('div');
+  cover.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99999;';
+  document.body.appendChild(cover);
+  fetch('/api/toggle-wicked').then(function(){
+    WICKED_ACTIVE=!WICKED_ACTIVE;
+    setTimeout(function(){ window.location.replace('/'); },300);
+  });
+}
+
+// Track wicked state in JS
 var WICKED_ACTIVE=false;
 
 // ── Toggle helper ─────────────────────────────────────────────────────────────
@@ -1357,10 +1371,10 @@ def render_layout(content, auto_refresh=True):
 </script>""" if auto_refresh else ""
     style   = PSYCHEDELIC_STYLE if PSYCHEDELIC_MODE else (PSYCH_STYLE if WICKED_MODE else PROF_STYLE)
     return HTMLResponse(
-        "<html><head><title>OKi – Casa Azul</title>"
+        "<html style='background:#000'><head><title>OKi – Casa Azul</title>"
         "<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5'><meta name='mobile-web-app-capable' content='yes'>"
         + style + SCRIPTS + refresh_js +
-        "</head><body><div class='outer'><div class='frame'>"
+        "</head><body style='background:#000'><div class='outer'><div class='frame'>"
         + render_header()
         + "<div class='divider'></div>"
         + '<div class="refresh-note">&#8635; auto-refresh every 3s</div>'
