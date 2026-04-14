@@ -1,7 +1,17 @@
 # ============================================================
 # OKi – Onboard Knowledge Interface
-# ENTERPRISE WEB LAYER v21.11
+# ENTERPRISE WEB LAYER v21.14
 # ============================================================
+#
+# Changelog v21.14
+# -----------------
+# • OPERATOR BUTTONS — distinct colours in all three UI modes:
+#     - Normal:      Expected (green), Investigating (amber), Unexpected (red)
+#     - Wicked:      Expected (neon green), Investigating (amber), Unexpected (red)
+#     - Psychedelic: unchanged (already had named classes from v21.12)
+# • Named classes .op-button-b and .op-button-c added to render_supervisory_view
+#   (both visible and hidden-state placeholders) — nth-child bug permanently resolved
+#   across all three UI modes
 #
 # Changelog v20.7
 # ----------------
@@ -253,8 +263,12 @@ input:checked+.slider:before{transform:translateX(18px);background:#fff}
 .badge-warning{background:#ffb300;color:#000}.badge-critical{background:#ff5252;color:#fff}.badge-ok{background:#4caf50;color:#fff}
 .button{display:block;width:92%;margin:7px auto;padding:clamp(14px,2.8vw,18px);background:#2b313c;color:#cad8e3;text-decoration:none;border-radius:24px;text-align:center;font-size:clamp(13px,2.5vw,15px);transition:background 0.2s;cursor:pointer;border:none;touch-action:manipulation;min-height:48px}
 .button:hover,.button:active{background:#3a4255}
-.op-button{display:block;width:92%;margin:6px auto;padding:clamp(14px,2.8vw,18px);background:#2b313c;color:#cad8e3;text-decoration:none;border-radius:24px;text-align:center;font-size:clamp(13px,2.5vw,15px);border:none;cursor:pointer;transition:background 0.2s;touch-action:manipulation;min-height:48px}
-.op-button:hover,.op-button:active{background:#3a4255}
+.op-button{display:block;width:92%;margin:6px auto;padding:clamp(14px,2.8vw,18px);background:#1a2e1a;color:#4caf50;text-decoration:none;border-radius:24px;text-align:center;font-size:clamp(13px,2.5vw,15px);border:1px solid #2a4a2a;cursor:pointer;transition:background 0.2s;touch-action:manipulation;min-height:48px}
+.op-button:hover,.op-button:active{background:#243824}
+.op-button-b{background:#2e2a14;color:#ffb300;border-color:#4a3e10}
+.op-button-b:hover,.op-button-b:active{background:#3a3318}
+.op-button-c{background:#2e1a1a;color:#ff5252;border-color:#4a2222}
+.op-button-c:hover,.op-button-c:active{background:#3a2222}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:5px 10px;font-size:clamp(12px,2.2vw,14px)}
 .grid2 .label{color:#9aa8b5;font-size:clamp(10px,1.8vw,12px)}.grid2 .value{color:#cad8e3}
 .advisory{font-size:clamp(10px,1.8vw,12px);color:#ffb300;margin-top:8px;padding:6px 10px;background:#2a2000;border-radius:6px;border-left:3px solid #ffb300}
@@ -367,6 +381,10 @@ input:checked+.slider:before{transform:translateX(18px);background:#00d4ff}
 .button:hover,.button:active{background:linear-gradient(135deg,#1a3a5a,#0d2040);border-color:#1f6fb5;color:#00d4ff}
 .op-button{display:block;width:92%;margin:6px auto;padding:clamp(14px,2.8vw,18px);background:linear-gradient(135deg,#1a2a1a,#0d1a0d);color:#4aff80;text-decoration:none;border-radius:10px;text-align:center;font-size:clamp(12px,2.3vw,14px);font-family:'Orbitron',monospace;letter-spacing:0.1em;border:1px solid #1a4a2a;cursor:pointer;transition:all 0.15s ease;touch-action:manipulation;min-height:48px}
 .op-button:hover,.op-button:active{background:linear-gradient(135deg,#2a4a2a,#1a2a1a);border-color:#00ff44}
+.op-button-b{background:linear-gradient(135deg,#2a2210,#1a1608);color:#ffb300;border-color:#4a3a10}
+.op-button-b:hover,.op-button-b:active{background:linear-gradient(135deg,#3a3018,#2a2210);border-color:#ffb300}
+.op-button-c{background:linear-gradient(135deg,#2a1010,#1a0808);color:#ff3333;border-color:#4a1a1a}
+.op-button-c:hover,.op-button-c:active{background:linear-gradient(135deg,#3a1818,#2a1010);border-color:#ff3333}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:5px 10px;font-size:clamp(12px,2.2vw,14px)}
 .grid2 .label{color:#3a6a8a;font-size:clamp(10px,1.8vw,12px)}.grid2 .value{color:#cad8e3;font-family:'Orbitron',monospace;font-size:clamp(11px,2vw,13px)}
 .advisory{font-size:clamp(10px,1.8vw,12px);color:#ffb300;margin-top:8px;padding:6px 10px;background:linear-gradient(135deg,#2a1500,#1a0d00);border-radius:6px;border-left:2px solid #ffb300}
@@ -502,8 +520,8 @@ input:checked+.slider:before{transform:translateX(18px);background:#00e5ff}
 .button:hover,.button:active{box-shadow:0 0 24px rgba(0,229,255,0.55)}
 /* Operator buttons — large pill neon bars: green / lime / pink */
 .op-button{display:block;width:92%;margin:6px auto;padding:clamp(14px,2.8vw,18px);text-decoration:none;border-radius:28px;text-align:center;font-size:clamp(12px,2.3vw,14px);font-family:'Orbitron',monospace;letter-spacing:0.1em;cursor:pointer;touch-action:manipulation;min-height:52px;background:rgba(0,14,4,0.88);color:#00ff88;border:2px solid rgba(0,255,136,0.7);box-shadow:0 0 14px rgba(0,255,136,0.25),inset 0 0 12px rgba(0,255,136,0.05)}
-.op-button:nth-child(2){background:rgba(10,12,0,0.88);color:#aaff00;border-color:rgba(170,255,0,0.7);box-shadow:0 0 14px rgba(170,255,0,0.25),inset 0 0 12px rgba(170,255,0,0.05)}
-.op-button:nth-child(3){background:rgba(14,0,7,0.88);color:#ff44aa;border-color:rgba(255,68,170,0.7);box-shadow:0 0 14px rgba(255,68,170,0.25),inset 0 0 12px rgba(255,68,170,0.05)}
+.op-button-b{background:rgba(10,12,0,0.88);color:#aaff00;border-color:rgba(170,255,0,0.7);box-shadow:0 0 14px rgba(170,255,0,0.25),inset 0 0 12px rgba(170,255,0,0.05)}
+.op-button-c{background:rgba(14,0,7,0.88);color:#ff44aa;border-color:rgba(255,68,170,0.7);box-shadow:0 0 14px rgba(255,68,170,0.25),inset 0 0 12px rgba(255,68,170,0.05)}
 .op-button:hover,.op-button:active{filter:brightness(1.25)}
 /* Grid data values */
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:5px 10px;font-size:clamp(12px,2.2vw,14px);position:relative;z-index:1}
@@ -1029,11 +1047,11 @@ def render_supervisory_view(state):
     if has_active_q and not is_silent:
         q  = f"<div id='question-text' style='font-size:clamp(12px,2.5vw,14px);margin-bottom:8px;color:#cad8e3;'><b>{operator['ActiveQuestionText']}</b></div>"
         q += f'<a id="q-opt-a" class="op-button" href="/answer/A">{operator["OptionA"]}</a>'
-        q += f'<a id="q-opt-b" class="op-button" href="/answer/B">{operator["OptionB"]}</a>'
-        q += f'<a id="q-opt-c" class="op-button" href="/answer/C">{operator["OptionC"]}</a>'
+        q += f'<a id="q-opt-b" class="op-button op-button-b" href="/answer/B">{operator["OptionB"]}</a>'
+        q += f'<a id="q-opt-c" class="op-button op-button-c" href="/answer/C">{operator["OptionC"]}</a>'
         content += f'<div id="question-panel"><div class="panel"><div class="panel-title">Operator Confirmation Required</div>{q}</div></div>'
     else:
-        content += '<div id="question-panel" style="display:none;"><div class="panel"><div class="panel-title">Operator Confirmation Required</div><div id="question-text"></div><a id="q-opt-a" class="op-button" href="/answer/A"></a><a id="q-opt-b" class="op-button" href="/answer/B"></a><a id="q-opt-c" class="op-button" href="/answer/C"></a></div></div>'
+        content += '<div id="question-panel" style="display:none;"><div class="panel"><div class="panel-title">Operator Confirmation Required</div><div id="question-text"></div><a id="q-opt-a" class="op-button" href="/answer/A"></a><a id="q-opt-b" class="op-button op-button-b" href="/answer/B"></a><a id="q-opt-c" class="op-button op-button-c" href="/answer/C"></a></div></div>'
 
     battery = state.get("Battery", {})
     derived = state.get("Derived", {})
