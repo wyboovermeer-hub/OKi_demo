@@ -1,6 +1,6 @@
 # ============================================================
 # OKi – Onboard Knowledge Interface
-# ENTERPRISE WEB LAYER v20.7
+# ENTERPRISE WEB LAYER v20.9
 # ============================================================
 #
 # Changelog v20.7
@@ -196,7 +196,7 @@ def bar_color_for_health(health):
 # ══════════════════════════════════════════════════════════════════════════════
 
 PROF_STYLE = """<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-user-select:none;-moz-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;width:100%}
 body{background:#0f1115;color:#cad8e3;font-family:Segoe UI,sans-serif;display:flex;justify-content:center;align-items:stretch;min-height:100dvh;padding:6px}
 .outer{width:100%;max-width:720px;display:flex;flex-direction:column}
@@ -218,16 +218,16 @@ body{background:#0f1115;color:#cad8e3;font-family:Segoe UI,sans-serif;display:fl
 .led-off{background:#2b313c;border:1px solid #3a4255}
 @keyframes pulse-amber{0%,100%{opacity:1}50%{opacity:0.4}}
 @keyframes pulse-red{0%,100%{opacity:1}50%{opacity:0.3}}
-.toggle-box{display:flex;flex-direction:column;align-items:center;gap:3px}
+.toggle-box{display:flex;flex-direction:column;align-items:center;gap:3px;touch-action:manipulation;cursor:pointer;padding:4px}
 .toggle-label{font-size:clamp(8px,1.5vw,10px);color:#9aa8b5;letter-spacing:0.08em;font-weight:600}
-.switch{position:relative;display:inline-block;width:36px;height:18px}
+.switch{position:relative;display:inline-block;width:44px;height:26px;touch-action:manipulation}
 .switch input{opacity:0;width:0;height:0}
 .slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#444;transition:.3s;border-radius:18px}
-.slider:before{position:absolute;content:"";height:12px;width:12px;left:2px;bottom:2px;background:white;transition:.3s;border-radius:50%}
+.slider:before{position:absolute;content:"";height:18px;width:18px;left:2px;bottom:2px;background:white;transition:.3s;border-radius:50%}
 input:checked+.slider{background:#1f6fb5}
-input:checked+.slider:before{transform:translateX(18px)}
+input:checked+.slider:before{transform:translateX(18px);background:#fff}
 .divider{height:1px;background:#2b313c;margin:4px 0 6px 0;flex-shrink:0}
-.content{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:#2b313c #0f1115}
+.content{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:#2b313c #0f1115;touch-action:pan-y}
 .soc-display{text-align:center;padding:4px 0 4px 0}
 .soc-number{font-size:clamp(32px,7vw,48px);font-weight:bold;line-height:1}
 .soc-green{color:#4caf50}.soc-amber{color:#ffb300}.soc-red{color:#ff5252}
@@ -245,9 +245,9 @@ input:checked+.slider:before{transform:translateX(18px)}
 .panel-title{margin-bottom:8px;font-size:clamp(13px,2.5vw,16px);color:#1f6fb5;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .badge{font-size:10px;padding:2px 8px;border-radius:8px;font-weight:bold}
 .badge-warning{background:#ffb300;color:#000}.badge-critical{background:#ff5252;color:#fff}.badge-ok{background:#4caf50;color:#fff}
-.button{display:block;width:92%;margin:7px auto;padding:clamp(13px,2.8vw,17px);background:#2b313c;color:#cad8e3;text-decoration:none;border-radius:24px;text-align:center;font-size:clamp(13px,2.5vw,15px);transition:background 0.2s;cursor:pointer;border:none}
+.button{display:block;width:92%;margin:7px auto;padding:clamp(14px,2.8vw,18px);background:#2b313c;color:#cad8e3;text-decoration:none;border-radius:24px;text-align:center;font-size:clamp(13px,2.5vw,15px);transition:background 0.2s;cursor:pointer;border:none;touch-action:manipulation;min-height:48px}
 .button:hover,.button:active{background:#3a4255}
-.op-button{display:block;width:92%;margin:6px auto;padding:clamp(13px,2.8vw,17px);background:#2b313c;color:#cad8e3;text-decoration:none;border-radius:24px;text-align:center;font-size:clamp(13px,2.5vw,15px);border:none;cursor:pointer;transition:background 0.2s}
+.op-button{display:block;width:92%;margin:6px auto;padding:clamp(14px,2.8vw,18px);background:#2b313c;color:#cad8e3;text-decoration:none;border-radius:24px;text-align:center;font-size:clamp(13px,2.5vw,15px);border:none;cursor:pointer;transition:background 0.2s;touch-action:manipulation;min-height:48px}
 .op-button:hover,.op-button:active{background:#3a4255}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:5px 10px;font-size:clamp(12px,2.2vw,14px)}
 .grid2 .label{color:#9aa8b5;font-size:clamp(10px,1.8vw,12px)}.grid2 .value{color:#cad8e3}
@@ -262,7 +262,7 @@ input:checked+.slider:before{transform:translateX(18px)}
 .demo-label{text-align:center;font-size:10px;color:#6a8aa0;margin-bottom:8px;letter-spacing:0.12em;font-weight:bold}
 .demo-scenario-btn{display:inline-block;margin:5px;padding:10px 20px;background:#1a2030;color:#7ab8d4;border:1px solid #2b3a50;border-radius:20px;font-size:clamp(11px,2vw,13px);text-decoration:none;cursor:pointer;font-weight:600}
 .demo-scenario-btn:hover{background:#2b3a50;color:#cad8e3}
-.footer img{width:clamp(50px,10vw,70px);opacity:0.7;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.footer img{width:clamp(72px,14vw,96px);opacity:0.85;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .dev-section{border-top:2px solid #1f6fb5;margin-top:10px;padding-top:8px}
 .dev-label{text-align:center;font-size:10px;color:#1f6fb5;margin-bottom:8px;letter-spacing:0.15em;font-weight:bold}
 .dev-panel{background:#111318;border:1px solid #2b313c;border-radius:8px;padding:10px;margin-bottom:8px}
@@ -297,7 +297,7 @@ input:checked+.slider:before{transform:translateX(18px)}
 
 PSYCH_STYLE = """<style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap');
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-user-select:none;-moz-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;width:100%}
 body{background:radial-gradient(ellipse at top,#0a1628 0%,#050810 60%,#000 100%);color:#cad8e3;font-family:'Exo 2',sans-serif;display:flex;justify-content:center;align-items:stretch;min-height:100dvh;padding:6px}
 .outer{width:100%;max-width:720px;display:flex;flex-direction:column}
@@ -319,16 +319,16 @@ body{background:radial-gradient(ellipse at top,#0a1628 0%,#050810 60%,#000 100%)
 .led-red{background:#ff3333;box-shadow:0 0 8px #ff3333;animation:pr 1s ease-in-out infinite}
 .led-off{background:#1a2030}
 @keyframes pg{0%,100%{opacity:1}50%{opacity:0.6}}@keyframes pa{0%,100%{opacity:1}50%{opacity:0.4}}@keyframes pr{0%,100%{opacity:1}50%{opacity:0.3}}
-.toggle-box{display:flex;flex-direction:column;align-items:center;gap:3px}
+.toggle-box{display:flex;flex-direction:column;align-items:center;gap:3px;touch-action:manipulation;cursor:pointer;padding:4px}
 .toggle-label{font-size:clamp(8px,1.5vw,10px);color:#3a6a8a;letter-spacing:0.1em;font-weight:600;font-family:'Orbitron',monospace}
-.switch{position:relative;display:inline-block;width:36px;height:18px}
+.switch{position:relative;display:inline-block;width:44px;height:26px;touch-action:manipulation}
 .switch input{opacity:0;width:0;height:0}
 .slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#1a2030;border:1px solid #2a4060;transition:.4s;border-radius:18px}
-.slider:before{position:absolute;content:"";height:12px;width:12px;left:2px;bottom:2px;background:#3a5a7a;transition:.4s;border-radius:50%}
+.slider:before{position:absolute;content:"";height:18px;width:18px;left:2px;bottom:2px;background:#3a5a7a;transition:.4s;border-radius:50%}
 input:checked+.slider{background:#0a3060;border-color:#1f6fb5;box-shadow:0 0 8px rgba(31,111,181,0.6)}
 input:checked+.slider:before{transform:translateX(18px);background:#00d4ff}
 .divider{height:1px;background:linear-gradient(90deg,transparent,#1f3a5a 20%,#1f6fb5 50%,#1f3a5a 80%,transparent);margin:4px 0 6px 0;flex-shrink:0}
-.content{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:#1f3a5a #080c14}
+.content{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:#1f3a5a #080c14;touch-action:pan-y}
 .soc-display{text-align:center;padding:4px 0 4px 0}
 .soc-number{font-family:'Orbitron',monospace;font-size:clamp(32px,7vw,48px);font-weight:900;line-height:1}
 .soc-green{color:#00ff44;text-shadow:0 0 20px rgba(0,255,68,0.8),0 0 40px rgba(0,255,68,0.4)}
@@ -354,9 +354,9 @@ input:checked+.slider:before{transform:translateX(18px);background:#00d4ff}
 .badge-warning{background:#7a5500;color:#ffb300;border:1px solid #ffb300}
 .badge-critical{background:#7a0000;color:#ff3333;border:1px solid #ff3333}
 .badge-ok{background:#006622;color:#00ff44;border:1px solid #00ff44}
-.button{display:block;width:92%;margin:7px auto;padding:clamp(13px,2.8vw,17px);background:linear-gradient(135deg,#0d1e35,#0a1525);color:#7ab8d4;text-decoration:none;border-radius:10px;text-align:center;font-size:clamp(12px,2.3vw,15px);font-family:'Orbitron',monospace;letter-spacing:0.15em;transition:all 0.15s ease;cursor:pointer;border:1px solid #1f4a6a;text-transform:uppercase}
+.button{display:block;width:92%;margin:7px auto;padding:clamp(14px,2.8vw,18px);background:linear-gradient(135deg,#0d1e35,#0a1525);color:#7ab8d4;text-decoration:none;border-radius:10px;text-align:center;font-size:clamp(12px,2.3vw,15px);font-family:'Orbitron',monospace;letter-spacing:0.15em;transition:all 0.15s ease;cursor:pointer;border:1px solid #1f4a6a;text-transform:uppercase;touch-action:manipulation;min-height:48px}
 .button:hover,.button:active{background:linear-gradient(135deg,#1a3a5a,#0d2040);border-color:#1f6fb5;color:#00d4ff}
-.op-button{display:block;width:92%;margin:6px auto;padding:clamp(13px,2.8vw,17px);background:linear-gradient(135deg,#1a2a1a,#0d1a0d);color:#4aff80;text-decoration:none;border-radius:10px;text-align:center;font-size:clamp(12px,2.3vw,14px);font-family:'Orbitron',monospace;letter-spacing:0.1em;border:1px solid #1a4a2a;cursor:pointer;transition:all 0.15s ease}
+.op-button{display:block;width:92%;margin:6px auto;padding:clamp(14px,2.8vw,18px);background:linear-gradient(135deg,#1a2a1a,#0d1a0d);color:#4aff80;text-decoration:none;border-radius:10px;text-align:center;font-size:clamp(12px,2.3vw,14px);font-family:'Orbitron',monospace;letter-spacing:0.1em;border:1px solid #1a4a2a;cursor:pointer;transition:all 0.15s ease;touch-action:manipulation;min-height:48px}
 .op-button:hover,.op-button:active{background:linear-gradient(135deg,#2a4a2a,#1a2a1a);border-color:#00ff44}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:5px 10px;font-size:clamp(12px,2.2vw,14px)}
 .grid2 .label{color:#3a6a8a;font-size:clamp(10px,1.8vw,12px)}.grid2 .value{color:#cad8e3;font-family:'Orbitron',monospace;font-size:clamp(11px,2vw,13px)}
@@ -371,7 +371,7 @@ input:checked+.slider:before{transform:translateX(18px);background:#00d4ff}
 .demo-label{text-align:center;font-size:10px;color:#6a8aa0;margin-bottom:8px;letter-spacing:0.12em;font-weight:bold}
 .demo-scenario-btn{display:inline-block;margin:5px;padding:10px 20px;background:#1a2030;color:#7ab8d4;border:1px solid #2b3a50;border-radius:20px;font-size:clamp(11px,2vw,13px);text-decoration:none;cursor:pointer;font-weight:600}
 .demo-scenario-btn:hover{background:#2b3a50;color:#cad8e3}
-.footer img{width:clamp(50px,10vw,70px);opacity:0.7;filter:drop-shadow(0 0 6px rgba(31,111,181,0.4));cursor:pointer;-webkit-tap-highlight-color:transparent}
+.footer img{width:clamp(72px,14vw,96px);opacity:0.85;filter:drop-shadow(0 0 6px rgba(31,111,181,0.4));cursor:pointer;-webkit-tap-highlight-color:transparent}
 .dev-section{border-top:2px solid #1f6fb5;margin-top:10px;padding-top:8px}
 .dev-label{text-align:center;font-size:10px;color:#1f6fb5;margin-bottom:8px;letter-spacing:0.15em;font-weight:bold;font-family:'Orbitron',monospace}
 .dev-panel{background:#050810;border:1px solid #1a2a3a;border-radius:8px;padding:10px;margin-bottom:8px}
@@ -416,7 +416,7 @@ PSYCHEDELIC_STYLE = """<style>
 @keyframes soc-bar-rainbow{0%{background:linear-gradient(90deg,#ff00ff,#00d4ff)}25%{background:linear-gradient(90deg,#00d4ff,#00ff88)}50%{background:linear-gradient(90deg,#00ff88,#ffaa00)}75%{background:linear-gradient(90deg,#ffaa00,#ff00ff)}100%{background:linear-gradient(90deg,#ff00ff,#00d4ff)}}
 @keyframes corner-spark{0%,100%{opacity:0.3}50%{opacity:1}}
 @keyframes slide-in{0%{opacity:0;transform:scale(0.96) translateY(8px)}100%{opacity:1;transform:scale(1) translateY(0)}}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-user-select:none;-moz-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;width:100%}
 body{background:#000;color:#e0f0ff;font-family:'Exo 2',sans-serif;display:flex;justify-content:center;align-items:stretch;min-height:100dvh;padding:6px;animation:hue-cycle 20s linear infinite}
 .outer{width:100%;max-width:720px;display:flex;flex-direction:column;animation:slide-in 0.6s ease-out}
@@ -438,16 +438,16 @@ body{background:#000;color:#e0f0ff;font-family:'Exo 2',sans-serif;display:flex;j
 .led-amber{background:#ffaa00;box-shadow:0 0 8px #ffaa00,0 0 16px rgba(255,170,0,0.6);animation:corner-spark 1.2s ease-in-out infinite}
 .led-red{background:#ff0055;box-shadow:0 0 8px #ff0055,0 0 16px rgba(255,0,85,0.6);animation:corner-spark 0.8s ease-in-out infinite}
 .led-off{background:#111}
-.toggle-box{display:flex;flex-direction:column;align-items:center;gap:3px}
+.toggle-box{display:flex;flex-direction:column;align-items:center;gap:3px;touch-action:manipulation;cursor:pointer;padding:4px}
 .toggle-label{font-size:clamp(8px,1.5vw,10px);color:#aa88ff;letter-spacing:0.1em;font-weight:600;font-family:'Orbitron',monospace}
-.switch{position:relative;display:inline-block;width:36px;height:18px}
+.switch{position:relative;display:inline-block;width:44px;height:26px;touch-action:manipulation}
 .switch input{opacity:0;width:0;height:0}
 .slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#1a0a2a;border:1px solid #6600aa;transition:.4s;border-radius:18px}
-.slider:before{position:absolute;content:"";height:12px;width:12px;left:2px;bottom:2px;background:#aa66ff;transition:.4s;border-radius:50%}
+.slider:before{position:absolute;content:"";height:18px;width:18px;left:2px;bottom:2px;background:#aa66ff;transition:.4s;border-radius:50%}
 input:checked+.slider{background:#2a0050;border-color:#ff00ff;box-shadow:0 0 10px rgba(255,0,255,0.6)}
 input:checked+.slider:before{transform:translateX(18px);background:#ff00ff}
 .divider{height:1px;background:linear-gradient(90deg,transparent,#ff00ff 20%,#00d4ff 50%,#00ff88 80%,transparent);margin:4px 0 6px 0;flex-shrink:0;animation:border-flow 3s ease infinite;background-size:400% 100%}
-.content{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:#ff00ff #000}
+.content{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:#ff00ff #000;touch-action:pan-y}
 .soc-display{text-align:center;padding:4px 0 4px 0}
 .soc-number{font-family:'Orbitron',monospace;font-size:clamp(32px,7vw,48px);font-weight:900;line-height:1;animation:neon-breathe 2s ease-in-out infinite}
 .soc-green{color:#00ff88}
@@ -488,7 +488,7 @@ input:checked+.slider:before{transform:translateX(18px);background:#ff00ff}
 .demo-label{text-align:center;font-size:10px;color:#aa88ff;margin-bottom:8px;letter-spacing:0.12em;font-weight:bold}
 .demo-scenario-btn{display:inline-block;margin:5px;padding:10px 20px;background:rgba(255,0,255,0.1);color:#ff00ff;border:1px solid rgba(255,0,255,0.4);border-radius:20px;font-size:clamp(11px,2vw,13px);text-decoration:none;cursor:pointer;font-weight:600}
 .demo-scenario-btn:hover{background:rgba(255,0,255,0.3);box-shadow:0 0 15px rgba(255,0,255,0.4)}
-.footer img{width:clamp(58px,11vw,78px);opacity:0.85;filter:drop-shadow(0 0 12px #ff00ff) drop-shadow(0 0 6px #00d4ff);cursor:pointer;-webkit-tap-highlight-color:transparent;animation:neon-breathe 3s ease-in-out infinite}
+.footer img{width:clamp(72px,14vw,96px);opacity:0.85;filter:drop-shadow(0 0 12px #ff00ff) drop-shadow(0 0 6px #00d4ff);cursor:pointer;-webkit-tap-highlight-color:transparent;animation:neon-breathe 3s ease-in-out infinite}
 .dev-section{border-top:2px solid rgba(255,0,255,0.4);margin-top:10px;padding-top:8px}
 .dev-label{text-align:center;font-size:10px;color:#ff00ff;margin-bottom:8px;letter-spacing:0.15em;font-weight:bold;font-family:'Orbitron',monospace}
 .dev-panel{background:rgba(5,0,15,0.9);border:1px solid rgba(0,212,255,0.3);border-radius:8px;padding:10px;margin-bottom:8px}
@@ -544,52 +544,69 @@ window.onload=updateClock;
 // ── EASTER EGG 1: 7 taps → WICKED MODE ───────────────────────────────────────
 var _taps=0,_tapTimer=null;
 function logoTap(){
+  // Only count if not a hold gesture
+  if(_wasHold){_wasHold=false;return;}
   _taps++;
   clearTimeout(_tapTimer);
   _tapTimer=setTimeout(function(){_taps=0;},3000);
-  if(_taps>=7){_taps=0;okiToggle(null,'/api/toggle-wicked');}
+  if(_taps>=5){_taps=0;okiToggle(null,'/api/toggle-wicked');}
 }
 
 // ── EASTER EGG 2: 15s hold → PSYCHEDELIC MODE ────────────────────────────────
-var _holdTimer=null,_holdInterval=null,_holdStart=null;
-var HOLD_DURATION=15000; // 15 seconds to activate
-var EXIT_DURATION=5000;  // 5 seconds to exit
+var _holdTimer=null,_holdInterval=null,_holdStart=null,_wasHold=false;
+var HOLD_DURATION=15000;
+var _holdThreshold=300; // ms before treating as a hold (not a tap)
 
 function logoPress(e){
-  e.preventDefault();
-  _taps=0; clearTimeout(_tapTimer); // reset tap counter — hold is a different gesture
+  // Don't preventDefault — let click fire for taps
   _holdStart=Date.now();
-  var ring=document.getElementById('ring-arc');
-  var ringEl=document.getElementById('logo-ring');
-  var img=document.getElementById('oki-logo-img');
-  var circumference=238.8;
-  if(ringEl) ringEl.style.opacity='1';
-  if(img){img.style.filter='drop-shadow(0 0 8px #ff00ff) drop-shadow(0 0 4px #00d4ff)';img.style.opacity='1';}
-  _holdInterval=setInterval(function(){
-    var elapsed=Date.now()-_holdStart;
-    var progress=Math.min(elapsed/HOLD_DURATION,1);
-    if(ring) ring.style.strokeDashoffset=circumference*(1-progress);
-    var glow=Math.round(progress*20);
-    if(img) img.style.filter='drop-shadow(0 0 '+glow+'px #ff00ff) drop-shadow(0 0 '+Math.round(glow/2)+'px #00d4ff)';
-  },50);
+  _wasHold=false;
+  // Delay starting hold machinery so short taps aren't affected
   _holdTimer=setTimeout(function(){
-    clearInterval(_holdInterval);
-    _holdInterval=null;
-    cinematicActivate();
-  },HOLD_DURATION);
+    // User has been holding for threshold — now it's a hold gesture
+    _wasHold=true;
+    _taps=0; clearTimeout(_tapTimer);
+    var ring=document.getElementById('ring-arc');
+    var ringEl=document.getElementById('logo-ring');
+    var img=document.getElementById('oki-logo-img');
+    var circumference=238.8;
+    if(ringEl) ringEl.style.opacity='1';
+    if(img){img.style.opacity='1';}
+    _holdInterval=setInterval(function(){
+      var elapsed=Date.now()-_holdStart;
+      var progress=Math.min(elapsed/HOLD_DURATION,1);
+      if(ring) ring.style.strokeDashoffset=circumference*(1-progress);
+      var glow=Math.round(progress*20)+4;
+      if(img) img.style.filter='drop-shadow(0 0 '+glow+'px #ff00ff) drop-shadow(0 0 '+Math.round(glow/2)+'px #00d4ff)';
+    },50);
+    // Schedule activation at full HOLD_DURATION from press start
+    var remaining=HOLD_DURATION-_holdThreshold;
+    _holdTimer=setTimeout(function(){
+      clearInterval(_holdInterval);
+      _holdInterval=null;
+      cinematicActivate();
+    },remaining);
+  },_holdThreshold);
 }
 
 function logoRelease(){
-  if(!_holdTimer) return;
-  clearTimeout(_holdTimer);
-  clearInterval(_holdInterval);
-  _holdTimer=null;_holdInterval=null;_holdStart=null;
-  var ring=document.getElementById('ring-arc');
-  var ringEl=document.getElementById('logo-ring');
-  var img=document.getElementById('oki-logo-img');
-  if(ring) ring.style.strokeDashoffset='238.8';
-  if(ringEl) setTimeout(function(){ringEl.style.opacity='0';},300);
-  if(img){img.style.filter='drop-shadow(0 0 4px rgba(31,111,181,0.5))';img.style.opacity='0.75';}
+  if(_holdInterval){
+    // Was a hold in progress — cancel it
+    clearTimeout(_holdTimer);
+    clearInterval(_holdInterval);
+    _holdTimer=null;_holdInterval=null;
+    var ring=document.getElementById('ring-arc');
+    var ringEl=document.getElementById('logo-ring');
+    var img=document.getElementById('oki-logo-img');
+    if(ring) ring.style.strokeDashoffset='238.8';
+    if(ringEl) setTimeout(function(){ringEl.style.opacity='0';},300);
+    if(img){img.style.filter='drop-shadow(0 0 4px rgba(31,111,181,0.5))';img.style.opacity='0.75';}
+  } else {
+    // Short press — clear the threshold timer, let tap fire
+    clearTimeout(_holdTimer);
+    _holdTimer=null;
+  }
+  _holdStart=null;
 }
 
 function cinematicActivate(){
@@ -705,9 +722,8 @@ def render_footer():
         '</div>'
         # Logo — 7 taps = wicked (onclick), 15s hold = psychedelic (onmousedown/touch)
         '<div id="logo-wrap" style="position:relative;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;"'
-        ' onclick="logoTap()"'
-        ' onmousedown="logoPress(event)" onmouseup="logoRelease()" onmouseleave="logoRelease()"'
-        ' ontouchstart="logoPress(event)" ontouchend="logoRelease(event)" ontouchcancel="logoRelease()">'
+        ' onmousedown="logoPress(event)" onmouseup="logoRelease()" onmouseleave="logoRelease()" onclick="logoTap()"'
+        ' ontouchstart="logoPress(event)" ontouchend="logoRelease();logoTap();" ontouchcancel="logoRelease()">'
         # Progress ring SVG
         '<svg id="logo-ring" width="90" height="90" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;opacity:0;transition:opacity 0.3s;">'
         '<circle cx="45" cy="45" r="38" fill="none" stroke-width="3" stroke="url(#ringGrad)" stroke-linecap="round"'
@@ -720,7 +736,7 @@ def render_footer():
         '</linearGradient></defs>'
         '</svg>'
         '<img id="oki-logo-img" src="/static/oki_logo.png" alt="OKi"'
-        ' style="width:clamp(60px,12vw,80px);opacity:0.75;display:block;transition:filter 0.3s,opacity 0.3s;filter:drop-shadow(0 0 4px rgba(31,111,181,0.5));">'
+        ' style="width:clamp(72px,14vw,96px);opacity:0.85;display:block;transition:filter 0.3s,opacity 0.3s;filter:drop-shadow(0 0 4px rgba(31,111,181,0.5));">'
         '</div>'
         '</div>'
     )
@@ -1298,7 +1314,7 @@ def render_layout(content, auto_refresh=True):
     style   = PSYCHEDELIC_STYLE if PSYCHEDELIC_MODE else (PSYCH_STYLE if WICKED_MODE else PROF_STYLE)
     return HTMLResponse(
         "<html><head><title>OKi – Casa Azul</title>"
-        "<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5'>"
+        "<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5'><meta name='mobile-web-app-capable' content='yes'>"
         + style + SCRIPTS + refresh_js +
         "</head><body><div class='outer'><div class='frame'>"
         + render_header()
