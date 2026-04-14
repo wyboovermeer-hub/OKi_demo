@@ -1,6 +1,6 @@
 # ============================================================
 # OKi – Onboard Knowledge Interface
-# ENTERPRISE WEB LAYER v21.1
+# ENTERPRISE WEB LAYER v21.2
 # ============================================================
 #
 # Changelog v20.7
@@ -299,6 +299,9 @@ input:checked+.slider:before{transform:translateX(18px);background:#fff}
 .kb-detail-list li::before{content:"–";position:absolute;left:0;color:#548bac}
 .kb-count{font-size:clamp(9px,1.6vw,10px);color:#4a7a9a;letter-spacing:0.08em;margin-bottom:10px}
 .kb-no-results{display:none}
+#psych-overlay{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;opacity:0;background:radial-gradient(ellipse at center,rgba(255,0,255,0.4),rgba(0,212,255,0.2),transparent);transition:opacity 0.4s ease}
+#psych-overlay.flash{animation:psych-flash 0.8s ease-out forwards}
+@keyframes psych-flash{0%{opacity:0}30%{opacity:1}100%{opacity:0}}
 </style>"""
 
 PSYCH_STYLE = """<style>
@@ -408,6 +411,9 @@ input:checked+.slider:before{transform:translateX(18px);background:#00d4ff}
 .kb-detail-list li::before{content:"–";position:absolute;left:0;color:#4a9fd4}
 .kb-count{font-size:clamp(9px,1.6vw,10px);color:#3a6a8a;letter-spacing:0.1em;margin-bottom:10px;font-family:'Orbitron',monospace}
 .kb-no-results{display:none}
+#psych-overlay{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;opacity:0;background:radial-gradient(ellipse at center,rgba(255,0,255,0.4),rgba(0,212,255,0.2),transparent);transition:opacity 0.4s ease}
+#psych-overlay.flash{animation:psych-flash 0.8s ease-out forwards}
+@keyframes psych-flash{0%{opacity:0}30%{opacity:1}100%{opacity:0}}
 </style>"""
 
 PSYCHEDELIC_STYLE = """<style>
@@ -545,7 +551,13 @@ function updateClock(){
   if(del) del.textContent=days[now.getDay()]+' '+String(now.getDate()).padStart(2,'0')+' '+months[now.getMonth()]+' '+now.getFullYear();
 }
 setInterval(updateClock,1000);
-window.onload=updateClock;
+window.onload=function(){
+  updateClock();
+  // Sync WICKED_ACTIVE with server state on load
+  fetch('/api/state').then(function(r){return r.json();}).then(function(d){
+    WICKED_ACTIVE=!!(d.wicked);
+  }).catch(function(){});
+};
 
 // ── EASTER EGG 1: 7 taps → WICKED MODE ───────────────────────────────────────
 var _taps=0,_tapTimer=null;
@@ -557,6 +569,7 @@ function logoTap(){
   if(_taps>=7){
     _taps=0;
     fetch('/api/toggle-wicked').then(function(){
+      WICKED_ACTIVE=!WICKED_ACTIVE;
       location.reload();
     });
   }
@@ -620,17 +633,26 @@ function logoRelease(){
 }
 
 function cinematicActivate(){
+  // Show full-screen flash overlay
   var overlay=document.getElementById('psych-overlay');
-  if(overlay){
-    overlay.classList.add('flash');
-  }
-  // Toggle mode server-side, then full reload so new CSS loads
-  fetch('/api/toggle-psychedelic').then(function(){
-    setTimeout(function(){
-      location.reload();
-    },500);
+  if(overlay) overlay.classList.add('flash');
+
+  // Cover the page so reload doesn't flash white/logo
+  var cover=document.createElement('div');
+  cover.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99998;';
+  document.body.appendChild(cover);
+
+  // Turn off wicked mode if active, then turn on psychedelic, then reload
+  var p1 = WICKED_ACTIVE ? fetch('/api/toggle-wicked') : Promise.resolve();
+  p1.then(function(){
+    return fetch('/api/toggle-psychedelic');
+  }).then(function(){
+    setTimeout(function(){ location.href='/'; },600);
   });
 }
+
+// Track wicked state in JS so cinematicActivate knows whether to turn it off
+var WICKED_ACTIVE=false;
 
 // ── Toggle helper ─────────────────────────────────────────────────────────────
 function okiToggle(input, overrideRoute){
@@ -1527,6 +1549,7 @@ def api_state():
         "focusMode":  FOCUS_MODE,
         "demoMode":   DEMO_MODE,
         "psychedelic": PSYCHEDELIC_MODE,
+        "wicked":     WICKED_MODE,
 
         # LEDs
         "leds": {
