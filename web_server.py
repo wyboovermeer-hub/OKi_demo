@@ -1,6 +1,6 @@
 # ============================================================
 # OKi – Onboard Knowledge Interface
-# ENTERPRISE WEB LAYER v21.4
+# ENTERPRISE WEB LAYER v21.5
 # ============================================================
 #
 # Changelog v20.7
@@ -549,91 +549,156 @@ input:checked+.slider:before{transform:translateX(18px);background:#00e5ff}
 </style>"""
 
 SCRIPTS = """<script>
+// ── Clock ─────────────────────────────────────────────────────────────────────
 function updateClock(){
-  const now=new Date();
-  const h=String(now.getHours()).padStart(2,'0');
-  const m=String(now.getMinutes()).padStart(2,'0');
-  const s=String(now.getSeconds()).padStart(2,'0');
-  const days=['SUN','MON','TUE','WED','THU','FRI','SAT'];
-  const months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-  const el=document.getElementById('clock');
-  const del=document.getElementById('clock-date');
+  var now=new Date();
+  var h=String(now.getHours()).padStart(2,'0');
+  var m=String(now.getMinutes()).padStart(2,'0');
+  var s=String(now.getSeconds()).padStart(2,'0');
+  var days=['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  var months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  var el=document.getElementById('clock');
+  var del=document.getElementById('clock-date');
   if(el) el.textContent=h+':'+m+':'+s;
   if(del) del.textContent=days[now.getDay()]+' '+String(now.getDate()).padStart(2,'0')+' '+months[now.getMonth()]+' '+now.getFullYear();
 }
 setInterval(updateClock,1000);
+
+// ── UI Mode State ─────────────────────────────────────────────────────────────
+// uiMode: 'normal' | 'wicked' | 'psychedelic'
+var uiMode='normal';
+
 window.onload=function(){
   updateClock();
-  // Sync WICKED_ACTIVE with server state on load
+  // Sync mode from server on load
   fetch('/api/state').then(function(r){return r.json();}).then(function(d){
-    WICKED_ACTIVE=!!(d.wicked);
+    if(d.psychedelic) uiMode='psychedelic';
+    else if(d.wicked) uiMode='wicked';
+    else uiMode='normal';
   }).catch(function(){});
 };
 
-// ── EASTER EGG 1: 7 taps → WICKED MODE ───────────────────────────────────────
-var _taps=0,_tapTimer=null;
+// ── Navigation helper — black cover then replace ──────────────────────────────
+function navigateTo(url, delay){
+  document.documentElement.style.background='#000';
+  document.body.style.background='#000';
+  var cover=document.createElement('div');
+  cover.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99999;';
+  document.body.appendChild(cover);
+  setTimeout(function(){ window.location.replace(url); }, delay||200);
+}
+
+// ── WICKED MODE — 7 taps within 2 seconds ────────────────────────────────────
+var _tapTimes=[];
+
 function logoTap(){
   if(_wasHold){_wasHold=false;return;}
-  _taps++;
-  clearTimeout(_tapTimer);
-  _tapTimer=setTimeout(function(){_taps=0;},3000);
-  if(_taps>=7){
-    _taps=0;
-    wickedActivate();
+
+  var now=Date.now();
+  _tapTimes.push(now);
+  // Keep only taps within last 2 seconds
+  _tapTimes=_tapTimes.filter(function(t){return now-t<=2000;});
+
+  // Visual tap feedback — brief glow pulse
+  var img=document.getElementById('oki-logo-img');
+  if(img){
+    img.style.filter='drop-shadow(0 0 10px #00e5ff) drop-shadow(0 0 5px #fff)';
+    setTimeout(function(){
+      if(!_holdInterval) img.style.filter='drop-shadow(0 0 4px rgba(31,111,181,0.5))';
+      img.style.opacity='0.85';
+    },120);
+  }
+
+  if(_tapTimes.length>=7){
+    _tapTimes=[];
+    if(uiMode==='wicked'){
+      // Already wicked — 3 taps exits (handled below), but 7 taps re-triggers
+      wickedDeactivate();
+    } else {
+      wickedActivate();
+    }
+    return;
+  }
+
+  // Exit wicked with 3 taps
+  if(uiMode==='wicked' && _tapTimes.length>=3){
+    _tapTimes=[];
+    wickedDeactivate();
   }
 }
 
-// ── EASTER EGG 2: 15s hold → PSYCHEDELIC MODE ────────────────────────────────
+function wickedActivate(){
+  uiMode='wicked';
+  var overlay=document.getElementById('psych-overlay');
+  if(overlay){overlay.style.background='radial-gradient(ellipse at center,rgba(0,229,255,0.4),transparent)';overlay.classList.add('flash');}
+  fetch('/api/toggle-wicked').then(function(){
+    navigateTo('/',250);
+  });
+}
+
+function wickedDeactivate(){
+  uiMode='normal';
+  fetch('/api/toggle-wicked').then(function(){
+    navigateTo('/',200);
+  });
+}
+
+// ── PSYCHEDELIC MODE — 7 second hold ─────────────────────────────────────────
 var _holdTimer=null,_holdInterval=null,_holdStart=null,_wasHold=false;
-var HOLD_DURATION=15000;
-var _holdThreshold=300; // ms before treating as a hold (not a tap)
+var HOLD_ACTIVATE=7000;   // 7s to activate
+var HOLD_EXIT=3000;       // 3s to exit from psychedelic
+var _holdThreshold=250;   // ms to distinguish hold from tap
 
 function logoPress(e){
-  // Don't preventDefault — let click fire for taps
   _holdStart=Date.now();
   _wasHold=false;
-  // Delay starting hold machinery so short taps aren't affected
+
   _holdTimer=setTimeout(function(){
-    // User has been holding for threshold — now it's a hold gesture
     _wasHold=true;
-    _taps=0; clearTimeout(_tapTimer);
+    _tapTimes=[];
     var ring=document.getElementById('ring-arc');
     var ringEl=document.getElementById('logo-ring');
     var img=document.getElementById('oki-logo-img');
     var circumference=238.8;
+    var duration= uiMode==='psychedelic' ? HOLD_EXIT : HOLD_ACTIVATE;
+
     if(ringEl) ringEl.style.opacity='1';
-    if(img){img.style.opacity='1';}
+    if(img) img.style.opacity='1';
+
     _holdInterval=setInterval(function(){
       var elapsed=Date.now()-_holdStart;
-      var progress=Math.min(elapsed/HOLD_DURATION,1);
+      var progress=Math.min(elapsed/duration,1);
       if(ring) ring.style.strokeDashoffset=circumference*(1-progress);
-      var glow=Math.round(progress*20)+4;
+      var glow=Math.round(progress*22)+4;
       if(img) img.style.filter='drop-shadow(0 0 '+glow+'px #ff00ff) drop-shadow(0 0 '+Math.round(glow/2)+'px #00d4ff)';
-    },50);
-    // Schedule activation at full HOLD_DURATION from press start
-    var remaining=HOLD_DURATION-_holdThreshold;
+    },40);
+
+    var remaining=duration-_holdThreshold;
     _holdTimer=setTimeout(function(){
       clearInterval(_holdInterval);
       _holdInterval=null;
-      cinematicActivate();
+      if(uiMode==='psychedelic'){
+        psychedelicDeactivate();
+      } else {
+        cinematicActivate();
+      }
     },remaining);
   },_holdThreshold);
 }
 
 function logoRelease(){
   if(_holdInterval){
-    // Was a hold in progress — cancel it
     clearTimeout(_holdTimer);
     clearInterval(_holdInterval);
-    _holdTimer=null;_holdInterval=null;
+    _holdTimer=null; _holdInterval=null;
+    // Reset ring and logo
     var ring=document.getElementById('ring-arc');
     var ringEl=document.getElementById('logo-ring');
     var img=document.getElementById('oki-logo-img');
     if(ring) ring.style.strokeDashoffset='238.8';
     if(ringEl) setTimeout(function(){ringEl.style.opacity='0';},300);
-    if(img){img.style.filter='drop-shadow(0 0 4px rgba(31,111,181,0.5))';img.style.opacity='0.75';}
+    if(img){img.style.filter='drop-shadow(0 0 4px rgba(31,111,181,0.5))';img.style.opacity='0.85';}
   } else {
-    // Short press — clear the threshold timer, let tap fire
     clearTimeout(_holdTimer);
     _holdTimer=null;
   }
@@ -641,47 +706,33 @@ function logoRelease(){
 }
 
 function cinematicActivate(){
-  // Immediate black cover — paint it before anything else
-  document.documentElement.style.background='#000';
-  document.body.style.background='#000';
-  var cover=document.createElement('div');
-  cover.id='psych-cover';
-  cover.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99999;transition:opacity 0.3s;';
-  document.body.appendChild(cover);
-
-  // Neon flash on top of cover
-  var overlay=document.getElementById('psych-overlay');
-  if(overlay) overlay.classList.add('flash');
-
-  // Turn off wicked if active, turn on psychedelic, then navigate
-  var p1 = WICKED_ACTIVE ? fetch('/api/toggle-wicked') : Promise.resolve();
-  p1.then(function(){
-    return fetch('/api/toggle-psychedelic');
-  }).then(function(){
-    // Short delay so flash is visible, then navigate
-    setTimeout(function(){ window.location.replace('/'); },700);
-  });
-}
-
-function wickedActivate(){
-  // Black cover
+  uiMode='psychedelic';
   document.documentElement.style.background='#000';
   document.body.style.background='#000';
   var cover=document.createElement('div');
   cover.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99999;';
   document.body.appendChild(cover);
-  fetch('/api/toggle-wicked').then(function(){
-    WICKED_ACTIVE=!WICKED_ACTIVE;
-    setTimeout(function(){ window.location.replace('/'); },300);
+  // Flash overlay
+  var overlay=document.getElementById('psych-overlay');
+  if(overlay) overlay.classList.add('flash');
+  // Turn off wicked if active, then on psychedelic
+  var wasWicked=(uiMode==='wicked');
+  uiMode='psychedelic';
+  var p1=wasWicked ? fetch('/api/toggle-wicked') : Promise.resolve();
+  p1.then(function(){ return fetch('/api/toggle-psychedelic'); })
+    .then(function(){ setTimeout(function(){ window.location.replace('/'); },600); });
+}
+
+function psychedelicDeactivate(){
+  uiMode='normal';
+  fetch('/api/toggle-psychedelic').then(function(){
+    navigateTo('/',300);
   });
 }
 
-// Track wicked state in JS
-var WICKED_ACTIVE=false;
-
-// ── Toggle helper ─────────────────────────────────────────────────────────────
+// ── okiToggle — for FOCUS/DEV/DEMO toggles (no full reload needed) ────────────
 function okiToggle(input, overrideRoute){
-  var route = overrideRoute || (input && input.getAttribute('data-toggle-route'));
+  var route=overrideRoute||(input&&input.getAttribute('data-toggle-route'));
   if(!route) return;
   fetch(route).then(function(r){return r.json();}).then(function(d){
     return fetch('/api/content').then(function(r){return r.text();}).then(function(html){
