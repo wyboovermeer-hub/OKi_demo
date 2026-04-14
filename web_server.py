@@ -1,6 +1,6 @@
 # ============================================================
 # OKi – Onboard Knowledge Interface
-# ENTERPRISE WEB LAYER v20.9
+# ENTERPRISE WEB LAYER v21.1
 # ============================================================
 #
 # Changelog v20.7
@@ -118,6 +118,12 @@ except Exception as _klib_err:
 # ── Startup — initialise state_manager and load demo ──────────────────────────
 @app.on_event("startup")
 def _startup():
+    # Always boot in normal mode — Easter eggs must be re-activated each session
+    global PSYCHEDELIC_MODE, WICKED_MODE, FOCUS_MODE
+    PSYCHEDELIC_MODE = False
+    WICKED_MODE      = False
+    FOCUS_MODE       = False
+
     if not hasattr(app.state, "state_manager") or app.state.state_manager is None:
         try:
             from state_manager import StateManager
@@ -544,12 +550,16 @@ window.onload=updateClock;
 // ── EASTER EGG 1: 7 taps → WICKED MODE ───────────────────────────────────────
 var _taps=0,_tapTimer=null;
 function logoTap(){
-  // Only count if not a hold gesture
   if(_wasHold){_wasHold=false;return;}
   _taps++;
   clearTimeout(_tapTimer);
   _tapTimer=setTimeout(function(){_taps=0;},3000);
-  if(_taps>=5){_taps=0;okiToggle(null,'/api/toggle-wicked');}
+  if(_taps>=7){
+    _taps=0;
+    fetch('/api/toggle-wicked').then(function(){
+      location.reload();
+    });
+  }
 }
 
 // ── EASTER EGG 2: 15s hold → PSYCHEDELIC MODE ────────────────────────────────
@@ -610,15 +620,16 @@ function logoRelease(){
 }
 
 function cinematicActivate(){
-  // Flash overlay then toggle
   var overlay=document.getElementById('psych-overlay');
   if(overlay){
     overlay.classList.add('flash');
-    setTimeout(function(){overlay.classList.remove('flash');},900);
   }
-  setTimeout(function(){
-    okiToggle(null,'/api/toggle-psychedelic');
-  },400);
+  // Toggle mode server-side, then full reload so new CSS loads
+  fetch('/api/toggle-psychedelic').then(function(){
+    setTimeout(function(){
+      location.reload();
+    },500);
+  });
 }
 
 // ── Toggle helper ─────────────────────────────────────────────────────────────
