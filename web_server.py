@@ -1,6 +1,6 @@
 # ============================================================
 # OKi – Onboard Knowledge Interface
-# ENTERPRISE WEB LAYER v21.10
+# ENTERPRISE WEB LAYER v21.11
 # ============================================================
 #
 # Changelog v20.7
@@ -593,42 +593,42 @@ function navigateTo(url, delay){
   setTimeout(function(){ window.location.replace(url); }, delay||200);
 }
 
-// ── WICKED MODE — 7 taps within 2 seconds ────────────────────────────────────
-var _tapTimes=[];
+// ── EASTER EGG 1: WICKED MODE — 7 clicks on OKi logo ─────────────────────────
+var _tapCount=0;
+var _tapResetTimer=null;
 
 function logoTap(){
   if(_wasHold){_wasHold=false;return;}
-
-  var now=Date.now();
-  _tapTimes.push(now);
-  // Keep only taps within last 2 seconds
-  _tapTimes=_tapTimes.filter(function(t){return now-t<=2000;});
 
   // Visual tap feedback — brief glow pulse
   var img=document.getElementById('oki-logo-img');
   if(img){
     img.style.filter='drop-shadow(0 0 10px #00e5ff) drop-shadow(0 0 5px #fff)';
     setTimeout(function(){
-      if(!_holdInterval) img.style.filter='drop-shadow(0 0 4px rgba(31,111,181,0.5))';
+      if(!_holdActive) img.style.filter='drop-shadow(0 0 4px rgba(31,111,181,0.5))';
       img.style.opacity='0.85';
     },120);
   }
 
-  if(_tapTimes.length>=7){
-    _tapTimes=[];
+  _tapCount++;
+
+  // Reset tap counter after 3 seconds of inactivity
+  clearTimeout(_tapResetTimer);
+  _tapResetTimer=setTimeout(function(){ _tapCount=0; },3000);
+
+  if(_tapCount>=7){
+    _tapCount=0;
+    clearTimeout(_tapResetTimer);
     if(uiMode==='wicked'){
-      // Already wicked — 3 taps exits (handled below), but 7 taps re-triggers
       wickedDeactivate();
     } else {
-      wickedActivate();
+      // If psychedelic is active, turn it off first then go wicked
+      if(uiMode==='psychedelic'){
+        fetch('/api/toggle-psychedelic').then(function(){ return fetch('/api/toggle-wicked'); }).then(function(){ navigateTo('/',250); });
+      } else {
+        wickedActivate();
+      }
     }
-    return;
-  }
-
-  // Exit wicked with 3 taps
-  if(uiMode==='wicked' && _tapTimes.length>=3){
-    _tapTimes=[];
-    wickedDeactivate();
   }
 }
 
@@ -648,39 +648,41 @@ function wickedDeactivate(){
   });
 }
 
-// ── PSYCHEDELIC MODE — 7 second hold ─────────────────────────────────────────
-var _holdTimer=null,_holdInterval=null,_holdStart=null,_wasHold=false;
-var HOLD_ACTIVATE=7000;   // 7s to activate
-var HOLD_EXIT=3000;       // 3s to exit from psychedelic
-var _holdThreshold=250;   // ms to distinguish hold from tap
+// ── EASTER EGG 2: PSYCHEDELIC MODE — 7 second press-and-hold on OKi logo ─────
+var _holdTimer=null,_holdInterval=null,_holdStart=null,_wasHold=false,_holdActive=false;
+var HOLD_DURATION=7000;   // 7s to activate psychedelic
+var _holdThreshold=200;   // ms to distinguish hold from tap
 
 function logoPress(e){
   _holdStart=Date.now();
   _wasHold=false;
+  _holdActive=false;
 
   _holdTimer=setTimeout(function(){
     _wasHold=true;
-    _tapTimes=[];
+    _holdActive=true;
+    _tapCount=0;
+    clearTimeout(_tapResetTimer);
     var ring=document.getElementById('ring-arc');
     var ringEl=document.getElementById('logo-ring');
     var img=document.getElementById('oki-logo-img');
-    var duration= uiMode==='psychedelic' ? HOLD_EXIT : HOLD_ACTIVATE;
 
     if(ringEl) ringEl.style.opacity='1';
     if(img) img.style.opacity='1';
 
     _holdInterval=setInterval(function(){
       var elapsed=Date.now()-_holdStart;
-      var progress=Math.min(elapsed/duration,1);
+      var progress=Math.min(elapsed/HOLD_DURATION,1);
       if(ring) ring.style.strokeDashoffset=389.6*(1-progress);
       var glow=Math.round(progress*22)+4;
       if(img) img.style.filter='drop-shadow(0 0 '+glow+'px #ff00ff) drop-shadow(0 0 '+Math.round(glow/2)+'px #00d4ff)';
     },40);
 
-    var remaining=duration-_holdThreshold;
+    var remaining=HOLD_DURATION-_holdThreshold;
     _holdTimer=setTimeout(function(){
       clearInterval(_holdInterval);
       _holdInterval=null;
+      _holdActive=false;
       if(uiMode==='psychedelic'){
         psychedelicDeactivate();
       } else {
@@ -694,7 +696,7 @@ function logoRelease(){
   if(_holdInterval){
     clearTimeout(_holdTimer);
     clearInterval(_holdInterval);
-    _holdTimer=null; _holdInterval=null;
+    _holdTimer=null; _holdInterval=null; _holdActive=false;
     // Reset ring and logo
     var ring=document.getElementById('ring-arc');
     var ringEl=document.getElementById('logo-ring');
@@ -710,18 +712,15 @@ function logoRelease(){
 }
 
 function cinematicActivate(){
+  var wasWicked=(uiMode==='wicked');
   uiMode='psychedelic';
   document.documentElement.style.background='#000';
   document.body.style.background='#000';
   var cover=document.createElement('div');
   cover.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99999;';
   document.body.appendChild(cover);
-  // Flash overlay
   var overlay=document.getElementById('psych-overlay');
   if(overlay) overlay.classList.add('flash');
-  // Turn off wicked if active, then on psychedelic
-  var wasWicked=(uiMode==='wicked');
-  uiMode='psychedelic';
   var p1=wasWicked ? fetch('/api/toggle-wicked') : Promise.resolve();
   p1.then(function(){ return fetch('/api/toggle-psychedelic'); })
     .then(function(){ setTimeout(function(){ window.location.replace('/'); },600); });
