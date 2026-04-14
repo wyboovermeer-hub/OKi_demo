@@ -1,7 +1,21 @@
 # ============================================================
 # OKi – Onboard Knowledge Interface
-# ENTERPRISE WEB LAYER v20.4
+# ENTERPRISE WEB LAYER v20.5
 # ============================================================
+#
+# Changelog v20.5
+# ----------------
+# • TOGGLE FIX — FOCUS, DEV, DEMO, PSYCHEDELIC toggles no longer cause
+#     page reload or scroll jump. JS intercepts toggle onChange, calls
+#     fetch('/api/toggle-*'), then fetches '/api/content' to swap the
+#     .content div in place. Header re-rendered via '/api/header'.
+# • FOCUS VIEW IDs — all live data elements in render_focus_view now
+#     carry the same IDs as supervisory view. applyState() updates
+#     focus view data live, no reload needed.
+# • New endpoints: GET /api/toggle-focus, /api/toggle-dev,
+#     /api/toggle-demo, /api/toggle-psychedelic (return JSON),
+#     GET /api/content (returns rendered content HTML for current view),
+#     GET /api/header (returns rendered header HTML)
 #
 # Changelog v20.4
 # ----------------
@@ -347,7 +361,26 @@ function logoTap(){
   _taps++;
   clearTimeout(_tapTimer);
   _tapTimer=setTimeout(function(){_taps=0;},3000);
-  if(_taps>=7){_taps=0;window.location.href='/toggle-psychedelic';}
+  if(_taps>=7){_taps=0;okiToggle(null,'/api/toggle-psychedelic');}
+}
+function okiToggle(input, overrideRoute){
+  var route = overrideRoute || (input && input.getAttribute('data-toggle-route'));
+  if(!route) return;
+  fetch(route).then(function(r){return r.json();}).then(function(d){
+    // Swap content div
+    return fetch('/api/content').then(function(r){return r.text();}).then(function(html){
+      var c=document.querySelector('.content');
+      if(c) c.innerHTML=html;
+      // Update header LEDs and toggles
+      return fetch('/api/header').then(function(r){return r.text();}).then(function(hhtml){
+        var hdr=document.querySelector('.header');
+        if(hdr) hdr.outerHTML=hhtml;
+      });
+    });
+  }).catch(function(e){
+    // Fallback to full navigation if fetch fails
+    if(input) window.location.href=route.replace('/api/','/')+'-legacy';
+  });
 }
 </script>"""
 
@@ -379,7 +412,10 @@ def render_led_strip(g, a, r, prefix=""):
 
 def render_toggle(label, checked, route):
     flag = "checked" if checked else ""
-    return f'<div class="toggle-box"><span class="toggle-label">{label}</span><label class="switch"><input type="checkbox" {flag} onchange="window.location.href=\'/{route}\'"><span class="slider"></span></label></div>'
+    return (f'<div class="toggle-box"><span class="toggle-label">{label}</span>'
+            f'<label class="switch"><input type="checkbox" {flag} '
+            f'data-toggle-route="/api/{route}" onchange="okiToggle(this)">'
+            f'<span class="slider"></span></label></div>')
 
 def render_panel(title, content, badge=None):
     badge_html = ""
@@ -418,7 +454,9 @@ def render_header():
 
 def render_footer():
     demo_checked = "checked" if DEMO_MODE else ""
-    toggle = f'<label class="switch"><input type="checkbox" {demo_checked} onchange="window.location.href=\'/toggle-demo\'"><span class="slider"></span></label>'
+    toggle = (f'<label class="switch"><input type="checkbox" {demo_checked} '
+              f'data-toggle-route="/api/toggle-demo" onchange="okiToggle(this)">'
+              f'<span class="slider"></span></label>')
     return (
         '<div class="footer">'
         '<div class="footer-demo">'
@@ -689,20 +727,31 @@ def render_focus_view(state):
     mode    = derived.get("EnergyMode") or "—"
     health  = safe_int(system.get("SystemHealth"), 0)
 
-    soc_html = f"""<div class="soc-display"><div class="{soc_css_class(soc)}">{soc}%</div><div class="soc-label">State of Charge</div></div>
-{soc_bar_html(soc, mode)}
+    mode_upper  = (mode or "").upper()
+    is_charging = "CHARG" in mode_upper
+    is_discharging = "DISCHARG" in mode_upper
+    bar_anim    = "soc-bar-discharging" if is_discharging else "soc-bar-charging" if is_charging else ""
+    bar_color   = "#ff5252" if soc < 15 else "#ffb300" if soc < 30 else "#4caf50"
+
+    soc_html = f"""<div class="soc-display"><div id="soc-number" class="{soc_css_class(soc)}">{soc}%</div><div class="soc-label">State of Charge</div></div>
+<div class="soc-bar-outer"><div id="soc-bar-fill" class="soc-bar-fill {bar_anim}" style="width:{soc}%; background:{bar_color};"></div></div>
 <div class="grid2" style="margin-top:10px;">
-  <div class="label">Voltage</div><div class="value">{voltage} V</div>
-  <div class="label">Current</div><div class="value">{current} A</div>
-  <div class="label">Power</div><div class="value">{power} W</div>
-  <div class="label">Mode</div><div class="value">{mode}</div>
+  <div class="label">Voltage</div><div id="bat-voltage" class="value">{voltage} V</div>
+  <div class="label">Current</div><div id="bat-current" class="value">{current} A</div>
+  <div class="label">Power</div><div id="bat-power" class="value">{power} W</div>
+  <div class="label">Mode</div><div id="bat-mode" class="value">{mode}</div>
 </div>"""
-    health_html = f'<div style="font-size:clamp(20px,4vw,28px);font-weight:bold;color:#cad8e3;">{health}%</div>{render_bar(health, bar_color_for_health(health))}'
+
+    health_html = (f'<div id="health-number" style="font-size:clamp(20px,4vw,28px);font-weight:bold;color:#cad8e3;">{health}%</div>'
+                   f'<div class="bar-container"><div id="health-bar-fill" class="bar-fill bar-{bar_color_for_health(health)}" style="width:{health}%"></div></div>')
+
     rec     = system.get("Recommendation", "")
     content = render_panel("Battery", soc_html)
     content += render_panel("System Health", health_html)
     if rec:
-        content += render_panel("Status", f"<div style='font-size:clamp(12px,2vw,13px);'>{rec}</div>")
+        content += f'<div id="rec-panel"><div class="panel"><div class="panel-title">Status</div><div id="rec-inner"><div style="font-size:clamp(12px,2vw,13px);">{rec}</div></div></div></div>'
+    else:
+        content += '<div id="rec-panel" style="display:none;"><div class="panel"><div class="panel-title">Status</div><div id="rec-inner"></div></div></div>'
     content += render_button("CARE", "/care")
 
     # DEMO block
@@ -940,6 +989,50 @@ def care_task():
 @app.get("/knowledge")
 def knowledge_page():
     return render_layout(render_knowledge_page(), auto_refresh=False)
+
+# ── JSON toggle endpoints — no redirect, called by okiToggle() JS ─────────────
+@app.get("/api/toggle-focus")
+def api_toggle_focus():
+    from fastapi.responses import JSONResponse
+    global FOCUS_MODE
+    FOCUS_MODE = not FOCUS_MODE
+    return JSONResponse({"ok": True, "focusMode": FOCUS_MODE, "devMode": False, "demoMode": DEMO_MODE, "psychedelic": PSYCHEDELIC_MODE})
+
+@app.get("/api/toggle-dev")
+def api_toggle_dev():
+    from fastapi.responses import JSONResponse
+    toggle_dev_mode(app.state.state_manager)
+    state   = get_state()
+    dev_mode = state["System"].get("DevMode", False)
+    return JSONResponse({"ok": True, "focusMode": FOCUS_MODE, "devMode": dev_mode, "demoMode": DEMO_MODE, "psychedelic": PSYCHEDELIC_MODE})
+
+@app.get("/api/toggle-demo")
+def api_toggle_demo():
+    from fastapi.responses import JSONResponse
+    global DEMO_MODE
+    DEMO_MODE = not DEMO_MODE
+    return JSONResponse({"ok": True, "focusMode": FOCUS_MODE, "devMode": False, "demoMode": DEMO_MODE, "psychedelic": PSYCHEDELIC_MODE})
+
+@app.get("/api/toggle-psychedelic")
+def api_toggle_psychedelic():
+    from fastapi.responses import JSONResponse
+    global PSYCHEDELIC_MODE
+    PSYCHEDELIC_MODE = not PSYCHEDELIC_MODE
+    return JSONResponse({"ok": True, "focusMode": FOCUS_MODE, "devMode": False, "demoMode": DEMO_MODE, "psychedelic": PSYCHEDELIC_MODE})
+
+@app.get("/api/content")
+def api_content():
+    """Returns rendered .content div HTML for current view — used by okiToggle()"""
+    from fastapi.responses import PlainTextResponse
+    state   = get_state()
+    content = render_focus_view(state) if FOCUS_MODE else render_supervisory_view(state)
+    return PlainTextResponse(content, media_type="text/html")
+
+@app.get("/api/header")
+def api_header():
+    """Returns rendered header HTML — used by okiToggle() to refresh LEDs/toggles"""
+    from fastapi.responses import PlainTextResponse
+    return PlainTextResponse(render_header(), media_type="text/html")
 
 # ── Live state API — used by fetch-based refresh (no page reload) ──────────────
 @app.get("/api/state")
