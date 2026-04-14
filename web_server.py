@@ -1,6 +1,6 @@
 # ============================================================
 # OKi – Onboard Knowledge Interface
-# ENTERPRISE WEB LAYER v21.9
+# ENTERPRISE WEB LAYER v21.10
 # ============================================================
 #
 # Changelog v20.7
@@ -8,7 +8,7 @@
 # • TWO EASTER EGGS:
 #     - WICKED MODE: 7 taps on OKi logo → sci-fi Orbitron neon theme
 #       (was PSYCHEDELIC_MODE, renamed to WICKED_MODE)
-#     - PSYCHEDELIC MODE: 15s hold on OKi logo → true psychedelic
+#     - PSYCHEDELIC MODE: 7s hold on OKi logo → true psychedelic
 #       cosmic mode with animated neon borders, particle field,
 #       color-cycling panels, energy flow, cinematic transition
 # • Logo enlarged slightly and aligned with DEMO toggle
@@ -833,7 +833,7 @@ def render_footer():
         '<div class="footer-demo-label">DEMO</div>'
         + toggle +
         '</div>'
-        # Logo — 7 taps = wicked (onclick), 15s hold = psychedelic (onmousedown/touch)
+        # Logo — 7 taps = wicked (onclick), 7s hold = psychedelic (onmousedown/touch)
         '<div id="logo-wrap" style="position:relative;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;"'
         ' onmousedown="logoPress(event)" onmouseup="logoRelease()" onmouseleave="logoRelease()" onclick="logoTap()"'
         ' ontouchstart="logoPress(event)" ontouchend="logoRelease();logoTap();" ontouchcancel="logoRelease()">'
