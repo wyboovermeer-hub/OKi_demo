@@ -721,19 +721,23 @@ def render_layout(content, auto_refresh=True):
     # JS refresh preserves scroll position — no more jumping to top
     refresh_js = """<script>
 (function(){
-  var c=document.querySelector('.content');
-  if(c){
-    var k='oki_scroll';
-    var saved=sessionStorage.getItem(k);
-    if(saved) c.scrollTop=parseInt(saved,10);
-    c.addEventListener('scroll',function(){sessionStorage.setItem(k,c.scrollTop);});
-  }
+  var k='oki_scroll';
+  // Restore scroll after content renders — slight delay ensures DOM is ready
+  setTimeout(function(){
+    var c=document.querySelector('.content');
+    if(c){
+      var saved=sessionStorage.getItem(k);
+      if(saved) c.scrollTop=parseInt(saved,10);
+      c.addEventListener('scroll',function(){sessionStorage.setItem(k,c.scrollTop);});
+    }
+  },50);
+  // Save scroll and reload every 3 seconds
+  setTimeout(function(){
+    var c=document.querySelector('.content');
+    if(c) sessionStorage.setItem(k,c.scrollTop);
+    location.reload();
+  },3000);
 })();
-setTimeout(function(){
-  var c=document.querySelector('.content');
-  if(c) sessionStorage.setItem('oki_scroll',c.scrollTop);
-  location.reload();
-},3000);
 </script>""" if auto_refresh else ""
     style   = PSYCH_STYLE if PSYCHEDELIC_MODE else PROF_STYLE
     return HTMLResponse(
