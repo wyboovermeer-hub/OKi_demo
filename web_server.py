@@ -1,7 +1,17 @@
 # ============================================================
 # OKi – Onboard Knowledge Interface
-# ENTERPRISE WEB LAYER v20.5
+# ENTERPRISE WEB LAYER v20.6
 # ============================================================
+#
+# Changelog v20.6
+# ----------------
+# • KNOWLEDGE BASE — full implementation of /knowledge page:
+#     - All cases listed with title, symptoms as tags, root cause snippet
+#     - Live JS search/filter by keyword (no reload)
+#     - Case detail page at /knowledge/<case_id> showing full
+#       root cause, solution, symptoms, conditions, actions
+#     - Case count and system grouping by case_id prefix
+#     - Consistent OKi visual style, Back navigation
 #
 # Changelog v20.5
 # ----------------
@@ -249,6 +259,25 @@ input:checked+.slider:before{transform:translateX(18px)}
 .dev-scenario-btn{display:inline-block;margin:4px;padding:6px 14px;background:#1a2030;color:#7ab8d4;border:1px solid #2b3a50;border-radius:16px;font-size:clamp(10px,1.8vw,12px);text-decoration:none;cursor:pointer}
 .dev-scenario-btn:hover{background:#2b3a50;color:#cad8e3}
 @media(max-width:400px){.button,.op-button{width:100%}}
+.kb-search{width:100%;padding:10px 14px;background:#1a1d23;border:1px solid #2b313c;border-radius:24px;color:#cad8e3;font-size:clamp(12px,2.2vw,14px);outline:none;margin-bottom:10px;box-sizing:border-box}
+.kb-search:focus{border-color:#1f6fb5}
+.kb-search::placeholder{color:#4a5a6a}
+.kb-case{background:#0f1115;border-radius:10px;padding:10px 12px;margin-bottom:6px;cursor:pointer;border:1px solid #1a1d23;transition:border-color 0.15s;text-decoration:none;display:block}
+.kb-case:hover{border-color:#1f6fb5}
+.kb-case-id{font-size:clamp(9px,1.5vw,10px);color:#4a7a9a;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px}
+.kb-case-title{font-size:clamp(12px,2.2vw,14px);color:#cad8e3;font-weight:600;margin-bottom:5px}
+.kb-case-snippet{font-size:clamp(10px,1.8vw,11px);color:#6a8aa0;margin-bottom:6px;line-height:1.5}
+.kb-tags{display:flex;flex-wrap:wrap;gap:4px}
+.kb-tag{font-size:clamp(9px,1.5vw,10px);padding:2px 8px;background:#0a1420;color:#548bac;border:1px solid #1a3048;border-radius:10px}
+.kb-empty{text-align:center;color:#4a5a6a;padding:20px;font-size:clamp(11px,2vw,13px)}
+.kb-detail-section{margin-bottom:14px}
+.kb-detail-label{font-size:clamp(9px,1.6vw,10px);color:#4a7a9a;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:5px;font-weight:600}
+.kb-detail-text{font-size:clamp(11px,2vw,13px);color:#cad8e3;line-height:1.7}
+.kb-detail-list{list-style:none;padding:0;margin:0}
+.kb-detail-list li{font-size:clamp(11px,2vw,12px);color:#cad8e3;padding:3px 0 3px 14px;position:relative;line-height:1.5}
+.kb-detail-list li::before{content:"–";position:absolute;left:0;color:#548bac}
+.kb-count{font-size:clamp(9px,1.6vw,10px);color:#4a7a9a;letter-spacing:0.08em;margin-bottom:10px}
+.kb-no-results{display:none}
 </style>"""
 
 PSYCH_STYLE = """<style>
@@ -339,6 +368,25 @@ input:checked+.slider:before{transform:translateX(18px);background:#00d4ff}
 .dev-scenario-btn{display:inline-block;margin:4px;padding:6px 14px;background:#0a1525;color:#7ab8d4;border:1px solid #1f4a6a;border-radius:16px;font-size:clamp(10px,1.8vw,12px);text-decoration:none;cursor:pointer;font-family:'Orbitron',monospace;letter-spacing:0.08em}
 .dev-scenario-btn:hover{background:#1a3a5a;color:#00d4ff}
 @media(max-width:400px){.button,.op-button{width:100%}}
+.kb-search{width:100%;padding:10px 14px;background:#0a1020;border:1px solid #1a2a3a;border-radius:24px;color:#cad8e3;font-size:clamp(12px,2.2vw,14px);outline:none;margin-bottom:10px;box-sizing:border-box;font-family:'Exo 2',sans-serif}
+.kb-search:focus{border-color:#1f6fb5;box-shadow:0 0 8px rgba(31,111,181,0.3)}
+.kb-search::placeholder{color:#2a4a6a}
+.kb-case{background:#080c14;border-radius:10px;padding:10px 12px;margin-bottom:6px;cursor:pointer;border:1px solid #1a2a3a;transition:border-color 0.15s;text-decoration:none;display:block}
+.kb-case:hover{border-color:#1f6fb5;box-shadow:0 0 8px rgba(31,111,181,0.15)}
+.kb-case-id{font-size:clamp(9px,1.5vw,10px);color:#3a6a8a;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:2px;font-family:'Orbitron',monospace}
+.kb-case-title{font-size:clamp(12px,2.2vw,14px);color:#cad8e3;font-weight:600;margin-bottom:5px}
+.kb-case-snippet{font-size:clamp(10px,1.8vw,11px);color:#3a6a8a;margin-bottom:6px;line-height:1.5}
+.kb-tags{display:flex;flex-wrap:wrap;gap:4px}
+.kb-tag{font-size:clamp(9px,1.5vw,10px);padding:2px 8px;background:#050a14;color:#4a9fd4;border:1px solid #1a3a5a;border-radius:10px;font-family:'Orbitron',monospace;letter-spacing:0.05em}
+.kb-empty{text-align:center;color:#2a4a6a;padding:20px;font-size:clamp(11px,2vw,13px)}
+.kb-detail-section{margin-bottom:14px}
+.kb-detail-label{font-size:clamp(9px,1.6vw,10px);color:#3a6a8a;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:5px;font-weight:600;font-family:'Orbitron',monospace}
+.kb-detail-text{font-size:clamp(11px,2vw,13px);color:#cad8e3;line-height:1.7}
+.kb-detail-list{list-style:none;padding:0;margin:0}
+.kb-detail-list li{font-size:clamp(11px,2vw,12px);color:#cad8e3;padding:3px 0 3px 14px;position:relative;line-height:1.5}
+.kb-detail-list li::before{content:"–";position:absolute;left:0;color:#4a9fd4}
+.kb-count{font-size:clamp(9px,1.6vw,10px);color:#3a6a8a;letter-spacing:0.1em;margin-bottom:10px;font-family:'Orbitron',monospace}
+.kb-no-results{display:none}
 </style>"""
 
 SCRIPTS = """<script>
@@ -671,9 +719,14 @@ def render_supervisory_view(state):
     if rec:
         reason   = state["System"].get("RecommendationReason")
         advisory = state["System"].get("Advisory")
+        advisory_case = state["System"].get("AdvisoryCase")
         r = f"<div style='font-size:clamp(12px,2vw,13px);'>{rec}</div>"
         if reason:   r += f'<div class="reason">Reason: {reason}</div>'
-        if advisory: r += f'<div class="advisory">&#128203; {advisory}</div>'
+        if advisory:
+            if advisory_case:
+                r += f'<div class="advisory">&#128203; {advisory} &nbsp;<a href="/knowledge/{advisory_case}" style="color:#ffb300;text-decoration:underline;font-size:clamp(10px,1.8vw,11px);">View case →</a></div>'
+            else:
+                r += f'<div class="advisory">&#128203; {advisory}</div>'
         content += f'<div id="rec-panel"><div class="panel"><div class="panel-title">Recommendation</div><div id="rec-inner">{r}</div></div></div>'
     else:
         content += '<div id="rec-panel" style="display:none;"><div class="panel"><div class="panel-title">Recommendation</div><div id="rec-inner"></div></div></div>'
@@ -779,25 +832,133 @@ def render_care_page():
     panel += render_button("← Back", "/")
     return panel
 
+def _case_system_group(case_id: str) -> str:
+    """Derive a human-readable system group from case_id prefix."""
+    prefix = case_id.split("-")[0].upper() if "-" in case_id else case_id[:3].upper()
+    mapping = {
+        "BAT": "Battery", "SOL": "Solar", "GEN": "Generator", "AC": "AC Power",
+        "FUEL": "Fuel", "CAN": "CAN Bus", "SYS": "System", "ENG": "Engine",
+        "INV": "Inverter", "CHG": "Charger", "VES": "Vessel",
+    }
+    return mapping.get(prefix, "General")
+
 def render_knowledge_page():
     cases = list(CASE_LIBRARY.cases.values()) if hasattr(CASE_LIBRARY, 'cases') else []
+    total = len(cases)
+
     if not cases:
-        content = "<div style='color:#6a8aa0;'>No cases loaded yet.</div>"
-    else:
-        content = f"<div class='reason' style='margin-bottom:10px;'>{len(cases)} cases loaded</div>"
-        for case in cases[:10]:
-            case_id    = getattr(case, "case_id",    "?")
-            title      = getattr(case, "title",      "?")
-            root_cause = getattr(case, "root_cause", "") or ""
-            snippet    = root_cause[:120] + "..." if len(root_cause) > 120 else root_cause
-            content += (
-                f'<div style="margin-bottom:8px;padding:10px;background:#0f1115;border-radius:8px;">'
-                f'<div style="color:#1f6fb5;font-size:clamp(11px,2vw,13px);">{case_id} — {title}</div>'
-                f'<div style="font-size:clamp(10px,1.8vw,12px);color:#6a8aa0;margin-top:3px;">{snippet}</div>'
-                f'</div>'
-            )
+        content = "<div class='kb-empty'>No cases loaded yet.<br><span style='font-size:11px;'>Add JSON files to the cases/ directory.</span></div>"
+        return render_panel("OKi Knowledge Base", content) + render_button("← Back", "/")
+
+    # Build case cards — all rendered in HTML, JS handles filtering
+    cards_html = ""
+    for case in cases:
+        case_id    = getattr(case, "case_id",    "?")
+        title      = getattr(case, "title",      "") or case_id
+        root_cause = getattr(case, "root_cause", "") or ""
+        symptoms   = getattr(case, "symptoms",   []) or []
+        snippet    = (root_cause[:100] + "…") if len(root_cause) > 100 else root_cause
+        group      = _case_system_group(case_id)
+
+        tags_html = "".join(
+            f'<span class="kb-tag">{s}</span>'
+            for s in (symptoms[:4])
+        )
+        if tags_html:
+            tags_html = f'<div class="kb-tags">{tags_html}</div>'
+
+        # data-search attribute enables JS filtering without re-rendering
+        searchable = f"{case_id} {title} {root_cause} {' '.join(symptoms)}".lower()
+        cards_html += (
+            f'<a class="kb-case" href="/knowledge/{case_id}" data-search="{searchable}">'
+            f'<div class="kb-case-id">{group} · {case_id}</div>'
+            f'<div class="kb-case-title">{title}</div>'
+            f'<div class="kb-case-snippet">{snippet}</div>'
+            f'{tags_html}'
+            f'</a>'
+        )
+
+    search_js = """<script>
+(function(){
+  var inp=document.getElementById('kb-search-input');
+  var cards=document.querySelectorAll('.kb-case');
+  var noRes=document.getElementById('kb-no-results');
+  if(!inp) return;
+  inp.addEventListener('input',function(){
+    var q=inp.value.trim().toLowerCase();
+    var visible=0;
+    cards.forEach(function(c){
+      var match=!q||c.getAttribute('data-search').indexOf(q)!==-1;
+      c.style.display=match?'':'none';
+      if(match) visible++;
+    });
+    if(noRes) noRes.style.display=(visible===0&&q)?'block':'none';
+  });
+})();
+</script>"""
+
+    content = (
+        f'<div class="kb-count">{total} case{"s" if total != 1 else ""} in knowledge base</div>'
+        f'<input id="kb-search-input" class="kb-search" type="text" placeholder="Search by symptom, system, keyword…" autocomplete="off">'
+        f'<div id="kb-no-results" class="kb-empty kb-no-results">No cases match your search.</div>'
+        + cards_html
+        + search_js
+    )
+
     panel  = render_panel("OKi Knowledge Base", content)
     panel += render_button("← Back", "/")
+    return panel
+
+
+def render_knowledge_detail(case_id: str):
+    case = CASE_LIBRARY.get_case(case_id) if hasattr(CASE_LIBRARY, 'get_case') else None
+
+    if not case:
+        content = f"<div class='kb-empty'>Case <b>{case_id}</b> not found.</div>"
+        panel   = render_panel("Case Not Found", content)
+        panel  += render_button("← Knowledge Base", "/knowledge")
+        return panel
+
+    title      = getattr(case, "title",      "") or case_id
+    root_cause = getattr(case, "root_cause", "") or ""
+    solution   = getattr(case, "solution",   "") or ""
+    symptoms   = getattr(case, "symptoms",   []) or []
+    conditions = getattr(case, "conditions", []) or []
+    actions    = getattr(case, "actions",    []) or []
+    group      = _case_system_group(case_id)
+
+    def detail_section(label, text):
+        if not text: return ""
+        return (f'<div class="kb-detail-section">'
+                f'<div class="kb-detail-label">{label}</div>'
+                f'<div class="kb-detail-text">{text}</div>'
+                f'</div>')
+
+    def detail_list(label, items):
+        if not items: return ""
+        lis = "".join(f"<li>{item}</li>" for item in items)
+        return (f'<div class="kb-detail-section">'
+                f'<div class="kb-detail-label">{label}</div>'
+                f'<ul class="kb-detail-list">{lis}</ul>'
+                f'</div>')
+
+    def symptom_tags(items):
+        if not items: return ""
+        tags = "".join(f'<span class="kb-tag">{s}</span>' for s in items)
+        return (f'<div class="kb-detail-section">'
+                f'<div class="kb-detail-label">Symptoms</div>'
+                f'<div class="kb-tags" style="margin-top:2px;">{tags}</div>'
+                f'</div>')
+
+    content  = f'<div class="kb-count">{group} · {case_id}</div>'
+    content += detail_section("Root Cause", root_cause)
+    content += symptom_tags(symptoms)
+    content += detail_list("Conditions", conditions)
+    content += detail_section("Solution", solution)
+    content += detail_list("Actions", actions)
+
+    panel  = render_panel(title, content)
+    panel += render_button("← Knowledge Base", "/knowledge")
     return panel
 
 def render_layout(content, auto_refresh=True):
@@ -839,7 +1000,11 @@ def render_layout(content, auto_refresh=True):
       if(d.rec){
         var rh='<div style="font-size:clamp(12px,2vw,13px);">'+d.rec+'</div>';
         if(d.recReason) rh+='<div class="reason">Reason: '+d.recReason+'</div>';
-        if(d.advisory)  rh+='<div class="advisory">&#128203; '+d.advisory+'</div>';
+        if(d.advisory){
+          rh+='<div class="advisory">&#128203; '+d.advisory;
+          if(d.advisoryCase) rh+=' &nbsp;<a href="/knowledge/'+d.advisoryCase+'" style="color:#ffb300;text-decoration:underline;font-size:clamp(10px,1.8vw,11px);">View case \u2192</a>';
+          rh+='</div>';
+        }
         setHTML('rec-inner',rh);
         recPanel.style.display='';
       } else {
@@ -990,6 +1155,10 @@ def care_task():
 def knowledge_page():
     return render_layout(render_knowledge_page(), auto_refresh=False)
 
+@app.get("/knowledge/{case_id}")
+def knowledge_case(case_id: str):
+    return render_layout(render_knowledge_detail(case_id), auto_refresh=False)
+
 # ── JSON toggle endpoints — no redirect, called by okiToggle() JS ─────────────
 @app.get("/api/toggle-focus")
 def api_toggle_focus():
@@ -1136,6 +1305,7 @@ def api_state():
         "rec":      system.get("Recommendation") or "",
         "recReason": system.get("RecommendationReason") or "",
         "advisory":  system.get("Advisory") or "",
+        "advisoryCase": system.get("AdvisoryCase") or "",
 
         # Care
         "careIndex":       care_index,

@@ -1,6 +1,12 @@
 # ============================================================
-# OKi ENGINE v8.1 – Supervisory Intelligence Core
+# OKi ENGINE v8.2 – Supervisory Intelligence Core
 # ============================================================
+#
+# Changelog v8.2
+# ---------------
+# • consult_case_library() now writes state["System"]["AdvisoryCase"]
+#   with the matched case_id — web UI uses this to render advisory
+#   as a direct link into the Knowledge Base
 #
 # Changelog v8.1
 # ---------------
@@ -492,9 +498,11 @@ def consult_case_library(state: State) -> None:
         # Support both dataclass objects and plain dicts safely
         case_id = getattr(top, "case_id", None) or (top.get("case_id", "?") if isinstance(top, dict) else "?")
         title   = getattr(top, "title",   None) or (top.get("title",   "?") if isinstance(top, dict) else "?")
-        system["Advisory"] = f"Resembles case {case_id} — {title}"
+        system["Advisory"]     = f"Resembles case {case_id} — {title}"
+        system["AdvisoryCase"] = case_id
     else:
-        system["Advisory"] = None
+        system["Advisory"]     = None
+        system["AdvisoryCase"] = None
 
 
 # ============================================================
