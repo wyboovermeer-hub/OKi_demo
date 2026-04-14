@@ -1,7 +1,21 @@
 # ============================================================
 # OKi – Onboard Knowledge Interface
-# ENTERPRISE WEB LAYER v20.6
+# ENTERPRISE WEB LAYER v20.7
 # ============================================================
+#
+# Changelog v20.7
+# ----------------
+# • TWO EASTER EGGS:
+#     - WICKED MODE: 7 taps on OKi logo → sci-fi Orbitron neon theme
+#       (was PSYCHEDELIC_MODE, renamed to WICKED_MODE)
+#     - PSYCHEDELIC MODE: 15s hold on OKi logo → true psychedelic
+#       cosmic mode with animated neon borders, particle field,
+#       color-cycling panels, energy flow, cinematic transition
+# • Logo enlarged slightly and aligned with DEMO toggle
+# • Progress ring SVG feedback during 15s hold
+# • Cinematic CSS transition on psychedelic activation
+# • New endpoints: /api/toggle-wicked, /api/toggle-psychedelic (updated)
+# • render_layout: psychedelic > wicked > normal priority
 #
 # Changelog v20.6
 # ----------------
@@ -75,6 +89,7 @@ app.mount("/static", StaticFiles(directory="."), name="static")
 
 FOCUS_MODE       = False
 PSYCHEDELIC_MODE = False
+WICKED_MODE      = False
 DEMO_MODE        = False
 
 # ── Knowledge path ─────────────────────────────────────────────────────────────
@@ -389,6 +404,127 @@ input:checked+.slider:before{transform:translateX(18px);background:#00d4ff}
 .kb-no-results{display:none}
 </style>"""
 
+PSYCHEDELIC_STYLE = """<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap');
+@keyframes hue-cycle{0%{filter:hue-rotate(0deg)}100%{filter:hue-rotate(360deg)}}
+@keyframes border-flow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes energy-pulse{0%,100%{opacity:0.6;transform:scaleX(1)}50%{opacity:1;transform:scaleX(1.02)}}
+@keyframes particle-drift{0%{transform:translateY(0) translateX(0);opacity:0}20%{opacity:1}80%{opacity:0.6}100%{transform:translateY(-120px) translateX(40px);opacity:0}}
+@keyframes neon-breathe{0%,100%{text-shadow:0 0 10px currentColor,0 0 20px currentColor,0 0 40px currentColor}50%{text-shadow:0 0 20px currentColor,0 0 40px currentColor,0 0 80px currentColor,0 0 120px currentColor}}
+@keyframes panel-shimmer{0%{border-color:rgba(0,212,255,0.6)}25%{border-color:rgba(255,0,255,0.6)}50%{border-color:rgba(0,255,136,0.6)}75%{border-color:rgba(255,165,0,0.6)}100%{border-color:rgba(0,212,255,0.6)}}
+@keyframes frame-glow{0%{box-shadow:0 0 20px #ff00ff,0 0 40px rgba(255,0,255,0.4),inset 0 0 20px rgba(0,212,255,0.1)}33%{box-shadow:0 0 20px #00d4ff,0 0 40px rgba(0,212,255,0.4),inset 0 0 20px rgba(0,255,136,0.1)}66%{box-shadow:0 0 20px #00ff88,0 0 40px rgba(0,255,136,0.4),inset 0 0 20px rgba(255,0,255,0.1)}100%{box-shadow:0 0 20px #ff00ff,0 0 40px rgba(255,0,255,0.4),inset 0 0 20px rgba(0,212,255,0.1)}}
+@keyframes soc-bar-rainbow{0%{background:linear-gradient(90deg,#ff00ff,#00d4ff)}25%{background:linear-gradient(90deg,#00d4ff,#00ff88)}50%{background:linear-gradient(90deg,#00ff88,#ffaa00)}75%{background:linear-gradient(90deg,#ffaa00,#ff00ff)}100%{background:linear-gradient(90deg,#ff00ff,#00d4ff)}}
+@keyframes corner-spark{0%,100%{opacity:0.3}50%{opacity:1}}
+@keyframes slide-in{0%{opacity:0;transform:scale(0.96) translateY(8px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;width:100%}
+body{background:#000;color:#e0f0ff;font-family:'Exo 2',sans-serif;display:flex;justify-content:center;align-items:stretch;min-height:100dvh;padding:6px;animation:hue-cycle 20s linear infinite}
+.outer{width:100%;max-width:720px;display:flex;flex-direction:column;animation:slide-in 0.6s ease-out}
+.frame{flex:1;border:2px solid transparent;border-radius:16px;padding:10px 12px 6px 12px;display:flex;flex-direction:column;overflow:hidden;background:linear-gradient(#000,#000) padding-box,linear-gradient(90deg,#ff00ff,#00d4ff,#00ff88,#ffaa00,#ff00ff) border-box;background-size:400% 400%;animation:border-flow 4s ease infinite,frame-glow 4s ease infinite;position:relative}
+.frame::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#ff00ff,#00d4ff,#00ff88,#ffaa00,#ff00ff);background-size:400% 100%;animation:border-flow 3s linear infinite;border-radius:16px 16px 0 0}
+.frame::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#00ff88,#ffaa00,#ff00ff,#00d4ff,#00ff88);background-size:400% 100%;animation:border-flow 3s linear infinite reverse;border-radius:0 0 16px 16px}
+.header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;margin-bottom:6px;gap:6px}
+.header-left{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.header-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.title-block{text-align:center}
+.title-oki{font-family:'Orbitron',monospace;font-size:clamp(24px,5.5vw,36px);font-weight:900;background:linear-gradient(90deg,#ff00ff,#00d4ff,#00ff88);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:0.18em;line-height:1;animation:border-flow 3s ease infinite;background-size:300% 100%}
+.title-sub{font-size:clamp(8px,1.4vw,10px);color:#aa88ff;letter-spacing:0.2em;text-transform:uppercase;margin-top:2px}
+.boat-name-center{font-family:'Orbitron',monospace;font-size:clamp(9px,1.8vw,11px);color:#00ff88;letter-spacing:0.2em;text-transform:uppercase;margin-top:3px;animation:neon-breathe 2s ease-in-out infinite}
+.clock{font-family:'Orbitron',monospace;font-size:clamp(14px,3vw,20px);color:#00d4ff;letter-spacing:0.1em;text-align:right;animation:neon-breathe 2.5s ease-in-out infinite}
+.clock-date{font-size:clamp(9px,1.8vw,11px);color:#aa88ff;text-align:right}
+.led-strip{display:flex;gap:5px;align-items:center}
+.led{width:11px;height:11px;border-radius:50%}
+.led-green{background:#00ff88;box-shadow:0 0 8px #00ff88,0 0 16px rgba(0,255,136,0.6);animation:corner-spark 1.5s ease-in-out infinite}
+.led-amber{background:#ffaa00;box-shadow:0 0 8px #ffaa00,0 0 16px rgba(255,170,0,0.6);animation:corner-spark 1.2s ease-in-out infinite}
+.led-red{background:#ff0055;box-shadow:0 0 8px #ff0055,0 0 16px rgba(255,0,85,0.6);animation:corner-spark 0.8s ease-in-out infinite}
+.led-off{background:#111}
+.toggle-box{display:flex;flex-direction:column;align-items:center;gap:3px}
+.toggle-label{font-size:clamp(8px,1.5vw,10px);color:#aa88ff;letter-spacing:0.1em;font-weight:600;font-family:'Orbitron',monospace}
+.switch{position:relative;display:inline-block;width:36px;height:18px}
+.switch input{opacity:0;width:0;height:0}
+.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#1a0a2a;border:1px solid #6600aa;transition:.4s;border-radius:18px}
+.slider:before{position:absolute;content:"";height:12px;width:12px;left:2px;bottom:2px;background:#aa66ff;transition:.4s;border-radius:50%}
+input:checked+.slider{background:#2a0050;border-color:#ff00ff;box-shadow:0 0 10px rgba(255,0,255,0.6)}
+input:checked+.slider:before{transform:translateX(18px);background:#ff00ff}
+.divider{height:1px;background:linear-gradient(90deg,transparent,#ff00ff 20%,#00d4ff 50%,#00ff88 80%,transparent);margin:4px 0 6px 0;flex-shrink:0;animation:border-flow 3s ease infinite;background-size:400% 100%}
+.content{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:#ff00ff #000}
+.soc-display{text-align:center;padding:4px 0 4px 0}
+.soc-number{font-family:'Orbitron',monospace;font-size:clamp(32px,7vw,48px);font-weight:900;line-height:1;animation:neon-breathe 2s ease-in-out infinite}
+.soc-green{color:#00ff88}
+.soc-amber{color:#ffaa00}
+.soc-red{color:#ff0055}
+.soc-label{font-family:'Orbitron',monospace;font-size:clamp(8px,1.6vw,10px);color:#aa88ff;letter-spacing:0.3em;margin-top:2px}
+.soc-bar-outer{width:100%;height:28px;background:#050005;border-radius:14px;overflow:hidden;margin-top:10px;border:1px solid transparent;animation:panel-shimmer 4s ease infinite}
+.soc-bar-fill{height:100%;border-radius:14px;animation:soc-bar-rainbow 3s linear infinite!important;background-size:400% 100%}
+.soc-bar-discharging{animation:soc-bar-rainbow 3s linear infinite!important}
+.soc-bar-charging{animation:soc-bar-rainbow 2s linear infinite!important}
+.bar-container{width:100%;height:12px;background:#050005;border-radius:6px;overflow:hidden;margin-top:6px}
+.bar-fill{height:100%;border-radius:6px;transition:width 0.8s ease}
+.bar-green{animation:soc-bar-rainbow 4s linear infinite;background-size:400% 100%}
+.bar-amber{background:linear-gradient(90deg,#ff6600,#ffaa00,#ff6600);background-size:200% 100%;animation:border-flow 2s ease infinite}
+.bar-red{background:linear-gradient(90deg,#ff0055,#ff6600,#ff0055);background-size:200% 100%;animation:border-flow 1.5s ease infinite}
+.bar-blue{background:linear-gradient(90deg,#6600ff,#00d4ff,#6600ff);background-size:200% 100%;animation:border-flow 2.5s ease infinite}
+.panel{background:rgba(5,0,15,0.9);padding:clamp(8px,2vw,12px);border-radius:10px;margin-bottom:6px;border:1px solid rgba(0,212,255,0.4);position:relative;overflow:hidden;animation:panel-shimmer 4s ease infinite}
+.panel::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(180deg,#ff00ff,#00d4ff,#00ff88,#ffaa00,#ff00ff);background-size:100% 400%;animation:border-flow 2s linear infinite;border-radius:3px 0 0 3px}
+.panel-title{margin-bottom:8px;font-size:clamp(11px,2.2vw,14px);background:linear-gradient(90deg,#ff00ff,#00d4ff,#00ff88);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-family:'Orbitron',monospace;letter-spacing:0.06em;text-transform:uppercase;animation:border-flow 3s ease infinite;background-size:300% 100%}
+.badge{font-size:10px;padding:2px 8px;border-radius:8px;font-weight:bold}
+.badge-warning{background:#3a2000;color:#ffaa00;border:1px solid #ffaa00;box-shadow:0 0 6px rgba(255,170,0,0.5)}
+.badge-critical{background:#3a0010;color:#ff0055;border:1px solid #ff0055;box-shadow:0 0 6px rgba(255,0,85,0.5)}
+.badge-ok{background:#003a15;color:#00ff88;border:1px solid #00ff88;box-shadow:0 0 6px rgba(0,255,136,0.5)}
+.button{display:block;width:92%;margin:7px auto;padding:clamp(13px,2.8vw,17px);background:linear-gradient(135deg,rgba(255,0,255,0.1),rgba(0,212,255,0.1));color:#00d4ff;text-decoration:none;border-radius:10px;text-align:center;font-size:clamp(12px,2.3vw,15px);font-family:'Orbitron',monospace;letter-spacing:0.15em;cursor:pointer;border:1px solid rgba(0,212,255,0.5);text-transform:uppercase;animation:panel-shimmer 5s ease infinite;position:relative;overflow:hidden}
+.button::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.05),transparent);animation:energy-pulse 3s ease-in-out infinite}
+.button:hover,.button:active{background:linear-gradient(135deg,rgba(255,0,255,0.3),rgba(0,212,255,0.3));box-shadow:0 0 20px rgba(0,212,255,0.4)}
+.op-button{display:block;width:92%;margin:6px auto;padding:clamp(13px,2.8vw,17px);background:linear-gradient(135deg,rgba(0,255,136,0.1),rgba(255,0,255,0.1));color:#00ff88;text-decoration:none;border-radius:10px;text-align:center;font-size:clamp(12px,2.3vw,14px);font-family:'Orbitron',monospace;letter-spacing:0.1em;border:1px solid rgba(0,255,136,0.5);cursor:pointer;animation:panel-shimmer 4s ease infinite}
+.op-button:hover,.op-button:active{background:linear-gradient(135deg,rgba(0,255,136,0.3),rgba(255,0,255,0.2));box-shadow:0 0 20px rgba(0,255,136,0.4)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:5px 10px;font-size:clamp(12px,2.2vw,14px)}
+.grid2 .label{color:#aa88ff;font-size:clamp(10px,1.8vw,12px)}.grid2 .value{color:#e0f0ff;font-family:'Orbitron',monospace;font-size:clamp(11px,2vw,13px)}
+.advisory{font-size:clamp(10px,1.8vw,12px);color:#ffaa00;margin-top:8px;padding:6px 10px;background:rgba(255,100,0,0.1);border-radius:6px;border-left:2px solid #ffaa00;box-shadow:0 0 10px rgba(255,170,0,0.2)}
+.reason{font-size:clamp(10px,1.8vw,11px);color:#aa88ff;margin-top:5px}
+.refresh-note{text-align:center;font-size:9px;color:#330055;margin-bottom:4px;flex-shrink:0}
+.footer{text-align:center;padding-top:4px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:6px}
+.footer-demo{display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:2px}
+.footer-demo-label{font-size:clamp(9px,1.6vw,11px);color:#aa88ff;letter-spacing:0.1em;font-weight:600}
+.demo-section{border-top:1px solid rgba(0,212,255,0.2);margin-top:8px;padding-top:8px}
+.demo-label{text-align:center;font-size:10px;color:#aa88ff;margin-bottom:8px;letter-spacing:0.12em;font-weight:bold}
+.demo-scenario-btn{display:inline-block;margin:5px;padding:10px 20px;background:rgba(255,0,255,0.1);color:#ff00ff;border:1px solid rgba(255,0,255,0.4);border-radius:20px;font-size:clamp(11px,2vw,13px);text-decoration:none;cursor:pointer;font-weight:600}
+.demo-scenario-btn:hover{background:rgba(255,0,255,0.3);box-shadow:0 0 15px rgba(255,0,255,0.4)}
+.footer img{width:clamp(58px,11vw,78px);opacity:0.85;filter:drop-shadow(0 0 12px #ff00ff) drop-shadow(0 0 6px #00d4ff);cursor:pointer;-webkit-tap-highlight-color:transparent;animation:neon-breathe 3s ease-in-out infinite}
+.dev-section{border-top:2px solid rgba(255,0,255,0.4);margin-top:10px;padding-top:8px}
+.dev-label{text-align:center;font-size:10px;color:#ff00ff;margin-bottom:8px;letter-spacing:0.15em;font-weight:bold;font-family:'Orbitron',monospace}
+.dev-panel{background:rgba(5,0,15,0.9);border:1px solid rgba(0,212,255,0.3);border-radius:8px;padding:10px;margin-bottom:8px}
+.dev-panel-title{font-size:clamp(9px,1.6vw,11px);color:#00d4ff;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:6px;font-weight:bold;font-family:'Orbitron',monospace}
+.dev-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px 10px;font-size:clamp(10px,1.8vw,12px)}
+.dev-grid .dk{color:#aa88ff;font-size:clamp(9px,1.5vw,11px)}.dev-grid .dv{color:#e0f0ff;font-family:monospace}
+.dev-memory{font-size:clamp(9px,1.5vw,11px);color:#aa88ff;font-family:monospace;line-height:1.6}
+.dev-memory span{color:#e0f0ff}
+.dev-scenario-btn{display:inline-block;margin:4px;padding:6px 14px;background:rgba(0,212,255,0.1);color:#00d4ff;border:1px solid rgba(0,212,255,0.4);border-radius:16px;font-size:clamp(10px,1.8vw,12px);text-decoration:none;cursor:pointer;font-family:'Orbitron',monospace;letter-spacing:0.08em}
+.dev-scenario-btn:hover{background:rgba(0,212,255,0.3);box-shadow:0 0 12px rgba(0,212,255,0.4)}
+@media(max-width:400px){.button,.op-button{width:100%}}
+.kb-search{width:100%;padding:10px 14px;background:rgba(5,0,15,0.9);border:1px solid rgba(255,0,255,0.4);border-radius:24px;color:#e0f0ff;font-size:clamp(12px,2.2vw,14px);outline:none;margin-bottom:10px;box-sizing:border-box;font-family:'Exo 2',sans-serif;animation:panel-shimmer 5s ease infinite}
+.kb-search:focus{box-shadow:0 0 15px rgba(0,212,255,0.4)}
+.kb-search::placeholder{color:#6600aa}
+.kb-case{background:rgba(5,0,15,0.9);border-radius:10px;padding:10px 12px;margin-bottom:6px;cursor:pointer;border:1px solid rgba(0,212,255,0.2);transition:all 0.2s;text-decoration:none;display:block;animation:panel-shimmer 6s ease infinite}
+.kb-case:hover{border-color:rgba(255,0,255,0.7);box-shadow:0 0 20px rgba(255,0,255,0.2)}
+.kb-case-id{font-size:clamp(9px,1.5vw,10px);color:#aa88ff;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:2px;font-family:'Orbitron',monospace}
+.kb-case-title{font-size:clamp(12px,2.2vw,14px);color:#e0f0ff;font-weight:600;margin-bottom:5px}
+.kb-case-snippet{font-size:clamp(10px,1.8vw,11px);color:#aa88ff;margin-bottom:6px;line-height:1.5}
+.kb-tags{display:flex;flex-wrap:wrap;gap:4px}
+.kb-tag{font-size:clamp(9px,1.5vw,10px);padding:2px 8px;background:rgba(0,212,255,0.1);color:#00d4ff;border:1px solid rgba(0,212,255,0.4);border-radius:10px;font-family:'Orbitron',monospace;letter-spacing:0.05em}
+.kb-empty{text-align:center;color:#6600aa;padding:20px;font-size:clamp(11px,2vw,13px)}
+.kb-detail-section{margin-bottom:14px}
+.kb-detail-label{font-size:clamp(9px,1.6vw,10px);color:#aa88ff;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:5px;font-weight:600;font-family:'Orbitron',monospace}
+.kb-detail-text{font-size:clamp(11px,2vw,13px);color:#e0f0ff;line-height:1.7}
+.kb-detail-list{list-style:none;padding:0;margin:0}
+.kb-detail-list li{font-size:clamp(11px,2vw,12px);color:#e0f0ff;padding:3px 0 3px 14px;position:relative;line-height:1.5}
+.kb-detail-list li::before{content:"–";position:absolute;left:0;color:#ff00ff}
+.kb-count{font-size:clamp(9px,1.6vw,10px);color:#aa88ff;letter-spacing:0.1em;margin-bottom:10px;font-family:'Orbitron',monospace}
+.kb-no-results{display:none}
+/* Cinematic activation overlay */
+#psych-overlay{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;opacity:0;background:radial-gradient(ellipse at center,rgba(255,0,255,0.3),rgba(0,212,255,0.2),transparent);transition:opacity 0.5s ease}
+#psych-overlay.flash{animation:psych-flash 0.8s ease-out forwards}
+@keyframes psych-flash{0%{opacity:0}20%{opacity:1}60%{opacity:0.6}100%{opacity:0}}
+</style>"""
+
 SCRIPTS = """<script>
 function updateClock(){
   const now=new Date();
@@ -404,29 +540,84 @@ function updateClock(){
 }
 setInterval(updateClock,1000);
 window.onload=updateClock;
+
+// ── EASTER EGG 1: 7 taps → WICKED MODE ───────────────────────────────────────
 var _taps=0,_tapTimer=null;
 function logoTap(){
   _taps++;
   clearTimeout(_tapTimer);
   _tapTimer=setTimeout(function(){_taps=0;},3000);
-  if(_taps>=7){_taps=0;okiToggle(null,'/api/toggle-psychedelic');}
+  if(_taps>=7){_taps=0;okiToggle(null,'/api/toggle-wicked');}
 }
+
+// ── EASTER EGG 2: 15s hold → PSYCHEDELIC MODE ────────────────────────────────
+var _holdTimer=null,_holdInterval=null,_holdStart=null;
+var HOLD_DURATION=15000; // 15 seconds to activate
+var EXIT_DURATION=5000;  // 5 seconds to exit
+
+function logoPress(e){
+  e.preventDefault();
+  _taps=0; clearTimeout(_tapTimer); // reset tap counter — hold is a different gesture
+  _holdStart=Date.now();
+  var ring=document.getElementById('ring-arc');
+  var ringEl=document.getElementById('logo-ring');
+  var img=document.getElementById('oki-logo-img');
+  var circumference=238.8;
+  if(ringEl) ringEl.style.opacity='1';
+  if(img){img.style.filter='drop-shadow(0 0 8px #ff00ff) drop-shadow(0 0 4px #00d4ff)';img.style.opacity='1';}
+  _holdInterval=setInterval(function(){
+    var elapsed=Date.now()-_holdStart;
+    var progress=Math.min(elapsed/HOLD_DURATION,1);
+    if(ring) ring.style.strokeDashoffset=circumference*(1-progress);
+    var glow=Math.round(progress*20);
+    if(img) img.style.filter='drop-shadow(0 0 '+glow+'px #ff00ff) drop-shadow(0 0 '+Math.round(glow/2)+'px #00d4ff)';
+  },50);
+  _holdTimer=setTimeout(function(){
+    clearInterval(_holdInterval);
+    _holdInterval=null;
+    cinematicActivate();
+  },HOLD_DURATION);
+}
+
+function logoRelease(){
+  if(!_holdTimer) return;
+  clearTimeout(_holdTimer);
+  clearInterval(_holdInterval);
+  _holdTimer=null;_holdInterval=null;_holdStart=null;
+  var ring=document.getElementById('ring-arc');
+  var ringEl=document.getElementById('logo-ring');
+  var img=document.getElementById('oki-logo-img');
+  if(ring) ring.style.strokeDashoffset='238.8';
+  if(ringEl) setTimeout(function(){ringEl.style.opacity='0';},300);
+  if(img){img.style.filter='drop-shadow(0 0 4px rgba(31,111,181,0.5))';img.style.opacity='0.75';}
+}
+
+function cinematicActivate(){
+  // Flash overlay then toggle
+  var overlay=document.getElementById('psych-overlay');
+  if(overlay){
+    overlay.classList.add('flash');
+    setTimeout(function(){overlay.classList.remove('flash');},900);
+  }
+  setTimeout(function(){
+    okiToggle(null,'/api/toggle-psychedelic');
+  },400);
+}
+
+// ── Toggle helper ─────────────────────────────────────────────────────────────
 function okiToggle(input, overrideRoute){
   var route = overrideRoute || (input && input.getAttribute('data-toggle-route'));
   if(!route) return;
   fetch(route).then(function(r){return r.json();}).then(function(d){
-    // Swap content div
     return fetch('/api/content').then(function(r){return r.text();}).then(function(html){
       var c=document.querySelector('.content');
       if(c) c.innerHTML=html;
-      // Update header LEDs and toggles
       return fetch('/api/header').then(function(r){return r.text();}).then(function(hhtml){
         var hdr=document.querySelector('.header');
         if(hdr) hdr.outerHTML=hhtml;
       });
     });
   }).catch(function(e){
-    // Fallback to full navigation if fetch fails
     if(input) window.location.href=route.replace('/api/','/')+'-legacy';
   });
 }
@@ -506,12 +697,31 @@ def render_footer():
               f'data-toggle-route="/api/toggle-demo" onchange="okiToggle(this)">'
               f'<span class="slider"></span></label>')
     return (
+        '<div id="psych-overlay"></div>'
         '<div class="footer">'
         '<div class="footer-demo">'
         '<div class="footer-demo-label">DEMO</div>'
         + toggle +
         '</div>'
-        '<a href="/" onclick="logoTap(); return false;"><img src="/static/oki_logo.png" alt="OKi"></a>'
+        # Logo — 7 taps = wicked (onclick), 15s hold = psychedelic (onmousedown/touch)
+        '<div id="logo-wrap" style="position:relative;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;"'
+        ' onclick="logoTap()"'
+        ' onmousedown="logoPress(event)" onmouseup="logoRelease()" onmouseleave="logoRelease()"'
+        ' ontouchstart="logoPress(event)" ontouchend="logoRelease(event)" ontouchcancel="logoRelease()">'
+        # Progress ring SVG
+        '<svg id="logo-ring" width="90" height="90" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;opacity:0;transition:opacity 0.3s;">'
+        '<circle cx="45" cy="45" r="38" fill="none" stroke-width="3" stroke="url(#ringGrad)" stroke-linecap="round"'
+        ' stroke-dasharray="238.8" stroke-dashoffset="238.8" id="ring-arc"'
+        ' style="transform:rotate(-90deg);transform-origin:45px 45px;transition:stroke-dashoffset 0.05s linear"/>'
+        '<defs><linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">'
+        '<stop offset="0%" stop-color="#ff00ff"/>'
+        '<stop offset="50%" stop-color="#00d4ff"/>'
+        '<stop offset="100%" stop-color="#00ff88"/>'
+        '</linearGradient></defs>'
+        '</svg>'
+        '<img id="oki-logo-img" src="/static/oki_logo.png" alt="OKi"'
+        ' style="width:clamp(60px,12vw,80px);opacity:0.75;display:block;transition:filter 0.3s,opacity 0.3s;filter:drop-shadow(0 0 4px rgba(31,111,181,0.5));">'
+        '</div>'
         '</div>'
     )
 
@@ -1085,7 +1295,7 @@ def render_layout(content, auto_refresh=True):
   setInterval(poll,3000);
 })();
 </script>""" if auto_refresh else ""
-    style   = PSYCH_STYLE if PSYCHEDELIC_MODE else PROF_STYLE
+    style   = PSYCHEDELIC_STYLE if PSYCHEDELIC_MODE else (PSYCH_STYLE if WICKED_MODE else PROF_STYLE)
     return HTMLResponse(
         "<html><head><title>OKi – Casa Azul</title>"
         "<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5'>"
@@ -1130,6 +1340,12 @@ def toggle_demo():
 def toggle_psychedelic():
     global PSYCHEDELIC_MODE
     PSYCHEDELIC_MODE = not PSYCHEDELIC_MODE
+    return RedirectResponse("/", 302)
+
+@app.get("/toggle-wicked")
+def toggle_wicked():
+    global WICKED_MODE
+    WICKED_MODE = not WICKED_MODE
     return RedirectResponse("/", 302)
 
 @app.get("/scenario/{name}")
@@ -1187,7 +1403,14 @@ def api_toggle_psychedelic():
     from fastapi.responses import JSONResponse
     global PSYCHEDELIC_MODE
     PSYCHEDELIC_MODE = not PSYCHEDELIC_MODE
-    return JSONResponse({"ok": True, "focusMode": FOCUS_MODE, "devMode": False, "demoMode": DEMO_MODE, "psychedelic": PSYCHEDELIC_MODE})
+    return JSONResponse({"ok": True, "focusMode": FOCUS_MODE, "devMode": False, "demoMode": DEMO_MODE, "psychedelic": PSYCHEDELIC_MODE, "wicked": WICKED_MODE})
+
+@app.get("/api/toggle-wicked")
+def api_toggle_wicked():
+    from fastapi.responses import JSONResponse
+    global WICKED_MODE
+    WICKED_MODE = not WICKED_MODE
+    return JSONResponse({"ok": True, "focusMode": FOCUS_MODE, "devMode": False, "demoMode": DEMO_MODE, "psychedelic": PSYCHEDELIC_MODE, "wicked": WICKED_MODE})
 
 @app.get("/api/content")
 def api_content():
