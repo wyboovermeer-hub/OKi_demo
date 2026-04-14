@@ -1,7 +1,17 @@
 # ============================================================
 # OKi – Onboard Knowledge Interface
-# ENTERPRISE WEB LAYER v20.3
+# ENTERPRISE WEB LAYER v20.4
 # ============================================================
+#
+# Changelog v20.4
+# ----------------
+# • SCROLL FIX — replaced location.reload() with fetch-based live update
+#     - New GET /api/state endpoint returns full state as JSON
+#     - JS polls /api/state every 3s and updates DOM in place
+#     - No page reload = no scroll jump, ever
+#     - Header LEDs, SoC, health, recommendation, all panels update live
+#     - Clock continues to update independently (unchanged)
+#     - Toggle/button navigation unchanged (href redirects as before)
 #
 # Changelog v20.3
 # ----------------
@@ -358,7 +368,13 @@ def led_classes_battery(soc):
     elif soc < 50: return ("led led-off", "led led-amber", "led led-off")
     else:          return ("led led-green", "led led-off", "led led-off")
 
-def render_led_strip(g, a, r):
+def render_led_strip(g, a, r, prefix=""):
+    if prefix:
+        return (f'<div class="led-strip">'
+                f'<div id="{prefix}0" class="{g}"></div>'
+                f'<div id="{prefix}1" class="{a}"></div>'
+                f'<div id="{prefix}2" class="{r}"></div>'
+                f'</div>')
     return f'<div class="led-strip"><div class="{g}"></div><div class="{a}"></div><div class="{r}"></div></div>'
 
 def render_toggle(label, checked, route):
@@ -391,13 +407,13 @@ def render_header():
     sg, sa, sr = led_classes_system(health, severity)
     bg, ba, br = led_classes_battery(soc)
     return f"""<div class="header">
-  <div class="header-left">{render_led_strip(sg,sa,sr)}{render_toggle("FOCUS",FOCUS_MODE,"toggle-focus")}</div>
+  <div class="header-left">{render_led_strip(sg,sa,sr,"led-s")}{render_toggle("FOCUS",FOCUS_MODE,"toggle-focus")}</div>
   <div class="title-block">
     <div class="title-oki">OKi</div>
     <div class="title-sub">Onboard Knowledge Interface</div>
     <div class="boat-name-center">&#9875; Casa Azul</div>
   </div>
-  <div class="header-right">{render_led_strip(bg,ba,br)}{render_toggle("DEV",dev_mode,"toggle-dev")}<div class="clock" id="clock">--:--:--</div><div class="clock-date" id="clock-date">--- -- --- ----</div></div>
+  <div class="header-right">{render_led_strip(bg,ba,br,"led-b")}{render_toggle("DEV",dev_mode,"toggle-dev")}<div class="clock" id="clock">--:--:--</div><div class="clock-date" id="clock-date">--- -- --- ----</div></div>
 </div>"""
 
 def render_footer():
@@ -448,31 +464,33 @@ def render_dev_block(state: dict) -> str:
     comm = state.get("Communication", {})
 
     vessel_html = '<div class="dev-grid">'
-    vessel_html += row("BAT SoC",      v(bat.get("SoC"), "%"))
-    vessel_html += row("BAT Voltage",  v(bat.get("Voltage"), " V"))
-    vessel_html += row("BAT Current",  v(bat.get("Current"), " A"))
-    vessel_html += row("BAT Temp",     v(bat.get("Temperature"), " °C"))
-    vessel_html += row("DC Power",     v(der.get("DCPower"), " W"))
-    vessel_html += row("Energy Mode",  der.get("EnergyMode") or "—")
-    vessel_html += row("Solar Power",  v(sol.get("Power"), " W"))
-    vessel_html += row("Solar State",  sol.get("State") or "—")
-    vessel_html += row("Solar V",      v(sol.get("Voltage"), " V"))
-    vessel_html += row("AC Voltage",   v(ac.get("GridVoltage"), " V"))
-    vessel_html += row("AC Power",     v(ac.get("GridPower"), " W"))
-    vessel_html += row("AC State",     ac.get("State") or "—")
-    vessel_html += row("Shore",        str(ac.get("Shore") or "—"))
-    vessel_html += row("Shelly",       ac.get("ShellyStatus") or "—")
-    vessel_html += row("Generator",    "ON" if gen.get("Running") else "OFF")
-    vessel_html += row("Gen Expected", str(gen.get("Expected", "—")))
-    vessel_html += row("Gen Error",    gen.get("ErrorCode") or "none")
-    vessel_html += row("Fuel Level",   v(fuel.get("LevelPercent"), "%"))
-    vessel_html += row("Fuel State",   fuel.get("State") or "—")
-    vessel_html += row("Fuel Sensor",  "OK" if fuel.get("SensorReliable") else "unreliable")
-    vessel_html += row("CAN Healthy",  str(comm.get("CANHealthy") or "—"))
+    vessel_html += row("BAT SoC",      f'<span id="dv-bat-soc">{v(bat.get("SoC"), "%")}</span>')
+    vessel_html += row("BAT Voltage",  f'<span id="dv-bat-v">{v(bat.get("Voltage"), " V")}</span>')
+    vessel_html += row("BAT Current",  f'<span id="dv-bat-a">{v(bat.get("Current"), " A")}</span>')
+    vessel_html += row("BAT Temp",     f'<span id="dv-bat-t">{v(bat.get("Temperature"), " °C")}</span>')
+    vessel_html += row("DC Power",     f'<span id="dv-dc-power">{v(der.get("DCPower"), " W")}</span>')
+    vessel_html += row("Energy Mode",  f'<span id="dv-energy-mode">{der.get("EnergyMode") or "—"}</span>')
+    vessel_html += row("Solar Power",  f'<span id="dv-sol-power">{v(sol.get("Power"), " W")}</span>')
+    vessel_html += row("Solar State",  f'<span id="dv-sol-state">{sol.get("State") or "—"}</span>')
+    vessel_html += row("Solar V",      f'<span id="dv-sol-v">{v(sol.get("Voltage"), " V")}</span>')
+    vessel_html += row("AC Voltage",   f'<span id="dv-ac-v">{v(ac.get("GridVoltage"), " V")}</span>')
+    vessel_html += row("AC Power",     f'<span id="dv-ac-p">{v(ac.get("GridPower"), " W")}</span>')
+    vessel_html += row("AC State",     f'<span id="dv-ac-state">{ac.get("State") or "—"}</span>')
+    vessel_html += row("Shore",        f'<span id="dv-ac-shore">{str(ac.get("Shore") or "—")}</span>')
+    vessel_html += row("Shelly",       f'<span id="dv-ac-shelly">{ac.get("ShellyStatus") or "—"}</span>')
+    vessel_html += row("Generator",    f'<span id="dv-gen-run">{"ON" if gen.get("Running") else "OFF"}</span>')
+    vessel_html += row("Gen Expected", f'<span id="dv-gen-exp">{str(gen.get("Expected", "—"))}</span>')
+    vessel_html += row("Gen Error",    f'<span id="dv-gen-err">{gen.get("ErrorCode") or "none"}</span>')
+    vessel_html += row("Fuel Level",   f'<span id="dv-fuel-lvl">{v(fuel.get("LevelPercent"), "%")}</span>')
+    vessel_html += row("Fuel State",   f'<span id="dv-fuel-state">{fuel.get("State") or "—"}</span>')
+    vessel_html += row("Fuel Sensor",  f'<span id="dv-fuel-sensor">{"OK" if fuel.get("SensorReliable") else "unreliable"}</span>')
+    vessel_html += row("CAN Healthy",  f'<span id="dv-can">{str(comm.get("CANHealthy") or "—")}</span>')
     vessel_html += '</div>'
 
     if fuel.get("Inconsistency"):
-        vessel_html += f'<div class="reason" style="margin-top:6px;">&#9888; {fuel["Inconsistency"]}</div>'
+        vessel_html += f'<div id="dv-fuel-inc" class="reason" style="margin-top:6px;">&#9888; {fuel["Inconsistency"]}</div>'
+    else:
+        vessel_html += '<div id="dv-fuel-inc" class="reason" style="display:none;"></div>'
 
     # ── 2. System Intelligence ────────────────────────────────────────────────
     sys    = state.get("System", {})
@@ -482,40 +500,42 @@ def render_dev_block(state: dict) -> str:
     cats   = sys.get("HealthCategories") or {}
 
     intel_html = '<div class="dev-grid">'
-    intel_html += row("Situation",      sys.get("SituationType") or "—")
-    intel_html += row("Decision Win.",  sys.get("DecisionWindow") or "—")
-    intel_html += row("System Mode",    sys.get("Mode") or "—")
-    intel_html += row("Severity",       sys.get("Severity") or "none")
-    intel_html += row("Health Score",   f'{sys.get("SystemHealth") or "—"}%')
-    intel_html += row("Cat A (Integrity)", f'-{cats.get("A_SystemIntegrity", 0)}pt')
-    intel_html += row("Cat B (Energy)",    f'-{cats.get("B_EnergyBattery", 0)}pt')
-    intel_html += row("Cat C (Stress)",    f'-{cats.get("C_OperationalStress", 0)}pt')
-    intel_html += row("Cat F (Power)",     f'-{cats.get("F_PowerContinuity", 0)}pt')
-    intel_html += row("Time→Critical",  v(energy.get("TimeToCriticalHours"), " h"))
-    intel_html += row("Time→Shutdown",  v(energy.get("TimeToShutdownHours"), " h"))
-    intel_html += row("Discharge Rate", v(energy.get("DischargeRate"), " %/h"))
-    intel_html += row("Vessel Move",    vessel.get("MovementState") or "—")
-    intel_html += row("Location",       vessel.get("LocationContext") or "—")
-    intel_html += row("Survival Mode",  "YES" if vessel.get("SurvivalMode") else "no")
-    intel_html += row("Diag Step",      diag.get("Step") or "—")
-    intel_html += row("Diag State",     diag.get("DiagnosticState") or "—")
-    intel_html += row("Diag Primary",   (diag.get("PrimaryState") or "—")[:30])
-    intel_html += row("Active Q",       "yes" if diag.get("ActiveQuestion") else "none")
+    intel_html += row("Situation",      f'<span id="dv-situation">{sys.get("SituationType") or "—"}</span>')
+    intel_html += row("Decision Win.",  f'<span id="dv-decwin">{sys.get("DecisionWindow") or "—"}</span>')
+    intel_html += row("System Mode",    f'<span id="dv-mode">{sys.get("Mode") or "—"}</span>')
+    intel_html += row("Severity",       f'<span id="dv-sev">{sys.get("Severity") or "none"}</span>')
+    intel_html += row("Health Score",   f'<span id="dv-health">{sys.get("SystemHealth") or "—"}%</span>')
+    intel_html += row("Cat A (Integrity)", f'<span id="dv-catA">-{cats.get("A_SystemIntegrity", 0)}pt</span>')
+    intel_html += row("Cat B (Energy)",    f'<span id="dv-catB">-{cats.get("B_EnergyBattery", 0)}pt</span>')
+    intel_html += row("Cat C (Stress)",    f'<span id="dv-catC">-{cats.get("C_OperationalStress", 0)}pt</span>')
+    intel_html += row("Cat F (Power)",     f'<span id="dv-catF">-{cats.get("F_PowerContinuity", 0)}pt</span>')
+    intel_html += row("Time→Critical",  f'<span id="dv-ttc">{v(energy.get("TimeToCriticalHours"), " h")}</span>')
+    intel_html += row("Time→Shutdown",  f'<span id="dv-tts">{v(energy.get("TimeToShutdownHours"), " h")}</span>')
+    intel_html += row("Discharge Rate", f'<span id="dv-drate">{v(energy.get("DischargeRate"), " %/h")}</span>')
+    intel_html += row("Vessel Move",    f'<span id="dv-vmove">{vessel.get("MovementState") or "—"}</span>')
+    intel_html += row("Location",       f'<span id="dv-loc">{vessel.get("LocationContext") or "—"}</span>')
+    intel_html += row("Survival Mode",  f'<span id="dv-surv">{"YES" if vessel.get("SurvivalMode") else "no"}</span>')
+    intel_html += row("Diag Step",      f'<span id="dv-dstep">{diag.get("Step") or "—"}</span>')
+    intel_html += row("Diag State",     f'<span id="dv-dstate">{diag.get("DiagnosticState") or "—"}</span>')
+    intel_html += row("Diag Primary",   f'<span id="dv-dprim">{(diag.get("PrimaryState") or "—")[:30]}</span>')
+    intel_html += row("Active Q",       f'<span id="dv-dactq">{"yes" if diag.get("ActiveQuestion") else "none"}</span>')
     intel_html += '</div>'
 
     penalties = sys.get("HealthPenalties") or []
     if penalties:
-        intel_html += '<div style="margin-top:6px;">'
+        intel_html += '<div id="dv-penalties" style="margin-top:6px;">'
         for p in penalties[:5]:
             intel_html += f'<div class="reason">&#9888; {p}</div>'
         intel_html += '</div>'
+    else:
+        intel_html += '<div id="dv-penalties"></div>'
 
     # ── 3. Memory — last 10 snapshots ─────────────────────────────────────────
     memory = state.get("Memory", [])
     last10 = memory[-10:] if memory else []
 
     if last10:
-        mem_html = '<div class="dev-memory">'
+        mem_html = '<div class="dev-memory" id="dv-memory-rows">'
         for entry in reversed(last10):
             ts    = str(entry.get("timestamp", ""))[:19].replace("T", " ")
             mode  = entry.get("Mode") or "—"
@@ -524,7 +544,7 @@ def render_dev_block(state: dict) -> str:
             mem_html += f'<div>{ts} &nbsp; <span>{mode}</span> &nbsp; health:<span>{hlth}%</span> &nbsp; <span>{sev}</span></div>'
         mem_html += '</div>'
     else:
-        mem_html = '<div class="dev-memory">No memory snapshots yet.</div>'
+        mem_html = '<div class="dev-memory" id="dv-memory-rows">No memory snapshots yet.</div>'
 
     # ── 4. Scenarios ──────────────────────────────────────────────────────────
     scenarios_html = (
@@ -538,7 +558,7 @@ def render_dev_block(state: dict) -> str:
 
     # ── Assemble ──────────────────────────────────────────────────────────────
     return (
-        '<div class="dev-section">'
+        '<div id="dev-section" class="dev-section">'
         '<div class="dev-label">&#128295; DEV — RAW STATE DATA</div>'
         + dev_panel("&#9889; Vessel Data", vessel_html)
         + dev_panel("&#129302; System Intelligence", intel_html)
@@ -583,11 +603,13 @@ def render_supervisory_view(state):
     has_active_q     = operator.get("InteractionState") == "AwaitingResponse"
 
     if has_active_q and not is_silent:
-        q  = f"<div style='font-size:clamp(12px,2.5vw,14px);margin-bottom:8px;color:#cad8e3;'><b>{operator['ActiveQuestionText']}</b></div>"
-        q += render_op_button(operator["OptionA"], "/answer/A")
-        q += render_op_button(operator["OptionB"], "/answer/B")
-        q += render_op_button(operator["OptionC"], "/answer/C")
-        content += render_panel("Operator Confirmation Required", q)
+        q  = f"<div id='question-text' style='font-size:clamp(12px,2.5vw,14px);margin-bottom:8px;color:#cad8e3;'><b>{operator['ActiveQuestionText']}</b></div>"
+        q += f'<a id="q-opt-a" class="op-button" href="/answer/A">{operator["OptionA"]}</a>'
+        q += f'<a id="q-opt-b" class="op-button" href="/answer/B">{operator["OptionB"]}</a>'
+        q += f'<a id="q-opt-c" class="op-button" href="/answer/C">{operator["OptionC"]}</a>'
+        content += f'<div id="question-panel"><div class="panel"><div class="panel-title">Operator Confirmation Required</div>{q}</div></div>'
+    else:
+        content += '<div id="question-panel" style="display:none;"><div class="panel"><div class="panel-title">Operator Confirmation Required</div><div id="question-text"></div><a id="q-opt-a" class="op-button" href="/answer/A"></a><a id="q-opt-b" class="op-button" href="/answer/B"></a><a id="q-opt-c" class="op-button" href="/answer/C"></a></div></div>'
 
     battery = state.get("Battery", {})
     derived = state.get("Derived", {})
@@ -597,13 +619,13 @@ def render_supervisory_view(state):
     power   = safe_float(derived.get("DCPower"))
     mode    = derived.get("EnergyMode") or "—"
 
-    battery_html = f"""<div class="soc-display"><div class="{soc_css_class(soc)}">{soc}%</div><div class="soc-label">State of Charge</div></div>
-{soc_bar_html(soc, mode)}
+    battery_html = f"""<div class="soc-display"><div id="soc-number" class="{soc_css_class(soc)}">{soc}%</div><div class="soc-label">State of Charge</div></div>
+<div class="soc-bar-outer"><div id="soc-bar-fill" class="soc-bar-fill {('soc-bar-discharging' if 'DISCHARG' in (mode or '').upper() else 'soc-bar-charging' if 'CHARG' in (mode or '').upper() else '')}" style="width:{soc}%; background:{('#ff5252' if soc < 15 else '#ffb300' if soc < 30 else '#4caf50')};"></div></div>
 <div class="grid2" style="margin-top:10px;">
-  <div class="label">Voltage</div><div class="value">{voltage} V</div>
-  <div class="label">Current</div><div class="value">{current} A</div>
-  <div class="label">Power</div><div class="value">{power} W</div>
-  <div class="label">Mode</div><div class="value">{mode}</div>
+  <div class="label">Voltage</div><div id="bat-voltage" class="value">{voltage} V</div>
+  <div class="label">Current</div><div id="bat-current" class="value">{current} A</div>
+  <div class="label">Power</div><div id="bat-power" class="value">{power} W</div>
+  <div class="label">Mode</div><div id="bat-mode" class="value">{mode}</div>
 </div>"""
     content += render_panel("Battery", battery_html)
 
@@ -614,22 +636,34 @@ def render_supervisory_view(state):
         r = f"<div style='font-size:clamp(12px,2vw,13px);'>{rec}</div>"
         if reason:   r += f'<div class="reason">Reason: {reason}</div>'
         if advisory: r += f'<div class="advisory">&#128203; {advisory}</div>'
-        content += render_panel("Recommendation", r)
+        content += f'<div id="rec-panel"><div class="panel"><div class="panel-title">Recommendation</div><div id="rec-inner">{r}</div></div></div>'
+    else:
+        content += '<div id="rec-panel" style="display:none;"><div class="panel"><div class="panel-title">Recommendation</div><div id="rec-inner"></div></div></div>'
 
     health   = safe_int(state["System"].get("SystemHealth"), 0)
     severity = state["System"].get("Severity")
-    h = f'<div style="font-size:clamp(20px,4vw,28px);font-weight:bold;color:#cad8e3;">{health}%</div>{render_bar(health, bar_color_for_health(health))}'
+    badge_html = ""
+    if severity:
+        css = "badge-warning" if severity == "WARNING" else "badge-critical" if severity == "CRITICAL" else "badge-ok"
+        badge_html = f'<span id="health-badge" class="badge {css}">{severity}</span>'
+    else:
+        badge_html = '<span id="health-badge" class="badge badge-ok" style="display:none;"></span>'
+    h = (f'<div id="health-number" style="font-size:clamp(20px,4vw,28px);font-weight:bold;color:#cad8e3;">{health}%</div>'
+         f'<div class="bar-container"><div id="health-bar-fill" class="bar-fill bar-{bar_color_for_health(health)}" style="width:{health}%"></div></div>')
     issues = state["System"].get("Inconsistency")
-    if issues: h += f'<div class="reason" style="margin-top:5px;">&#9888; {" | ".join(issues)}</div>'
-    content += render_panel("System Health", h, badge=severity)
+    if issues:
+        h += f'<div id="health-issues" class="reason" style="margin-top:5px;">&#9888; {" | ".join(issues)}</div>'
+    else:
+        h += '<div id="health-issues" style="display:none;"></div>'
+    content += f'<div class="panel"><div class="panel-title">System Health{badge_html}</div>{h}</div>'
 
     care       = state["Care"]
     care_index = safe_int(care.get("CareIndex"), 0)
     c = f"""<div class="grid2">
-  <div class="label">System Care</div><div class="value">{safe_int(care.get('SystemCareScore'))}%</div>
-  <div class="label">Operator Care</div><div class="value">{safe_int(care.get('OperatorCareScore'))}%</div>
-  <div class="label">Care Index</div><div class="value"><b>{care_index}%</b></div>
-</div>{render_bar(care_index, "blue")}"""
+  <div class="label">System Care</div><div id="care-system" class="value">{safe_int(care.get('SystemCareScore'))}%</div>
+  <div class="label">Operator Care</div><div id="care-operator" class="value">{safe_int(care.get('OperatorCareScore'))}%</div>
+  <div class="label">Care Index</div><div id="care-index" class="value"><b>{care_index}%</b></div>
+</div><div class="bar-container"><div id="care-bar-fill" class="bar-fill bar-blue" style="width:{care_index}%"></div></div>"""
     content += render_panel("OKi Care", c)
     content += render_button("CARE", "/care")
     content += render_button("KNOWLEDGE", "/knowledge")
@@ -718,25 +752,123 @@ def render_knowledge_page():
     return panel
 
 def render_layout(content, auto_refresh=True):
-    # JS refresh preserves scroll position — no more jumping to top
     refresh_js = """<script>
 (function(){
-  var k='oki_scroll';
-  // Restore scroll after content renders — slight delay ensures DOM is ready
-  setTimeout(function(){
-    var c=document.querySelector('.content');
-    if(c){
-      var saved=sessionStorage.getItem(k);
-      if(saved) c.scrollTop=parseInt(saved,10);
-      c.addEventListener('scroll',function(){sessionStorage.setItem(k,c.scrollTop);});
+  function el(id){return document.getElementById(id);}
+  function setClass(id,cls){var e=el(id);if(e)e.className=cls;}
+  function setHTML(id,h){var e=el(id);if(e)e.innerHTML=h;}
+  function setText(id,t){var e=el(id);if(e)e.textContent=t;}
+  function show(id,vis){var e=el(id);if(e)e.style.display=vis?'':'none';}
+
+  function applyState(d){
+    // LEDs
+    var sl=d.leds.sys, bl=d.leds.bat;
+    setClass('led-s0',sl[0]); setClass('led-s1',sl[1]); setClass('led-s2',sl[2]);
+    setClass('led-b0',bl[0]); setClass('led-b1',bl[1]); setClass('led-b2',bl[2]);
+
+    // SoC number + label
+    var socEl=el('soc-number');
+    if(socEl){socEl.textContent=d.soc+'%'; socEl.className='soc-number '+d.socCss;}
+
+    // SoC bar
+    var fill=el('soc-bar-fill');
+    if(fill){
+      fill.style.width=d.soc+'%';
+      fill.style.background=d.barColor;
+      fill.className='soc-bar-fill'+(d.barAnim?' '+d.barAnim:'');
     }
-  },50);
-  // Save scroll and reload every 3 seconds
-  setTimeout(function(){
-    var c=document.querySelector('.content');
-    if(c) sessionStorage.setItem(k,c.scrollTop);
-    location.reload();
-  },3000);
+
+    // Battery grid
+    setText('bat-voltage', d.voltage+' V');
+    setText('bat-current', d.current+' A');
+    setText('bat-power',   d.power+' W');
+    setText('bat-mode',    d.mode);
+
+    // Recommendation panel
+    var recPanel=el('rec-panel');
+    if(recPanel){
+      if(d.rec){
+        var rh='<div style="font-size:clamp(12px,2vw,13px);">'+d.rec+'</div>';
+        if(d.recReason) rh+='<div class="reason">Reason: '+d.recReason+'</div>';
+        if(d.advisory)  rh+='<div class="advisory">&#128203; '+d.advisory+'</div>';
+        setHTML('rec-inner',rh);
+        recPanel.style.display='';
+      } else {
+        recPanel.style.display='none';
+      }
+    }
+
+    // System health
+    var hEl=el('health-number');
+    if(hEl) hEl.textContent=d.health+'%';
+    var hBar=el('health-bar-fill');
+    if(hBar){hBar.style.width=d.health+'%'; hBar.className='bar-fill bar-'+d.healthColor;}
+    var hBadge=el('health-badge');
+    if(hBadge){
+      if(d.severity){
+        var css=d.severity==='WARNING'?'badge badge-warning':d.severity==='CRITICAL'?'badge badge-critical':'badge badge-ok';
+        hBadge.className=css; hBadge.textContent=d.severity; hBadge.style.display='';
+      } else { hBadge.style.display='none'; }
+    }
+    var issEl=el('health-issues');
+    if(issEl){
+      if(d.issues&&d.issues.length){
+        issEl.innerHTML='<div class="reason" style="margin-top:5px;">&#9888; '+d.issues.join(' | ')+'</div>';
+        issEl.style.display='';
+      } else { issEl.style.display='none'; }
+    }
+
+    // Care
+    setText('care-index',    d.careIndex+'%');
+    setText('care-system',   d.systemCareScore+'%');
+    setText('care-operator', d.operatorCareScore+'%');
+    var cBar=el('care-bar-fill');
+    if(cBar) cBar.style.width=d.careIndex+'%';
+
+    // Operator question
+    var qPanel=el('question-panel');
+    if(qPanel){
+      if(d.showQuestion){
+        setHTML('question-text','<b>'+d.questionText+'</b>');
+        var qa=el('q-opt-a'), qb=el('q-opt-b'), qc=el('q-opt-c');
+        if(qa) qa.textContent=d.optionA;
+        if(qb) qb.textContent=d.optionB;
+        if(qc) qc.textContent=d.optionC;
+        qPanel.style.display='';
+      } else { qPanel.style.display='none'; }
+    }
+
+    // DEV block (only update if panel present)
+    var devSec=el('dev-section');
+    if(devSec&&d.devMode){
+      devSec.style.display='';
+      var dv=d.dev,bat=dv.bat,der=dv.derived,sol=dv.solar,ac=dv.ac,gn=dv.generator,fu=dv.fuel,sys=dv.system;
+      setText('dv-bat-soc',bat.soc); setText('dv-bat-v',bat.voltage); setText('dv-bat-a',bat.current); setText('dv-bat-t',bat.temp);
+      setText('dv-dc-power',der.dcPower); setText('dv-energy-mode',der.energyMode);
+      setText('dv-sol-power',sol.power); setText('dv-sol-state',sol.state); setText('dv-sol-v',sol.voltage);
+      setText('dv-ac-v',ac.gridVoltage); setText('dv-ac-p',ac.gridPower); setText('dv-ac-state',ac.state); setText('dv-ac-shore',ac.shore); setText('dv-ac-shelly',ac.shelly);
+      setText('dv-gen-run',gn.running); setText('dv-gen-exp',gn.expected); setText('dv-gen-err',gn.errorCode);
+      setText('dv-fuel-lvl',fu.level); setText('dv-fuel-state',fu.state); setText('dv-fuel-sensor',fu.sensor);
+      var fuInc=el('dv-fuel-inc'); if(fuInc){fuInc.textContent=fu.inconsistency||''; fuInc.style.display=fu.inconsistency?'':'none';}
+      setText('dv-can',dv.comm.canHealthy);
+      setText('dv-situation',sys.situation); setText('dv-decwin',sys.decisionWindow); setText('dv-mode',sys.systemMode); setText('dv-sev',sys.severity);
+      setText('dv-health',sys.health); setText('dv-catA',sys.catA); setText('dv-catB',sys.catB); setText('dv-catC',sys.catC); setText('dv-catF',sys.catF);
+      setText('dv-ttc',sys.timeToCritical); setText('dv-tts',sys.timeToShutdown); setText('dv-drate',sys.dischargeRate);
+      setText('dv-vmove',sys.vesselMove); setText('dv-loc',sys.location); setText('dv-surv',sys.survivalMode);
+      setText('dv-dstep',sys.diagStep); setText('dv-dstate',sys.diagState); setText('dv-dprim',sys.diagPrimary); setText('dv-dactq',sys.activeQ);
+      var penEl=el('dv-penalties');
+      if(penEl){var ph='';(sys.penalties||[]).forEach(function(p){ph+='<div class="reason">&#9888; '+p+'</div>';});penEl.innerHTML=ph;}
+      var memEl=el('dv-memory-rows');
+      if(memEl){var mh='';(dv.memory||[]).forEach(function(r){mh+='<div>'+r.ts+' &nbsp; <span>'+r.mode+'</span> &nbsp; health:<span>'+r.health+'%</span> &nbsp; <span>'+r.severity+'</span></div>';});memEl.innerHTML=mh||'No memory snapshots yet.';}
+    } else if(devSec){ devSec.style.display='none'; }
+  }
+
+  function poll(){
+    fetch('/api/state').then(function(r){return r.json();}).then(function(d){
+      applyState(d);
+    }).catch(function(){/* silent — keep polling */});
+  }
+  setInterval(poll,3000);
 })();
 </script>""" if auto_refresh else ""
     style   = PSYCH_STYLE if PSYCHEDELIC_MODE else PROF_STYLE
@@ -808,6 +940,185 @@ def care_task():
 @app.get("/knowledge")
 def knowledge_page():
     return render_layout(render_knowledge_page(), auto_refresh=False)
+
+# ── Live state API — used by fetch-based refresh (no page reload) ──────────────
+@app.get("/api/state")
+def api_state():
+    from fastapi.responses import JSONResponse
+    state    = get_state()
+    battery  = state.get("Battery", {})
+    derived  = state.get("Derived", {})
+    system   = state.get("System", {})
+    care     = state.get("Care", {})
+    operator = state.get("Operator", {})
+    attention = state.get("Attention", {})
+    energy   = state.get("Energy", {})
+    diag     = state.get("Diagnostic", {})
+    vessel   = state.get("VesselState", {})
+    sol      = state.get("Solar", {})
+    ac       = state.get("AC", {})
+    gen      = state.get("Generator", {})
+    fuel     = state.get("Fuel", {})
+    comm     = state.get("Communication", {})
+    memory   = state.get("Memory", [])
+
+    soc      = safe_int(battery.get("SoC"), 0)
+    health   = safe_int(system.get("SystemHealth"), 0)
+    severity = system.get("Severity")
+    mode     = derived.get("EnergyMode") or "—"
+
+    # LED classes
+    sg, sa, sr = led_classes_system(health, severity)
+    bg, ba, br = led_classes_battery(soc)
+
+    # SoC bar
+    mode_upper     = mode.upper()
+    is_charging    = "CHARG" in mode_upper
+    is_discharging = "DISCHARG" in mode_upper
+    if is_discharging:
+        bar_color   = "#ff5252" if soc < 15 else "#ffb300" if soc < 30 else "#4caf50"
+        bar_anim    = "soc-bar-discharging"
+    elif is_charging:
+        bar_color   = "#4caf50"
+        bar_anim    = "soc-bar-charging"
+    else:
+        bar_color   = "#ff5252" if soc < 15 else "#ffb300" if soc < 30 else "#4caf50"
+        bar_anim    = ""
+
+    soc_css = "soc-red" if soc < 15 else "soc-amber" if soc < 30 else "soc-green"
+
+    # Health bar
+    health_color = bar_color_for_health(health)
+
+    # Operator question
+    is_silent   = attention.get("Silence", False)
+    has_q       = operator.get("InteractionState") == "AwaitingResponse"
+    show_q      = has_q and not is_silent
+
+    # Care
+    care_index  = safe_int(care.get("CareIndex"), 0)
+
+    # Memory (last 10)
+    last10 = memory[-10:] if memory else []
+    mem_rows = []
+    for entry in reversed(last10):
+        ts   = str(entry.get("timestamp", ""))[:19].replace("T", " ")
+        m    = entry.get("Mode") or "—"
+        hlth = entry.get("Health") or "—"
+        sev  = entry.get("Severity") or "ok"
+        mem_rows.append({"ts": ts, "mode": m, "health": hlth, "severity": sev})
+
+    # Health categories
+    cats = system.get("HealthCategories") or {}
+
+    return JSONResponse({
+        "focusMode":  FOCUS_MODE,
+        "demoMode":   DEMO_MODE,
+        "psychedelic": PSYCHEDELIC_MODE,
+
+        # LEDs
+        "leds": {
+            "sys": [sg, sa, sr],
+            "bat": [bg, ba, br],
+        },
+        "devMode": system.get("DevMode", False),
+
+        # Battery / SoC
+        "soc":        soc,
+        "socCss":     soc_css,
+        "barColor":   bar_color,
+        "barAnim":    bar_anim,
+        "voltage":    safe_float(battery.get("Voltage")),
+        "current":    safe_float(battery.get("Current")),
+        "power":      safe_float(derived.get("DCPower")),
+        "mode":       mode,
+
+        # System health
+        "health":      health,
+        "healthColor": health_color,
+        "severity":    severity or "",
+        "issues":      system.get("Inconsistency") or [],
+
+        # Recommendation
+        "rec":      system.get("Recommendation") or "",
+        "recReason": system.get("RecommendationReason") or "",
+        "advisory":  system.get("Advisory") or "",
+
+        # Care
+        "careIndex":       care_index,
+        "systemCareScore": safe_int(care.get("SystemCareScore")),
+        "operatorCareScore": safe_int(care.get("OperatorCareScore")),
+
+        # Operator question
+        "showQuestion":   show_q,
+        "questionText":   operator.get("ActiveQuestionText") or "",
+        "optionA":        operator.get("OptionA") or "",
+        "optionB":        operator.get("OptionB") or "",
+        "optionC":        operator.get("OptionC") or "",
+
+        # DEV — vessel data
+        "dev": {
+            "bat": {
+                "soc": v(battery.get("SoC"), "%"),
+                "voltage": v(battery.get("Voltage"), " V"),
+                "current": v(battery.get("Current"), " A"),
+                "temp": v(battery.get("Temperature"), " °C"),
+            },
+            "derived": {
+                "dcPower": v(derived.get("DCPower"), " W"),
+                "energyMode": derived.get("EnergyMode") or "—",
+            },
+            "solar": {
+                "power": v(sol.get("Power"), " W"),
+                "state": sol.get("State") or "—",
+                "voltage": v(sol.get("Voltage"), " V"),
+            },
+            "ac": {
+                "gridVoltage": v(ac.get("GridVoltage"), " V"),
+                "gridPower": v(ac.get("GridPower"), " W"),
+                "state": ac.get("State") or "—",
+                "shore": str(ac.get("Shore") or "—"),
+                "shelly": ac.get("ShellyStatus") or "—",
+            },
+            "generator": {
+                "running": "ON" if gen.get("Running") else "OFF",
+                "expected": str(gen.get("Expected", "—")),
+                "errorCode": gen.get("ErrorCode") or "none",
+            },
+            "fuel": {
+                "level": v(fuel.get("LevelPercent"), "%"),
+                "state": fuel.get("State") or "—",
+                "sensor": "OK" if fuel.get("SensorReliable") else "unreliable",
+                "inconsistency": fuel.get("Inconsistency") or "",
+            },
+            "comm": {
+                "canHealthy": str(comm.get("CANHealthy") or "—"),
+            },
+            "system": {
+                "situation": system.get("SituationType") or "—",
+                "decisionWindow": system.get("DecisionWindow") or "—",
+                "systemMode": system.get("Mode") or "—",
+                "severity": system.get("Severity") or "none",
+                "health": f'{system.get("SystemHealth") or "—"}%',
+                "catA": f'-{cats.get("A_SystemIntegrity", 0)}pt',
+                "catB": f'-{cats.get("B_EnergyBattery", 0)}pt',
+                "catC": f'-{cats.get("C_OperationalStress", 0)}pt',
+                "catF": f'-{cats.get("F_PowerContinuity", 0)}pt',
+                "timeToCritical": v(energy.get("TimeToCriticalHours"), " h"),
+                "timeToShutdown": v(energy.get("TimeToShutdownHours"), " h"),
+                "dischargeRate": v(energy.get("DischargeRate"), " %/h"),
+                "vesselMove": vessel.get("MovementState") or "—",
+                "location": vessel.get("LocationContext") or "—",
+                "survivalMode": "YES" if vessel.get("SurvivalMode") else "no",
+                "diagStep": diag.get("Step") or "—",
+                "diagState": diag.get("DiagnosticState") or "—",
+                "diagPrimary": (diag.get("PrimaryState") or "—")[:30],
+                "activeQ": "yes" if diag.get("ActiveQuestion") else "none",
+                "penalties": (system.get("HealthPenalties") or [])[:5],
+            },
+            "memory": mem_rows,
+        },
+    })
 
 # ── Entrypoint ────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
