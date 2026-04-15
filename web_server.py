@@ -1161,8 +1161,6 @@ def render_focus_view(state):
         content += f'<div id="rec-panel"><div class="panel"><div class="panel-title">Status</div><div id="rec-inner"><div style="font-size:clamp(12px,2vw,13px);">{rec}</div></div></div></div>'
     else:
         content += '<div id="rec-panel" style="display:none;"><div class="panel"><div class="panel-title">Status</div><div id="rec-inner"></div></div></div>'
-    content += render_button("CARE", "/care")
-
     # DEMO block
     if DEMO_MODE:
         content += render_demo_block()
