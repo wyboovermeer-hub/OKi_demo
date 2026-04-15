@@ -1,0 +1,29 @@
+[
+  {
+    "case_id": "EVO-001",
+    "title": "Torqeedo Motor Dead — Victron Screen Drops When Key Turned",
+    "root_cause": "The 12V ignition key circuit was pulling down the Victron display power when activated, indicating a wiring conflict or short on the 12V control line. After a full system reset (all switches off, wait 1 minute, restore power), the Victron came back online but the Torqeedo motor controller still showed no power. Root cause traced to insufficient 12V supply reaching the Torqeedo controller — requiring multimeter verification at the controller input terminals.",
+    "solution": "1. Turn off all energy switches (red rotary switches). Verify 12V is fully disconnected. Wait 1 full minute. 2. Restore power: turn switches back on in order. Verify Victron display comes back online before touching the key. 3. Pull the Torqeedo start button outward (down position) before attempting to power on. 4. If Torqeedo display still does not light: measure 12V at the Torqeedo controller input with a multimeter. Voltage must be present for the controller to boot. 5. If no voltage at controller: fault is in the wiring between the 12V distribution and the Torqeedo controller — check fuses and connections on that circuit.",
+    "symptoms": [
+      "Torqeedo display does not light up",
+      "Victron MPPT or GX display goes dark when ignition key is turned",
+      "Motor will not respond",
+      "Battery has sufficient charge and solar is functioning normally",
+      "Emergency stop button is in the up (armed) position"
+    ],
+    "conditions": [
+      "Vessel: EVO electric passenger boat",
+      "Propulsion: Torqeedo electric outboard",
+      "Energy monitoring: Victron system",
+      "Problem appeared suddenly after normal prior operation"
+    ],
+    "actions": [
+      "Turn off all red rotary energy switches",
+      "Wait 1 full minute with no power on the vessel",
+      "Restore switches — verify Victron display returns",
+      "Pull Torqeedo start button to 'out / down' position",
+      "If still no power: locate multimeter and measure 12V at Torqeedo controller terminals",
+      "If no voltage present at controller: inspect fuses and cable connections between 12V distribution and Torqeedo controller"
+    ]
+  }
+]

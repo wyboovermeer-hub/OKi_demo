@@ -1,0 +1,31 @@
+[
+  {
+    "case_id": "SOL-001",
+    "title": "Solar Showing 0W — MPPT Relay Open, MC4 Connectors Unplugged",
+    "root_cause": "Solar panels had been replaced after the originals were damaged. During reinstallation the MC4 connectors between the solar panels and the Victron MPPT were left disconnected — no power was reaching the MPPT input. The Victron Cerbo GX showed the MPPT relay in the open state. Additionally, a blown or degraded fuse in the solar cable circuit was later confirmed as a contributing factor. Remote diagnosis was achieved via VRM after enabling Remote Console on the Cerbo and connecting via mobile hotspot.",
+    "solution": "1. Open VictronConnect app and connect to the MPPT. Check Panel Voltage — if 0V, no power is reaching the MPPT from the panels. 2. Physically inspect the MC4 connectors between panels and MPPT. Each panel string has 2 connectors (positive and negative). They must be fully mated — male into female, click audible. 3. On the Cerbo GX, navigate to the MPPT device page and check relay status. If relay shows 'open', the MPPT is not receiving panel voltage. 4. If MC4s appear connected but voltage is still 0: check for a fuse or switch in the solar cable run between panels and MPPT. Inspect fuses for continuity. 5. After connecting MC4s correctly, verify MPPT BULK LED begins flashing and panel voltage appears in VictronConnect. 6. For remote troubleshooting: enable Remote Console on Cerbo (Menu > General > Remote Console), connect Cerbo to internet via mobile hotspot, access via VRM portal.",
+    "symptoms": [
+      "Solar showing 0W in Victron system",
+      "MPPT BULK LED flashing but no charging current",
+      "VictronConnect shows 0V panel voltage",
+      "Cerbo GX MPPT page shows relay open",
+      "Battery SoC dropping or not charging despite sunny conditions"
+    ],
+    "conditions": [
+      "Vessel: EVO Passenger 9.0 electric passenger boat",
+      "Solar panels recently replaced after damage",
+      "Victron MPPT solar charge controller installed",
+      "Victron Cerbo GX system monitor present"
+    ],
+    "actions": [
+      "Open VictronConnect, connect to MPPT, check Panel Voltage reading",
+      "Physically inspect all MC4 connectors — ensure each is fully clicked into its mate",
+      "Count connectors: each panel string has 4 MC4 connectors total (2 per polarity)",
+      "Check for any inline fuse or switch in the solar cable run",
+      "Inspect fuses for signs of failure — replace if blown",
+      "After reconnecting, confirm MPPT BULK LED flashing and panel voltage present",
+      "Access Cerbo remotely: enable Remote Console, connect to mobile hotspot, use VRM portal",
+      "To change Cerbo access level: Menu > General > Access Level > Admin"
+    ]
+  }
+]

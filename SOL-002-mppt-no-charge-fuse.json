@@ -1,0 +1,29 @@
+[
+  {
+    "case_id": "SOL-002",
+    "title": "Solar MPPT No Charge — Panel Voltage Present, Zero Output",
+    "root_cause": "MPPT controller was receiving panel voltage at its input but producing zero charge current. Root cause was an open circuit between the solar panels and the MPPT controller — either a blown fuse, a tripped breaker, or a failed disconnect switch on the solar input side. The MPPT was powered and visible on the Victron network but reporting 0W with panels in full sun.",
+    "solution": "1. Verify panel voltage is present at the MPPT input terminals using a multimeter. If voltage is present at panels but not at MPPT input, the fault is in the cable between panels and controller. 2. Locate the fuse or breaker on the solar input circuit — typically a blade fuse or MCB mounted near the MPPT. Inspect and replace if blown. 3. If a disconnect switch is installed between panels and MPPT, verify it is in the ON position. 4. Check MC4 connectors on the panel cables — ensure they are fully clicked and locked. A partially seated MC4 will show voltage but carry no current under load. 5. If fuse and connectors are good, check MPPT settings in VictronConnect — verify the charger is not disabled and the absorption/float voltages are correctly set for the battery bank. 6. Reset the MPPT by disconnecting battery and panel inputs for 30 seconds, then reconnect.",
+    "symptoms": [
+      "Solar power showing 0W in Victron system",
+      "MPPT is online and visible on Cerbo GX",
+      "Panel voltage present when measured directly at panels",
+      "Battery not charging from solar despite adequate sunlight",
+      "VictronConnect shows MPPT in OFF or fault state"
+    ],
+    "conditions": [
+      "Victron MPPT solar charge controller installed",
+      "Panels previously functioning normally",
+      "Problem appeared after maintenance, panel replacement, or seasonal recommission",
+      "Battery bank otherwise healthy"
+    ],
+    "actions": [
+      "Measure voltage at MPPT input terminals with multimeter",
+      "Locate and inspect solar input fuse or MCB — replace if blown",
+      "Verify solar disconnect switch is ON",
+      "Check all MC4 connectors — unplug and re-seat firmly until they click",
+      "Open VictronConnect — verify MPPT charger is enabled and voltages are correct",
+      "If no resolution: disconnect panel and battery inputs for 30 seconds to reset MPPT"
+    ]
+  }
+]

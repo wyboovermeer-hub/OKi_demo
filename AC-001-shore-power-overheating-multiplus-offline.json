@@ -1,0 +1,41 @@
+[
+  {
+    "case_id": "AC-001",
+    "title": "Shore Power Charger Failure — Overheating, Burned Shore Connector, MultiPlus Offline, MG Safety Contactor Open",
+    "root_cause": "A cascade of related faults on a dual-phase Victron MultiPlus + eMotion MG Master hybrid catamaran: (1) The shore power connector (CEE 'pimenteiro') was undersized or degraded, causing repeated overheating and eventually burning out — destroying two connectors over the season. (2) One phase (L2) was consistently drawing 32–33A while the limit was set to 24A in the Victron, suggesting a Victron MultiPlus firmware or configuration issue where the charge current limit was not being respected on one phase. (3) The resulting thermal trips on the marina circuit breakers interrupted charging cycles repeatedly. (4) After an extended period without shore power during winter, the MG Master LV battery modules entered deep discharge and the safety contactor opened — disconnecting the traction batteries entirely. (5) A loose or misaligned mechanical button on the MultiPlus panel prevented the unit from turning on. Root recovery required: replacing the shore connector, resetting the MG SmartLink to re-engage the safety contactor, and physically securing the MultiPlus panel button.",
+    "solution": "PHASE 1 — Shore power and charging: 1. Inspect the CEE shore connector for burn marks, melted contacts, or discolouration. Replace if damaged — do not attempt to charge through a burned connector. 2. Set Victron MultiPlus input current limit to a value the marina connection can safely sustain — start at 16A per phase and increase only after confirming temperatures. 3. Monitor shore cable and connector temperature during charging. If circuit breaker trips within 1–2 hours, reduce current limit further. 4. If marina breaker is consistently tripping: request marina to check their breaker rating and cable condition. Do not assume the fault is on the vessel side only.\n\nPHASE 2 — MultiPlus not responding: 5. Check the physical panel button on each MultiPlus. The button must click positively into the 'on' position — a worn or misaligned button will appear to engage but does not make contact internally. Verify by gentle pressure and listening for click. 6. Use the rotary switch on each MultiPlus to cycle: OFF > Charger Only. This forces the unit into charge mode regardless of inverter state. 7. If MultiPlus shows 'Low Battery' warning: do not attempt to run the inverter — go directly to Charger Only mode.\n\nPHASE 3 — MG Master safety contactor open (batteries disconnected): 8. Look for flashing LEDs on the MG Master LV modules — slow flash indicates safety contactor is open (CLACK sound will occur when it closes). 9. Use the MG SmartLink green button: press and hold for 3 seconds to command contactor close. Listen for the mechanical 'clack' confirming closure. 10. Once contactor closes, allow batteries to charge to minimum 60% SoC before operating the vessel. 11. Note: repeated deep discharge cycles damage LV lithium modules — investigate why charging was interrupted and resolve before next season.\n\nPHASE 4 — VE.Bus communication fault (MultiPlus EB not visible in Cerbo): 12. Check the RJ45 (VE.Bus) cables connecting MultiPlus units to Cerbo GX. Both cables must be fully seated. 13. Verify circuit breaker for the VE.Bus circuit is in the up (on) position. 14. If MultiPlus EB still not visible: check that its physical panel button is properly engaged — a non-clicked button means no VE.Bus communication.",
+    "symptoms": [
+      "Shore connector (CEE pimenteiro) overheating or burned",
+      "Marina circuit breaker tripping within 1–2 hours of charging",
+      "MultiPlus charge current not following Victron limit setting",
+      "One MultiPlus not visible in Cerbo GX device list",
+      "MG Master LV LEDs flashing — safety contactor open",
+      "Batteries at very low SoC after extended period without shore power",
+      "MultiPlus showing 'Low Battery' alarm",
+      "MultiPlus panel button not engaging properly",
+      "Charging only reaching 96% or stopping short of 100%",
+      "L2 phase consistently higher current than L1"
+    ],
+    "conditions": [
+      "Vessel: large hybrid catamaran (SunBoat)",
+      "Propulsion/storage: eMotion MG Master LV lithium battery system",
+      "AC charging: Victron MultiPlus-II dual-phase system (port and starboard)",
+      "System monitor: Victron Cerbo GX with VRM",
+      "Shore connection: single CEE connector feeding both phases",
+      "Extended period without charging during winter layup"
+    ],
+    "actions": [
+      "Inspect CEE shore connector — replace if any burn marks or melted contacts visible",
+      "Set Victron MultiPlus input current limit to 16A per phase as safe starting point",
+      "Monitor shore cable temperature — reduce limit if breaker trips within 2 hours",
+      "Check physical MultiPlus panel button on each unit — confirm positive click engagement",
+      "Set MultiPlus rotary switch to 'Charger Only' mode",
+      "Press MG SmartLink green button for 3 seconds — listen for safety contactor 'clack'",
+      "Verify both RJ45 VE.Bus cables are fully seated on MultiPlus and Cerbo",
+      "Check VE.Bus circuit breaker is in up (on) position",
+      "Allow batteries to reach minimum 60% SoC before operating vessel",
+      "After recovery: investigate and resolve root cause of charging interruption before next layup",
+      "Request Victron support via distributor if current imbalance between phases persists"
+    ]
+  }
+]
