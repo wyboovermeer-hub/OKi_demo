@@ -1,0 +1,30 @@
+[
+  {
+    "case_id": "BAT-001",
+    "title": "Service Battery Collapse — Remote Recovery Coordination",
+    "root_cause": "Service battery dropped below 12V due to insufficient winter maintenance and energy management neglect. Partial charging strategy left the battery vulnerable to deep discharge. The operator was uncertain about safe disconnection steps, risking further damage by incorrect shutdown sequence. Communication infrastructure (router) was powered from the same battery bank, creating a dependency that had to be preserved to allow remote intervention.",
+    "solution": "1. Do not panic-disconnect the battery — a controlled shutdown is required. 2. Identify which loads are keeping the router and communication infrastructure alive. Do not cut these yet. 3. Shed all non-essential DC loads immediately: lighting, navigation instruments, entertainment. 4. Stabilise the inverter — set to passthrough or switch off if no AC loads are critical. 5. Connect an external charger if available (shore power, generator, or portable charger) directly to the service bank. 6. If voltage is below 11.5V, the battery may not accept a normal charge — use a charger with a recovery/reconditioning mode. 7. Once voltage is above 12.2V and stable, restore loads one by one. 8. Investigate root cause of discharge: check alternator output, solar MPPT state, and any parasitic loads.",
+    "symptoms": [
+      "Service battery voltage below 12V",
+      "Charging state uncertain or inconsistent",
+      "Risk of total battery collapse and loss of all onboard systems",
+      "Operator unsure of safe disconnection sequence",
+      "Communication systems (router, Cerbo GX) still marginally alive"
+    ],
+    "conditions": [
+      "Mixed AC/DC vessel system with service battery dependency",
+      "Winter lay-up or period of inactivity without maintained charging",
+      "Remote operator — physical access limited or delayed",
+      "Communication infrastructure dependent on the same battery bank"
+    ],
+    "actions": [
+      "Shed all non-essential DC loads immediately",
+      "Preserve router and Cerbo GX power for remote access",
+      "Stabilise or disable inverter to reduce draw",
+      "Connect external charger with recovery mode if voltage is below 11.5V",
+      "Monitor voltage recovery — do not restore loads until above 12.2V",
+      "Once stable: audit all loads and identify source of discharge",
+      "Check alternator, solar MPPT, and parasitic drain on DC distribution"
+    ]
+  }
+]

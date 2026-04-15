@@ -1,0 +1,29 @@
+[
+  {
+    "case_id": "AC-002",
+    "title": "Parallel MultiPlus Fault — One Unit Offline in Dual Inverter System",
+    "root_cause": "In a dual Victron MultiPlus parallel installation, one unit dropped off the VE.Bus network. Root causes included: mechanical instability of the MultiPlus power button (intermittent contact), VE.Bus RJ45 cable fault or loose connection between units, and configuration drift after a deep discharge event. The MG Master contactor had disengaged due to loss of VE.Bus communication, leaving only one MultiPlus visible in the Victron system. Deep discharge during winter lay-up triggered the cascade.",
+    "solution": "1. Physically inspect both MultiPlus units — verify the power button on each unit is fully pressed and latched in the ON position. The button must click firmly; a partially pressed button will cause intermittent VE.Bus dropout. 2. Inspect the VE.Bus RJ45 cable connecting the two MultiPlus units — unplug and re-seat at both ends. Replace cable if damaged or kinked. 3. Reboot the SmartLink or Cerbo GX: hold the button for 3 seconds until the unit restarts. Wait 60 seconds for VE.Bus to re-enumerate. 4. Verify both MultiPlus units appear in VictronConnect after reboot. If only one is visible, the VE.Bus cable or the offline unit's button is the fault. 5. If the MG Master contactor is not engaging (no audible clack), verify VE.Bus is healthy first — the contactor requires a valid VE.Bus signal to close. 6. Allow the system to charge to a minimum of 60% SoC before attempting full load. Deep-discharged batteries may cause repeated dropout during high-current inrush.",
+    "symptoms": [
+      "Only one MultiPlus visible in Victron system or VictronConnect",
+      "VE.Bus error or warning on Cerbo GX display",
+      "MG Master contactor not engaging — no audible click when system powers up",
+      "Charging unstable or not reaching float",
+      "Battery SoC very low after winter lay-up or extended inactivity"
+    ],
+    "conditions": [
+      "2x Victron MultiPlus in parallel installation",
+      "MG Master LV and SmartLink present in system",
+      "Deep discharge event preceded the fault",
+      "Vessel returned to service after seasonal lay-up"
+    ],
+    "actions": [
+      "Check both MultiPlus power buttons — press firmly until each clicks and latches",
+      "Unplug and re-seat VE.Bus RJ45 cable at both MultiPlus units",
+      "Reboot SmartLink or Cerbo GX — hold button 3 seconds, wait 60 seconds",
+      "Verify both units appear in VictronConnect after reboot",
+      "If MG Master contactor still not engaging: confirm VE.Bus is healthy first",
+      "Charge battery to minimum 60% SoC before applying full load"
+    ]
+  }
+]
