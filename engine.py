@@ -626,20 +626,19 @@ CARE_TASKS = [
 
 
 def compute_care(state: State) -> None:
-    """Recompute CareIndex from SystemHealth and OperatorCareScore."""
+    """
+    Compute Care Score.
+    Starts from SystemHealth as the base, then applies operator offset
+    accumulated via manual tasks, decays and event drops.
+    Final value clamped to 0-100.
+    """
     system = get_section(state, "System")
     care   = get_section(state, "Care")
 
-    sys_score = int(system.get("SystemHealth") or 0)
-    op_score  = int(care.get("OperatorCareScore") or 0)
-
-    care["SystemCareScore"] = sys_score
-    care["CareIndex"]       = round(0.6 * sys_score + 0.4 * op_score)
-
-
-def _clamp_op_score(care: dict) -> None:
-    """Keep OperatorCareScore within 0–100."""
-    care["OperatorCareScore"] = max(0, min(100, int(care.get("OperatorCareScore") or 0)))
+    base   = int(system.get("SystemHealth") or 0)
+    offset = int(care.get("_OperatorOffset") or 0)
+    score  = max(0, min(100, base + offset))
+    care["CareScore"] = score
 
 
 def apply_care_task(state_manager, task_id: str) -> dict:
@@ -674,8 +673,8 @@ def apply_care_task(state_manager, task_id: str) -> dict:
         }
 
     # Apply points
-    current = int(care.get("OperatorCareScore") or 0)
-    care["OperatorCareScore"] = min(100, current + points)
+    current = int(care.get("_OperatorOffset") or 0)
+    care["_OperatorOffset"] = min(30, current + points)
     cooldowns[task_id_] = now_ts
     care["TaskCooldowns"] = cooldowns
 
@@ -687,7 +686,7 @@ def apply_care_task(state_manager, task_id: str) -> dict:
 
 def _care_event_drop(state: State) -> None:
     """
-    Drop OperatorCareScore based on current severity and vessel situation.
+    Drop Care Score (via _OperatorOffset) based on current severity and vessel situation.
     Called once per engine cycle — uses a flag to avoid double-dropping.
     """
     system  = get_section(state, "System")
@@ -717,14 +716,14 @@ def _care_event_drop(state: State) -> None:
         drop = max(drop, CONFIG.care_drop_warning)
     elif severity is None and prev_severity in ("WARNING", "CRITICAL"):
         # Recovery — care score rises
-        current = int(care.get("OperatorCareScore") or 0)
-        care["OperatorCareScore"] = min(100, current + CONFIG.care_rise_recovery)
+        current = int(care.get("_OperatorOffset") or 0)
+        care["_OperatorOffset"] = min(30, current + CONFIG.care_rise_recovery)
 
     care["_PrevSeverity"] = severity
 
     if drop > 0:
-        current = int(care.get("OperatorCareScore") or 0)
-        care["OperatorCareScore"] = max(0, current - drop)
+        current = int(care.get("_OperatorOffset") or 0)
+        care["_OperatorOffset"] = max(-30, current - drop)
 
 
 def _care_passive_decay(state: State) -> None:
@@ -737,8 +736,8 @@ def _care_passive_decay(state: State) -> None:
     care["_DecayCycleCounter"] = counter
 
     if counter % CONFIG.care_decay_cycles == 0:
-        current = int(care.get("OperatorCareScore") or 0)
-        care["OperatorCareScore"] = max(0, current - 5)
+        current = int(care.get("_OperatorOffset") or 0)
+        care["_OperatorOffset"] = max(-30, current - 5)
 
 
 def _auto_care_reward(state: State) -> None:
@@ -756,8 +755,8 @@ def _auto_care_reward(state: State) -> None:
     care["HealthyCycleCounter"] = counter
 
     if counter % CONFIG.care_reward_interval == 0:
-        current = int(care.get("OperatorCareScore") or 0)
-        care["OperatorCareScore"] = min(100, current + CONFIG.care_reward_increment)
+        current = int(care.get("_OperatorOffset") or 0)
+        care["_OperatorOffset"] = min(30, current + CONFIG.care_reward_increment)
         compute_care(state)
 
 
@@ -896,7 +895,7 @@ _SCENARIO_DATA: Dict[str, Dict[str, Any]] = {
         "Generator": {"Running": False, "Expected": False, "RecentlyRan": False, "ErrorCode": ""},
         "Fuel":    {"LevelPercent": 75.0, "SensorReliable": True, "State": "OK", "Inconsistency": None},
         "Communication": {"CANHealthy": True},
-        "Care":    {"OperatorCareScore": 60, "TaskCooldowns": {}, "_PrevSeverity": "CRITICAL", "_InScenarioDrop": False},
+        "Care":    {"_OperatorOffset": 0, "TaskCooldowns": {}, "_PrevSeverity": "CRITICAL", "_InScenarioDrop": False},
     },
     "drain": {
         "Battery": {"SoC": 18, "Voltage": 23.8, "Current": -22.0},
@@ -971,7 +970,7 @@ def engine_cycle(state_manager) -> State:
     Step  9  evaluate_strategy         — energy strategy
     Step 10  evaluate_recommendation   — operator recommendation (situation-aware v8.3)
     Step 11  consult_case_library      — knowledge base match
-    Step 12  compute_care              — care index
+    Step 12  compute_care              — care score
     Step 13  _auto_care_reward         — healthy-cycle reward
     Step 14  compute_fuel_state        — fuel level + sensor reliability
     Step 15  compute_energy_time       — time-to-critical / time-to-shutdown

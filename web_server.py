@@ -1105,13 +1105,13 @@ def render_supervisory_view(state):
         h += '<div id="health-issues" style="display:none;"></div>'
     content += f'<div class="panel"><div class="panel-title">System Health{badge_html}</div>{h}</div>'
 
-    care       = state["Care"]
-    care_index = safe_int(care.get("CareIndex"), 0)
-    c = f"""<div class="grid2">
-  <div class="label">System Care</div><div id="care-system" class="value">{safe_int(care.get('SystemCareScore'))}%</div>
-  <div class="label">Operator Care</div><div id="care-operator" class="value">{safe_int(care.get('OperatorCareScore'))}%</div>
-  <div class="label">Care Index</div><div id="care-index" class="value"><b>{care_index}%</b></div>
-</div><div class="bar-container"><div id="care-bar-fill" class="bar-fill bar-blue" style="width:{care_index}%"></div></div>"""
+    care        = state["Care"]
+    care_score  = safe_int(care.get("CareScore"), 0)
+    care_color  = "#4caf50" if care_score >= 75 else "#ffb300" if care_score >= 50 else "#ff5252"
+    c = f"""<div style="display:flex;justify-content:space-between;align-items:center;">
+  <div class="label">Care Score</div>
+  <div id="care-index" class="value" style="color:{care_color};font-weight:bold;">{care_score}%</div>
+</div><div class="bar-container" style="margin-top:6px;"><div id="care-bar-fill" class="bar-fill bar-blue" style="width:{care_score}%"></div></div>"""
     content += render_panel("OKi Care", c)
     content += render_button("CARE", "/care")
     content += render_button("KNOWLEDGE", "/knowledge")
@@ -1176,30 +1176,29 @@ def render_care_page():
     from datetime import datetime, timezone
     state      = get_state()
     care       = state.get("Care", {})
-    care_index = safe_int(care.get("CareIndex"), 0)
-    sys_score  = safe_int(care.get("SystemCareScore"), 0)
-    op_score   = safe_int(care.get("OperatorCareScore"), 0)
+    care_score = safe_int(care.get("CareScore"), 0)
     cooldowns  = care.get("TaskCooldowns") or {}
     now_ts     = datetime.now(timezone.utc).timestamp()
     cooldown_s = 24 * 3600
 
-    # Care index color
-    if care_index >= 75:
-        idx_color = "#4caf50"
-    elif care_index >= 50:
-        idx_color = "#ffb300"
+    # Care score color
+    if care_score >= 75:
+        score_color = "#4caf50"
+    elif care_score >= 50:
+        score_color = "#ffb300"
     else:
-        idx_color = "#ff5252"
+        score_color = "#ff5252"
+
+    bar_color = "blue" if care_score >= 75 else "amber" if care_score >= 50 else "red"
 
     # Score summary panel
-    summary = f"""<div class="grid2">
-  <div class="label">System Care Score</div><div class="value">{sys_score}%</div>
-  <div class="label">Operator Care Score</div><div class="value">{op_score}%</div>
-  <div class="label">Care Index</div><div class="value"><b style="color:{idx_color}">{care_index}%</b></div>
-</div>{render_bar(care_index, "blue" if care_index >= 75 else "amber" if care_index >= 50 else "red")}
+    summary = f"""<div style="text-align:center;padding:10px 0 6px 0;">
+  <div style="font-size:clamp(32px,7vw,48px);font-weight:bold;color:{score_color};">{care_score}%</div>
+  <div style="font-size:10px;color:#6a8aa0;letter-spacing:0.2em;text-transform:uppercase;margin-top:2px;">CARE SCORE</div>
+</div>{render_bar(care_score, bar_color)}
 <div class="reason" style="margin-top:10px;">
-  The Care Index rewards operators who maintain the vessel actively. It rises when you take action
-  and decays slowly over time. Alerts and failures lower it. Recovery raises it.
+  Reflects how well the vessel is maintained. The system reads health, alerts and failures automatically.
+  Log manual tasks below to raise your score.
 </div>"""
 
     panel = render_panel("OKi Care", summary)
@@ -1458,11 +1457,9 @@ def render_layout(content, auto_refresh=True):
     }
 
     // Care
-    setText('care-index',    d.careIndex+'%');
-    setText('care-system',   d.systemCareScore+'%');
-    setText('care-operator', d.operatorCareScore+'%');
+    setText('care-index',    d.careScore+'%');
     var cBar=el('care-bar-fill');
-    if(cBar) cBar.style.width=d.careIndex+'%';
+    if(cBar) cBar.style.width=d.careScore+'%';
 
     // Operator question
     var qPanel=el('question-panel');
@@ -1702,7 +1699,7 @@ def api_state():
     show_q      = has_q and not is_silent
 
     # Care
-    care_index  = safe_int(care.get("CareIndex"), 0)
+    care_score  = safe_int(care.get("CareScore"), 0)
 
     # Memory (last 10)
     last10 = memory[-10:] if memory else []
@@ -1753,9 +1750,7 @@ def api_state():
         "advisoryCase": system.get("AdvisoryCase") or "",
 
         # Care
-        "careIndex":       care_index,
-        "systemCareScore": safe_int(care.get("SystemCareScore")),
-        "operatorCareScore": safe_int(care.get("OperatorCareScore")),
+        "careScore":       care_score,
 
         # Operator question
         "showQuestion":   show_q,
