@@ -438,128 +438,370 @@ input:checked+.slider:before{transform:translateX(18px);background:#00d4ff}
 
 OKi_Psychedelic_UI = """<style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap');
-/* Keyframes — flowing border, subtle pulse, slide-in, panel border sweep */
-@keyframes border-flow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-@keyframes border-flow-x{0%{background-position:0% 0%}100%{background-position:400% 0%}}
-@keyframes neon-glow-pulse{0%,100%{opacity:0.85;box-shadow:0 0 10px rgba(0,255,170,0.4)}50%{opacity:1;box-shadow:0 0 20px rgba(0,255,170,0.7)}}
-@keyframes slide-in{0%{opacity:0;transform:scale(0.97) translateY(8px)}100%{opacity:1;transform:scale(1) translateY(0)}}
-@keyframes led-pulse{0%,100%{opacity:0.7}50%{opacity:1}}
-@keyframes psych-flash{0%{opacity:0}20%{opacity:1}60%{opacity:0.6}100%{opacity:0}}
-@keyframes panel-border-anim{0%{background-position:0% 0%}100%{background-position:0% 400%}}
+
+/* ── Keyframes ── */
+@keyframes plasma-flow   {0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes tendril-x     {0%{background-position:0% 0%}100%{background-position:400% 0%}}
+@keyframes tendril-y     {0%{background-position:0% 0%}100%{background-position:0% 400%}}
+@keyframes star-twinkle  {0%,100%{opacity:0.4}50%{opacity:1}}
+@keyframes glow-pulse    {0%,100%{opacity:0.85;filter:brightness(1)}50%{opacity:1;filter:brightness(1.3)}}
+@keyframes led-flare     {0%,100%{opacity:0.8}50%{opacity:1}}
+@keyframes slide-in      {0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes scan-line     {0%{top:-10%}100%{top:110%}}
+@keyframes psych-flash   {0%{opacity:0}20%{opacity:1}60%{opacity:0.6}100%{opacity:0}}
+@keyframes warp-burst    {0%{transform:scale(0);opacity:1}100%{transform:scale(4);opacity:0}}
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-user-select:none;-moz-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;width:100%}
-/* Deep space background — no hue-rotation */
-body{background:radial-gradient(ellipse at 25% 20%,#08031a 0%,#02000c 50%,#000005 100%);color:#c8e8ff;font-family:'Exo 2',sans-serif;display:flex;justify-content:center;align-items:stretch;min-height:100dvh;padding:6px}
-.outer{width:100%;max-width:720px;display:flex;flex-direction:column;animation:slide-in 0.5s ease-out}
-/* Outer frame — flowing full neon border (gradient border-box trick) */
-.frame{flex:1;border-radius:16px;padding:10px 12px 6px 12px;display:flex;flex-direction:column;overflow:hidden;position:relative;border:2px solid transparent;background:linear-gradient(#03000e,#03000e) padding-box,linear-gradient(135deg,#00e5ff,#cc00ff,#ff5500,#aaff00,#ff00aa,#00e5ff) border-box;background-size:300% 300%;animation:border-flow 5s ease infinite;box-shadow:0 0 40px rgba(0,229,255,0.12),0 0 80px rgba(204,0,255,0.07),inset 0 0 60px rgba(0,0,15,0.9)}
-/* Outer frame top energy sweep line */
-.frame::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#00e5ff,#cc00ff,#ff5500,#aaff00,#ff00aa,#00e5ff);background-size:400% 100%;animation:border-flow-x 3s linear infinite;border-radius:16px 16px 0 0;opacity:1;z-index:2}
-/* Outer frame bottom energy sweep line */
-.frame::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#aaff00,#ff5500,#cc00ff,#00e5ff,#ff00aa,#aaff00);background-size:400% 100%;animation:border-flow-x 3s linear infinite reverse;border-radius:0 0 16px 16px;opacity:1;z-index:2}
-.header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;margin-bottom:6px;gap:6px}
+
+/* ── Deep space background with star field ── */
+body{
+  background:
+    radial-gradient(ellipse at 15% 85%,rgba(80,0,120,0.35) 0%,transparent 50%),
+    radial-gradient(ellipse at 85% 10%,rgba(0,60,140,0.4) 0%,transparent 45%),
+    radial-gradient(ellipse at 50% 50%,rgba(5,0,25,1) 0%,rgba(2,0,12,1) 100%);
+  color:#c8e8ff;font-family:'Exo 2',sans-serif;
+  display:flex;justify-content:center;align-items:stretch;
+  min-height:100dvh;padding:6px;
+  overflow:hidden;
+}
+
+/* ── Star particles via pseudo-elements ── */
+body::before{
+  content:'';position:fixed;top:0;left:0;width:100%;height:100%;
+  background-image:
+    radial-gradient(1px 1px at 10% 15%,rgba(255,255,255,0.8),transparent),
+    radial-gradient(1px 1px at 25% 40%,rgba(200,220,255,0.6),transparent),
+    radial-gradient(1px 1px at 40% 8%,rgba(255,255,255,0.7),transparent),
+    radial-gradient(1px 1px at 55% 65%,rgba(180,200,255,0.5),transparent),
+    radial-gradient(1px 1px at 70% 30%,rgba(255,255,255,0.8),transparent),
+    radial-gradient(1px 1px at 80% 75%,rgba(200,180,255,0.6),transparent),
+    radial-gradient(1px 1px at 90% 20%,rgba(255,255,255,0.5),transparent),
+    radial-gradient(1px 1px at 15% 70%,rgba(180,220,255,0.7),transparent),
+    radial-gradient(1px 1px at 60% 90%,rgba(255,255,255,0.4),transparent),
+    radial-gradient(2px 2px at 35% 55%,rgba(100,180,255,0.4),transparent),
+    radial-gradient(1px 1px at 75% 50%,rgba(255,180,255,0.3),transparent),
+    radial-gradient(1px 1px at 5%  45%,rgba(255,255,255,0.6),transparent),
+    radial-gradient(1px 1px at 95% 85%,rgba(200,255,200,0.4),transparent),
+    radial-gradient(1px 1px at 48% 22%,rgba(255,255,255,0.7),transparent),
+    radial-gradient(1px 1px at 62% 78%,rgba(180,180,255,0.5),transparent);
+  pointer-events:none;z-index:0;
+  animation:star-twinkle 4s ease-in-out infinite;
+}
+body::after{
+  content:'';position:fixed;top:0;left:0;width:100%;height:100%;
+  background-image:
+    radial-gradient(1px 1px at 20% 25%,rgba(255,200,255,0.5),transparent),
+    radial-gradient(1px 1px at 45% 82%,rgba(255,255,255,0.6),transparent),
+    radial-gradient(1px 1px at 67% 12%,rgba(200,255,255,0.4),transparent),
+    radial-gradient(2px 2px at 83% 60%,rgba(255,200,100,0.3),transparent),
+    radial-gradient(1px 1px at 92% 38%,rgba(255,255,255,0.5),transparent),
+    radial-gradient(1px 1px at 3%  90%,rgba(200,200,255,0.6),transparent),
+    radial-gradient(1px 1px at 57% 47%,rgba(255,255,255,0.3),transparent);
+  pointer-events:none;z-index:0;
+  animation:star-twinkle 6s ease-in-out infinite reverse;
+}
+
+.outer{width:100%;max-width:720px;display:flex;flex-direction:column;position:relative;z-index:1;animation:slide-in 0.5s ease-out}
+
+/* ── Outer frame — plasma tendril border ── */
+.frame{
+  flex:1;border-radius:18px;
+  padding:10px 12px 6px 12px;
+  display:flex;flex-direction:column;overflow:hidden;
+  position:relative;
+  background:rgba(4,1,18,0.92);
+  border:2px solid transparent;
+  background-clip:padding-box;
+  box-shadow:
+    0 0 0 2px rgba(0,229,255,0.6),
+    0 0 0 4px rgba(255,0,200,0.3),
+    0 0 40px rgba(0,229,255,0.15),
+    0 0 80px rgba(200,0,255,0.08),
+    inset 0 0 60px rgba(0,0,20,0.8);
+}
+
+/* Top plasma sweep */
+.frame::before{
+  content:'';position:absolute;top:-1px;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,
+    transparent 0%,
+    #ff00cc 5%, #ff6600 15%, #ffff00 25%,
+    #00ff88 35%, #00e5ff 50%,
+    #00ff88 65%, #ffff00 75%,
+    #ff6600 85%, #ff00cc 95%, transparent 100%);
+  background-size:400% 100%;
+  animation:tendril-x 3s linear infinite;
+  border-radius:18px 18px 0 0;z-index:3;
+}
+/* Bottom plasma sweep */
+.frame::after{
+  content:'';position:absolute;bottom:-1px;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,
+    transparent 0%,
+    #00e5ff 5%, #00ff88 15%, #aaff00 25%,
+    #ff6600 35%, #ff00cc 50%,
+    #ff6600 65%, #aaff00 75%,
+    #00ff88 85%, #00e5ff 95%, transparent 100%);
+  background-size:400% 100%;
+  animation:tendril-x 3s linear infinite reverse;
+  border-radius:0 0 18px 18px;z-index:3;
+}
+
+/* Left plasma tendril */
+.frame .plasma-left{
+  position:absolute;top:0;left:-1px;width:3px;height:100%;
+  background:linear-gradient(180deg,
+    transparent 0%,
+    #ff00cc 8%, #00e5ff 25%, #ff6600 45%,
+    #00ff88 65%, #ff00cc 80%, transparent 100%);
+  background-size:100% 400%;
+  animation:tendril-y 4s linear infinite;
+  border-radius:18px 0 0 18px;z-index:3;
+}
+/* Right plasma tendril */
+.frame .plasma-right{
+  position:absolute;top:0;right:-1px;width:3px;height:100%;
+  background:linear-gradient(180deg,
+    transparent 0%,
+    #00e5ff 8%, #ff00cc 25%, #aaff00 45%,
+    #ff6600 65%, #00e5ff 80%, transparent 100%);
+  background-size:100% 400%;
+  animation:tendril-y 4s linear infinite reverse;
+  border-radius:0 18px 18px 0;z-index:3;
+}
+
+.header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;margin-bottom:6px;gap:6px;position:relative;z-index:2}
 .header-left{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
 .header-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
 .title-block{text-align:center}
-/* OKi title — cyan with glow */
-.title-oki{font-family:'Orbitron',monospace;font-size:clamp(24px,5.5vw,36px);font-weight:900;color:#00e5ff;letter-spacing:0.18em;line-height:1;text-shadow:0 0 14px rgba(0,229,255,0.9),0 0 28px rgba(0,229,255,0.5)}
+
+/* OKi title — electric cyan */
+.title-oki{
+  font-family:'Orbitron',monospace;font-size:clamp(24px,5.5vw,36px);
+  font-weight:900;color:#00e5ff;letter-spacing:0.18em;line-height:1;
+  text-shadow:0 0 10px rgba(0,229,255,1),0 0 25px rgba(0,229,255,0.7),0 0 50px rgba(0,229,255,0.3);
+}
 .title-sub{font-size:clamp(8px,1.4vw,10px);color:#4a8aaa;letter-spacing:0.2em;text-transform:uppercase;margin-top:2px}
-.boat-name-center{font-family:'Orbitron',monospace;font-size:clamp(9px,1.8vw,11px);color:#00e5ff;letter-spacing:0.2em;text-transform:uppercase;margin-top:3px;text-shadow:0 0 8px rgba(0,229,255,0.7)}
-/* Clock — cyan glow, large */
-.clock{font-family:'Orbitron',monospace;font-size:clamp(16px,3.2vw,22px);color:#00e5ff;letter-spacing:0.1em;text-align:right;text-shadow:0 0 12px rgba(0,229,255,0.8),0 0 24px rgba(0,229,255,0.4);font-weight:700}
-.clock-date{font-size:clamp(9px,1.8vw,11px);color:#5a7a9a;text-align:right}
-/* LEDs */
+.boat-name-center{
+  font-family:'Orbitron',monospace;font-size:clamp(9px,1.8vw,11px);
+  color:#00e5ff;letter-spacing:0.2em;text-transform:uppercase;margin-top:3px;
+  text-shadow:0 0 8px rgba(0,229,255,0.8);
+}
+
+/* Clock — large electric cyan */
+.clock{
+  font-family:'Orbitron',monospace;font-size:clamp(20px,4vw,28px);
+  color:#00e5ff;letter-spacing:0.08em;text-align:right;font-weight:900;
+  text-shadow:0 0 12px rgba(0,229,255,0.9),0 0 25px rgba(0,229,255,0.5);
+}
+.clock-date{font-size:clamp(9px,1.8vw,11px);color:#5a8aaa;text-align:right;letter-spacing:0.08em}
+
+/* LEDs — vivid glowing */
 .led-strip{display:flex;gap:5px;align-items:center}
 .led{width:10px;height:10px;border-radius:50%}
-.led-green{background:#00ff88;box-shadow:0 0 7px #00ff88,0 0 14px rgba(0,255,136,0.5);animation:led-pulse 2s ease-in-out infinite}
-.led-amber{background:#ffaa00;box-shadow:0 0 7px #ffaa00,0 0 14px rgba(255,170,0,0.4);animation:led-pulse 1.5s ease-in-out infinite}
-.led-red{background:#ff2255;box-shadow:0 0 7px #ff2255,0 0 14px rgba(255,34,85,0.4);animation:led-pulse 1s ease-in-out infinite}
-.led-off{background:#0a0a1a;border:1px solid #1a1a30}
+.led-green{background:#00ff88;box-shadow:0 0 8px #00ff88,0 0 18px rgba(0,255,136,0.6);animation:led-flare 2s ease-in-out infinite}
+.led-amber{background:#ffcc00;box-shadow:0 0 8px #ffcc00,0 0 16px rgba(255,200,0,0.5);animation:led-flare 1.4s ease-in-out infinite}
+.led-red{background:#ff2255;box-shadow:0 0 8px #ff2255,0 0 16px rgba(255,34,85,0.5);animation:led-flare 0.9s ease-in-out infinite}
+.led-off{background:#0a0a1a;border:1px solid rgba(0,229,255,0.15)}
+
 /* Toggles */
 .toggle-box{display:flex;flex-direction:column;align-items:center;gap:3px;touch-action:manipulation;cursor:pointer;padding:4px}
-.toggle-label{font-size:clamp(8px,1.5vw,10px);color:#4a7a9a;letter-spacing:0.1em;font-weight:600;font-family:'Orbitron',monospace}
+.toggle-label{font-size:clamp(8px,1.5vw,10px);color:#4a8aaa;letter-spacing:0.1em;font-weight:600;font-family:'Orbitron',monospace}
 .switch{position:relative;display:inline-block;width:44px;height:26px;touch-action:manipulation}
 .switch input{opacity:0;width:0;height:0}
-.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#080018;border:1px solid #1a2040;transition:.3s;border-radius:18px}
-.slider:before{position:absolute;content:"";height:18px;width:18px;left:2px;bottom:2px;background:#2a3a5a;transition:.3s;border-radius:50%}
-input:checked+.slider{background:#001a35;border-color:#00e5ff;box-shadow:0 0 10px rgba(0,229,255,0.5)}
+.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#080018;border:1px solid rgba(0,229,255,0.2);transition:.3s;border-radius:18px}
+.slider:before{position:absolute;content:"";height:18px;width:18px;left:2px;bottom:2px;background:#2a2a4a;transition:.3s;border-radius:50%}
+input:checked+.slider{background:rgba(0,60,100,0.8);border-color:#00e5ff;box-shadow:0 0 10px rgba(0,229,255,0.5)}
 input:checked+.slider:before{transform:translateX(18px);background:#00e5ff}
-/* Divider — neon spectrum sweep */
-.divider{height:1px;background:linear-gradient(90deg,transparent,#00e5ff 20%,#cc00ff 50%,#ff5500 80%,transparent);margin:4px 0 6px 0;flex-shrink:0;background-size:300% 100%;animation:border-flow 4s ease infinite}
-.content{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:#00e5ff #03000e;touch-action:pan-y}
-/* SoC number — bright green glow */
+
+/* Divider — rainbow plasma */
+.divider{
+  height:1px;margin:4px 0 6px 0;flex-shrink:0;
+  background:linear-gradient(90deg,transparent,#ff00cc 10%,#00e5ff 30%,#00ff88 50%,#ffff00 70%,#ff6600 90%,transparent);
+  background-size:300% 100%;
+  animation:plasma-flow 3s ease infinite;
+}
+
+.content{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:rgba(0,229,255,0.4) rgba(4,1,18,0.9);touch-action:pan-y;position:relative;z-index:2}
+
+/* SoC display */
 .soc-display{text-align:center;padding:4px 0 4px 0}
 .soc-number{font-family:'Orbitron',monospace;font-size:clamp(32px,7vw,52px);font-weight:900;line-height:1}
-.soc-green{color:#00ff88;text-shadow:0 0 18px rgba(0,255,136,0.8),0 0 36px rgba(0,255,136,0.4)}
-.soc-amber{color:#ffaa00;text-shadow:0 0 18px rgba(255,170,0,0.8)}
-.soc-red{color:#ff2255;text-shadow:0 0 18px rgba(255,34,85,0.8)}
-.soc-label{font-family:'Orbitron',monospace;font-size:clamp(8px,1.6vw,10px);color:#3a6a8a;letter-spacing:0.3em;margin-top:2px}
-/* SoC bar — thin luminous green→cyan energy beam */
-.soc-bar-outer{width:100%;height:8px;background:#020008;border-radius:4px;overflow:hidden;margin-top:10px;border:1px solid rgba(0,229,255,0.15)}
-.soc-bar-fill{height:100%;border-radius:4px;transition:width 0.6s ease;background:linear-gradient(90deg,#00cc55,#00ffaa,#00e5ff)!important;box-shadow:0 0 8px rgba(0,255,170,0.6),0 0 16px rgba(0,229,255,0.3)}
-.soc-bar-discharging{background:linear-gradient(90deg,#00cc55,#00ffaa,#00e5ff)!important}
-.soc-bar-charging{background:linear-gradient(90deg,#00cc55,#00ffaa,#00e5ff)!important;animation:neon-glow-pulse 1.5s ease-in-out infinite}
+.soc-green{color:#00ff88;text-shadow:0 0 15px rgba(0,255,136,0.9),0 0 35px rgba(0,255,136,0.5)}
+.soc-amber{color:#ffcc00;text-shadow:0 0 15px rgba(255,200,0,0.9),0 0 30px rgba(255,200,0,0.5)}
+.soc-red{color:#ff2255;text-shadow:0 0 15px rgba(255,34,85,0.9),0 0 30px rgba(255,34,85,0.5)}
+.soc-label{font-family:'Orbitron',monospace;font-size:clamp(8px,1.6vw,10px);color:#3a6a8a;letter-spacing:0.3em;margin-top:2px;text-transform:uppercase}
+
+/* SoC bar — bright lime green beam like reference */
+.soc-bar-outer{width:100%;height:10px;background:rgba(0,0,0,0.6);border-radius:5px;overflow:hidden;margin-top:10px;border:1px solid rgba(0,255,136,0.2)}
+.soc-bar-fill{height:100%;border-radius:5px;transition:width 0.6s ease}
+.soc-bar-discharging{
+  background:linear-gradient(90deg,#00cc44,#44ff44,#aaff00)!important;
+  box-shadow:0 0 10px rgba(100,255,50,0.7),0 0 20px rgba(100,255,50,0.3)!important;
+  animation:glow-pulse 1.2s ease-in-out infinite;
+}
+.soc-bar-charging{
+  background:linear-gradient(90deg,#00cc44,#44ff44,#aaff00,#00e5ff)!important;
+  box-shadow:0 0 10px rgba(100,255,50,0.7),0 0 20px rgba(0,229,255,0.3)!important;
+  animation:glow-pulse 1.8s ease-in-out infinite;
+}
+
 /* Health/care bars */
-.bar-container{width:100%;height:12px;background:#02000a;border-radius:6px;overflow:hidden;margin-top:6px;border:1px solid rgba(0,229,255,0.08)}
-.bar-fill{height:100%;border-radius:6px;transition:width 0.8s ease}
-.bar-green{background:linear-gradient(90deg,#00cc66,#00ffaa,#00e5ff);box-shadow:0 0 8px rgba(0,255,170,0.4)}
-.bar-amber{background:linear-gradient(90deg,#cc6600,#ffaa00);box-shadow:0 0 6px rgba(255,170,0,0.3)}
-.bar-red{background:linear-gradient(90deg,#cc0033,#ff2255);box-shadow:0 0 6px rgba(255,34,85,0.3)}
-.bar-blue{background:linear-gradient(90deg,#0044cc,#00e5ff);box-shadow:0 0 6px rgba(0,229,255,0.3)}
-/* Panels — each has its own full animated neon border */
-.panel{background:rgba(3,0,12,0.93);padding:clamp(8px,2vw,12px);border-radius:12px;margin-bottom:6px;position:relative;border:1.5px solid transparent;background-clip:padding-box;overflow:visible}
-.panel::before{content:'';position:absolute;inset:-1.5px;border-radius:13px;background:linear-gradient(135deg,#00e5ff,#cc00ff,#ff5500,#aaff00,#ff00aa,#00e5ff);background-size:300% 300%;animation:border-flow 5s ease infinite;z-index:-1}
-/* Panel inner background to cover the gradient border */
-.panel::after{content:'';position:absolute;inset:1.5px;border-radius:11px;background:rgba(3,0,12,0.95);z-index:-1}
-/* Panel titles — cyan, Orbitron */
-.panel-title{margin-bottom:8px;font-size:clamp(11px,2.2vw,14px);color:#00e5ff;display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-family:'Orbitron',monospace;letter-spacing:0.08em;text-transform:uppercase;text-shadow:0 0 10px rgba(0,229,255,0.6);position:relative;z-index:1}
+.bar-container{width:100%;height:10px;background:rgba(0,0,0,0.5);border-radius:5px;overflow:hidden;margin-top:6px}
+.bar-fill{height:100%;border-radius:5px;transition:width 0.8s ease}
+.bar-green{background:linear-gradient(90deg,#00aa44,#00ff88,#aaff00);box-shadow:0 0 8px rgba(0,255,136,0.5)}
+.bar-amber{background:linear-gradient(90deg,#aa6600,#ffcc00);box-shadow:0 0 6px rgba(255,200,0,0.4)}
+.bar-red{background:linear-gradient(90deg,#aa0033,#ff2255);box-shadow:0 0 6px rgba(255,34,85,0.4)}
+.bar-blue{background:linear-gradient(90deg,#0044cc,#00e5ff);box-shadow:0 0 6px rgba(0,229,255,0.4)}
+
+/* ── Panels — plasma tendril border like reference ── */
+.panel{
+  background:rgba(4,1,22,0.88);
+  padding:clamp(8px,2vw,12px);
+  border-radius:14px;
+  margin-bottom:8px;
+  position:relative;
+  overflow:visible;
+  /* Multi-layer plasma glow border */
+  box-shadow:
+    0 0 0 1.5px rgba(0,229,255,0.7),
+    0 0 0 3px rgba(255,0,200,0.25),
+    0 0 15px rgba(0,229,255,0.12),
+    0 0 30px rgba(200,0,255,0.06),
+    inset 0 0 20px rgba(0,0,30,0.5);
+}
+
+/* Panel top plasma edge */
+.panel::before{
+  content:'';position:absolute;top:-1px;left:8%;right:8%;height:2px;
+  background:linear-gradient(90deg,
+    transparent,#ff00cc 20%,#00e5ff 50%,#00ff88 80%,transparent);
+  background-size:300% 100%;
+  animation:plasma-flow 4s ease infinite;
+  border-radius:2px;z-index:1;
+}
+/* Panel bottom plasma edge */
+.panel::after{
+  content:'';position:absolute;bottom:-1px;left:8%;right:8%;height:2px;
+  background:linear-gradient(90deg,
+    transparent,#aaff00 20%,#ff6600 50%,#ff00cc 80%,transparent);
+  background-size:300% 100%;
+  animation:plasma-flow 4s ease infinite reverse;
+  border-radius:2px;z-index:1;
+}
+
+.panel-title{
+  margin-bottom:8px;font-size:clamp(11px,2.2vw,13px);
+  color:#00e5ff;display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  font-family:'Orbitron',monospace;letter-spacing:0.1em;text-transform:uppercase;
+  text-shadow:0 0 8px rgba(0,229,255,0.7);position:relative;z-index:1;
+}
 .badge{font-size:10px;padding:2px 8px;border-radius:8px;font-weight:bold}
-.badge-warning{background:#2a1800;color:#ffaa00;border:1px solid #ffaa00}
-.badge-critical{background:#2a0010;color:#ff2255;border:1px solid #ff2255}
-.badge-ok{background:#002a10;color:#00ff88;border:1px solid #00ff88}
-/* Regular buttons — cyan pill */
-.button{display:block;width:92%;margin:7px auto;padding:clamp(14px,2.8vw,18px);background:rgba(0,18,35,0.85);color:#00e5ff;text-decoration:none;border-radius:28px;text-align:center;font-size:clamp(12px,2.3vw,15px);font-family:'Orbitron',monospace;letter-spacing:0.12em;cursor:pointer;border:2px solid rgba(0,229,255,0.7);text-transform:uppercase;touch-action:manipulation;min-height:48px;box-shadow:0 0 14px rgba(0,229,255,0.25),inset 0 0 14px rgba(0,229,255,0.06)}
-.button:hover,.button:active{box-shadow:0 0 24px rgba(0,229,255,0.55)}
-/* Operator buttons — large pill neon bars: green / lime / pink */
-.op-button{display:block;width:92%;margin:6px auto;padding:clamp(14px,2.8vw,18px);text-decoration:none;border-radius:28px;text-align:center;font-size:clamp(12px,2.3vw,14px);font-family:'Orbitron',monospace;letter-spacing:0.1em;cursor:pointer;touch-action:manipulation;min-height:52px;background:rgba(0,14,4,0.88);color:#00ff88;border:2px solid rgba(0,255,136,0.7);box-shadow:0 0 14px rgba(0,255,136,0.25),inset 0 0 12px rgba(0,255,136,0.05)}
-.op-button-b{background:rgba(10,12,0,0.88);color:#aaff00;border-color:rgba(170,255,0,0.7);box-shadow:0 0 14px rgba(170,255,0,0.25),inset 0 0 12px rgba(170,255,0,0.05)}
-.op-button-c{background:rgba(14,0,7,0.88);color:#ff44aa;border-color:rgba(255,68,170,0.7);box-shadow:0 0 14px rgba(255,68,170,0.25),inset 0 0 12px rgba(255,68,170,0.05)}
-.op-button:hover,.op-button:active{filter:brightness(1.25)}
-/* Grid data values */
+.badge-warning{background:rgba(40,20,0,0.9);color:#ffcc00;border:1px solid rgba(255,200,0,0.7)}
+.badge-critical{background:rgba(40,0,12,0.9);color:#ff2255;border:1px solid rgba(255,34,85,0.7)}
+.badge-ok{background:rgba(0,30,12,0.9);color:#00ff88;border:1px solid rgba(0,255,136,0.7)}
+
+/* ── Operator buttons — exactly like reference image ── */
+/* Expected — neon green */
+.op-button{
+  display:block;width:92%;margin:6px auto;
+  padding:clamp(14px,2.8vw,18px);
+  text-decoration:none;border-radius:12px;text-align:center;
+  font-size:clamp(13px,2.5vw,16px);
+  font-family:'Exo 2',sans-serif;font-weight:600;
+  letter-spacing:0.05em;cursor:pointer;touch-action:manipulation;min-height:52px;
+  background:rgba(0,20,8,0.85);
+  color:#00ff88;
+  border:2px solid rgba(0,255,136,0.8);
+  box-shadow:0 0 18px rgba(0,255,136,0.4),0 0 40px rgba(0,255,136,0.15),inset 0 0 20px rgba(0,255,136,0.05);
+  text-shadow:0 0 10px rgba(0,255,136,0.8);
+  transition:all 0.15s ease;
+}
+.op-button:hover,.op-button:active{
+  box-shadow:0 0 28px rgba(0,255,136,0.6),inset 0 0 30px rgba(0,255,136,0.1);
+  border-color:rgba(0,255,136,1);
+}
+/* Investigating — amber/orange */
+.op-button-b{
+  background:rgba(20,12,0,0.85);
+  color:#ffcc00;
+  border-color:rgba(255,180,0,0.8);
+  box-shadow:0 0 18px rgba(255,180,0,0.35),0 0 40px rgba(255,100,0,0.15),inset 0 0 20px rgba(255,160,0,0.05);
+  text-shadow:0 0 10px rgba(255,200,0,0.8);
+}
+.op-button-b:hover,.op-button-b:active{box-shadow:0 0 28px rgba(255,180,0,0.55),inset 0 0 30px rgba(255,160,0,0.1)}
+/* Unexpected — pink/magenta */
+.op-button-c{
+  background:rgba(20,0,14,0.85);
+  color:#ff44cc;
+  border-color:rgba(255,60,200,0.8);
+  box-shadow:0 0 18px rgba(255,60,200,0.35),0 0 40px rgba(255,0,150,0.15),inset 0 0 20px rgba(255,40,180,0.05);
+  text-shadow:0 0 10px rgba(255,60,200,0.8);
+}
+.op-button-c:hover,.op-button-c:active{box-shadow:0 0 28px rgba(255,60,200,0.55),inset 0 0 30px rgba(255,40,180,0.1)}
+
+/* Regular nav buttons */
+.button{
+  display:block;width:92%;margin:7px auto;
+  padding:clamp(14px,2.8vw,18px);
+  background:rgba(0,15,30,0.85);color:#00e5ff;
+  text-decoration:none;border-radius:28px;text-align:center;
+  font-size:clamp(12px,2.3vw,15px);font-family:'Orbitron',monospace;
+  letter-spacing:0.12em;cursor:pointer;
+  border:2px solid rgba(0,229,255,0.6);
+  text-transform:uppercase;touch-action:manipulation;min-height:48px;
+  box-shadow:0 0 14px rgba(0,229,255,0.2),inset 0 0 14px rgba(0,229,255,0.04);
+  text-shadow:0 0 8px rgba(0,229,255,0.6);
+  transition:all 0.15s ease;
+}
+.button:hover,.button:active{box-shadow:0 0 24px rgba(0,229,255,0.45)}
+
+/* Grid data */
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:5px 10px;font-size:clamp(12px,2.2vw,14px);position:relative;z-index:1}
-.grid2 .label{color:#3a6a8a;font-size:clamp(10px,1.8vw,12px)}.grid2 .value{color:#c8e8ff;font-family:'Orbitron',monospace;font-size:clamp(11px,2vw,13px)}
-.advisory{font-size:clamp(10px,1.8vw,12px);color:#ffaa00;margin-top:8px;padding:6px 10px;background:rgba(40,18,0,0.7);border-radius:8px;border-left:2px solid #ffaa00}
+.grid2 .label{color:#00aacc;font-size:clamp(10px,1.8vw,12px);font-family:'Orbitron',monospace;letter-spacing:0.05em}
+.grid2 .value{color:#ffffff;font-size:clamp(11px,2vw,13px)}
+.advisory{font-size:clamp(10px,1.8vw,12px);color:#ffcc00;margin-top:8px;padding:6px 10px;background:rgba(30,15,0,0.7);border-radius:8px;border-left:2px solid #ffcc00}
 .reason{font-size:clamp(10px,1.8vw,11px);color:#3a6a8a;margin-top:5px}
 .refresh-note{text-align:center;font-size:9px;color:#0a1a2a;margin-bottom:4px;flex-shrink:0}
-.footer{text-align:center;padding-top:4px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:6px}
+
+/* Footer */
+.footer{text-align:center;padding-top:4px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;z-index:2}
 .footer-demo{display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:2px}
 .footer-demo-label{font-size:clamp(9px,1.6vw,11px);color:#3a6a8a;letter-spacing:0.1em;font-weight:600}
-.demo-section{border-top:1px solid rgba(0,229,255,0.12);margin-top:8px;padding-top:8px}
+.demo-section{border-top:1px solid rgba(0,229,255,0.15);margin-top:8px;padding-top:8px}
 .demo-label{text-align:center;font-size:10px;color:#3a6a8a;margin-bottom:8px;letter-spacing:0.12em;font-weight:bold}
-.demo-scenario-btn{display:inline-block;margin:5px;padding:10px 20px;background:rgba(0,18,35,0.85);color:#00e5ff;border:1px solid rgba(0,229,255,0.45);border-radius:20px;font-size:clamp(11px,2vw,13px);text-decoration:none;cursor:pointer}
-.demo-scenario-btn:hover{background:rgba(0,35,60,0.9);box-shadow:0 0 12px rgba(0,229,255,0.3)}
-.footer img{width:clamp(72px,14vw,96px);opacity:0.85;filter:drop-shadow(0 0 8px rgba(0,229,255,0.5)) drop-shadow(0 0 4px rgba(204,0,255,0.35));cursor:pointer;-webkit-tap-highlight-color:transparent}
+.demo-scenario-btn{display:inline-block;margin:5px;padding:10px 20px;background:rgba(0,15,30,0.85);color:#00e5ff;border:1px solid rgba(0,229,255,0.4);border-radius:20px;font-size:clamp(11px,2vw,13px);text-decoration:none;cursor:pointer;font-family:'Orbitron',monospace}
+.demo-scenario-btn:hover{background:rgba(0,30,55,0.9);box-shadow:0 0 10px rgba(0,229,255,0.25)}
+.footer img{
+  width:clamp(72px,14vw,96px);opacity:0.9;
+  filter:drop-shadow(0 0 10px rgba(0,229,255,0.6)) drop-shadow(0 0 6px rgba(255,0,200,0.4));
+  cursor:pointer;-webkit-tap-highlight-color:transparent;
+}
+/* DEV section */
 .dev-section{border-top:2px solid rgba(0,229,255,0.3);margin-top:10px;padding-top:8px}
 .dev-label{text-align:center;font-size:10px;color:#00e5ff;margin-bottom:8px;letter-spacing:0.15em;font-weight:bold;font-family:'Orbitron',monospace}
-.dev-panel{background:rgba(2,0,10,0.95);border:1px solid rgba(0,229,255,0.2);border-radius:8px;padding:10px;margin-bottom:8px}
+.dev-panel{background:rgba(2,0,12,0.95);border:1px solid rgba(0,229,255,0.2);border-radius:8px;padding:10px;margin-bottom:8px}
 .dev-panel-title{font-size:clamp(9px,1.6vw,11px);color:#00e5ff;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:6px;font-weight:bold;font-family:'Orbitron',monospace}
 .dev-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px 10px;font-size:clamp(10px,1.8vw,12px)}
 .dev-grid .dk{color:#3a6a8a;font-size:clamp(9px,1.5vw,11px)}.dev-grid .dv{color:#c8e8ff;font-family:monospace}
 .dev-memory{font-size:clamp(9px,1.5vw,11px);color:#3a6a8a;font-family:monospace;line-height:1.6}
 .dev-memory span{color:#c8e8ff}
-.dev-scenario-btn{display:inline-block;margin:4px;padding:6px 14px;background:rgba(0,18,35,0.85);color:#00e5ff;border:1px solid rgba(0,229,255,0.4);border-radius:16px;font-size:clamp(10px,1.8vw,12px);text-decoration:none;cursor:pointer;font-family:'Orbitron',monospace;letter-spacing:0.08em}
-.dev-scenario-btn:hover{background:rgba(0,35,60,0.9);box-shadow:0 0 10px rgba(0,229,255,0.3)}
+.dev-scenario-btn{display:inline-block;margin:4px;padding:6px 14px;background:rgba(0,15,30,0.85);color:#00e5ff;border:1px solid rgba(0,229,255,0.35);border-radius:16px;font-size:clamp(10px,1.8vw,12px);text-decoration:none;cursor:pointer;font-family:'Orbitron',monospace;letter-spacing:0.08em}
+.dev-scenario-btn:hover{background:rgba(0,30,55,0.9);box-shadow:0 0 8px rgba(0,229,255,0.25)}
 @media(max-width:400px){.button,.op-button{width:100%}}
-.kb-search{width:100%;padding:10px 14px;background:rgba(2,0,10,0.95);border:1px solid rgba(0,229,255,0.3);border-radius:24px;color:#c8e8ff;font-size:clamp(12px,2.2vw,14px);outline:none;margin-bottom:10px;box-sizing:border-box;font-family:'Exo 2',sans-serif}
+
+/* Knowledge base */
+.kb-search{width:100%;padding:10px 14px;background:rgba(2,0,12,0.95);border:1px solid rgba(0,229,255,0.3);border-radius:24px;color:#c8e8ff;font-size:clamp(12px,2.2vw,14px);outline:none;margin-bottom:10px;box-sizing:border-box;font-family:'Exo 2',sans-serif}
 .kb-search:focus{border-color:rgba(0,229,255,0.7);box-shadow:0 0 10px rgba(0,229,255,0.2)}
 .kb-search::placeholder{color:#2a4a6a}
-.kb-case{background:rgba(2,0,10,0.95);border-radius:10px;padding:10px 12px;margin-bottom:6px;cursor:pointer;border:1px solid rgba(0,229,255,0.15);transition:border-color 0.2s;text-decoration:none;display:block}
+.kb-case{background:rgba(2,0,12,0.95);border-radius:10px;padding:10px 12px;margin-bottom:6px;cursor:pointer;border:1px solid rgba(0,229,255,0.15);transition:border-color 0.2s;text-decoration:none;display:block}
 .kb-case:hover{border-color:rgba(0,229,255,0.5);box-shadow:0 0 12px rgba(0,229,255,0.1)}
 .kb-case-id{font-size:clamp(9px,1.5vw,10px);color:#3a6a8a;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:2px;font-family:'Orbitron',monospace}
 .kb-case-title{font-size:clamp(12px,2.2vw,14px);color:#c8e8ff;font-weight:600;margin-bottom:5px}
 .kb-case-snippet{font-size:clamp(10px,1.8vw,11px);color:#3a6a8a;margin-bottom:6px;line-height:1.5}
 .kb-tags{display:flex;flex-wrap:wrap;gap:4px}
-.kb-tag{font-size:clamp(9px,1.5vw,10px);padding:2px 8px;background:rgba(0,18,35,0.85);color:#00e5ff;border:1px solid rgba(0,229,255,0.3);border-radius:10px;font-family:'Orbitron',monospace;letter-spacing:0.05em}
+.kb-tag{font-size:clamp(9px,1.5vw,10px);padding:2px 8px;background:rgba(0,15,30,0.85);color:#00e5ff;border:1px solid rgba(0,229,255,0.3);border-radius:10px;font-family:'Orbitron',monospace;letter-spacing:0.05em}
 .kb-empty{text-align:center;color:#2a4a6a;padding:20px;font-size:clamp(11px,2vw,13px)}
 .kb-detail-section{margin-bottom:14px}
 .kb-detail-label{font-size:clamp(9px,1.6vw,10px);color:#3a6a8a;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:5px;font-weight:600;font-family:'Orbitron',monospace}
@@ -569,8 +811,12 @@ input:checked+.slider:before{transform:translateX(18px);background:#00e5ff}
 .kb-detail-list li::before{content:"–";position:absolute;left:0;color:#00e5ff}
 .kb-count{font-size:clamp(9px,1.6vw,10px);color:#3a6a8a;letter-spacing:0.1em;margin-bottom:10px;font-family:'Orbitron',monospace}
 .kb-no-results{display:none}
-#psych-overlay{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;opacity:0;background:radial-gradient(ellipse at center,rgba(0,229,255,0.3),rgba(204,0,255,0.2),transparent);transition:opacity 0.4s ease}
+
+/* Cinematic activation overlay */
+#psych-overlay{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;opacity:0;background:radial-gradient(ellipse at center,rgba(0,229,255,0.5),rgba(255,0,200,0.3),transparent);transition:opacity 0.4s ease}
 #psych-overlay.flash{animation:psych-flash 0.8s ease-out forwards}
+#warp-burst{position:fixed;top:50%;left:50%;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:radial-gradient(circle,#fff,#00e5ff,transparent);pointer-events:none;z-index:10000;opacity:0}
+#warp-burst.active{animation:warp-burst 0.5s ease-out forwards}
 </style>"""
 
 SCRIPTS = """<script>
@@ -734,16 +980,21 @@ function logoRelease(){
 function cinematicActivate(){
   var wasWicked=(uiMode==='wicked');
   uiMode='psychedelic';
-  document.documentElement.style.background='#000';
-  document.body.style.background='#000';
-  var cover=document.createElement('div');
-  cover.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99999;';
-  document.body.appendChild(cover);
+  // Warp burst from logo centre
+  var burst=document.getElementById('warp-burst');
+  if(burst){ burst.classList.add('active'); }
   var overlay=document.getElementById('psych-overlay');
   if(overlay) overlay.classList.add('flash');
-  var p1=wasWicked ? fetch('/api/toggle-wicked') : Promise.resolve();
-  p1.then(function(){ return fetch('/api/toggle-psychedelic'); })
-    .then(function(){ setTimeout(function(){ window.location.replace('/'); },600); });
+  setTimeout(function(){
+    document.documentElement.style.background='#000';
+    document.body.style.background='#000';
+    var cover=document.createElement('div');
+    cover.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99999;transition:opacity 0.3s';
+    document.body.appendChild(cover);
+    var p1=wasWicked ? fetch('/api/toggle-wicked') : Promise.resolve();
+    p1.then(function(){ return fetch('/api/toggle-psychedelic'); })
+      .then(function(){ setTimeout(function(){ window.location.replace('/'); },400); });
+  }, 300);
 }
 
 function psychedelicDeactivate(){
@@ -846,7 +1097,7 @@ def render_footer():
               f'data-toggle-route="/api/toggle-demo" onchange="okiToggle(this)">'
               f'<span class="slider"></span></label>')
     return (
-        '<div id="psych-overlay"></div>'
+        '<div id="psych-overlay"></div><div id="warp-burst"></div>'
         '<div class="footer">'
         '<div class="footer-demo">'
         '<div class="footer-demo-label">DEMO</div>'
@@ -1514,6 +1765,7 @@ def render_layout(content, auto_refresh=True):
         "<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=5'><meta name='mobile-web-app-capable' content='yes'>"
         + style + SCRIPTS + refresh_js +
         "</head><body style='background:#000'><div class='outer'><div class='frame'>"
+        + ("<div class='plasma-left'></div><div class='plasma-right'></div>" if PSYCHEDELIC_MODE else "")
         + render_header()
         + "<div class='divider'></div>"
         + '<div class="refresh-note">&#8635; auto-refresh every 3s</div>'
