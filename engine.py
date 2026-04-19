@@ -895,7 +895,7 @@ _SCENARIO_DATA: Dict[str, Dict[str, Any]] = {
         "Generator": {"Running": False, "Expected": False, "RecentlyRan": False, "ErrorCode": ""},
         "Fuel":    {"LevelPercent": 75.0, "SensorReliable": True, "State": "OK", "Inconsistency": None},
         "Communication": {"CANHealthy": True},
-        "Care":    {"_OperatorOffset": 0, "TaskCooldowns": {}, "_PrevSeverity": "CRITICAL", "_InScenarioDrop": False},
+        "Care":    {"_OperatorOffset": 0, "CareScore": 70, "TaskCooldowns": {}, "_PrevSeverity": "CRITICAL", "_InScenarioDrop": False},
     },
     "drain": {
         "Battery": {"SoC": 18, "Voltage": 23.8, "Current": -22.0},
