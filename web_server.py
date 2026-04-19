@@ -84,7 +84,7 @@ from pathlib import Path
 
 # ── Engine import — safe guard ────────────────────────────────────────────────
 try:
-    from engine import process_operator_response, load_scenario, toggle_dev_mode, apply_care_task
+    from engine import process_operator_response, load_scenario, toggle_dev_mode, apply_care_task, CARE_TASKS
     _ENGINE_AVAILABLE = True
 except Exception as _engine_err:
     print(f"[OKi] Warning — engine import failed: {_engine_err}")
@@ -92,7 +92,8 @@ except Exception as _engine_err:
     def process_operator_response(*a, **kw): pass
     def load_scenario(*a, **kw): pass
     def toggle_dev_mode(*a, **kw): pass
-    def apply_care_task(*a, **kw): pass
+    def apply_care_task(*a, **kw): return {"ok": False, "points": 0, "message": "Engine unavailable."}
+    CARE_TASKS = []
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="."), name="static")
@@ -1172,17 +1173,76 @@ def render_focus_view(state):
     return content
 
 def render_care_page():
+    from datetime import datetime, timezone
     state      = get_state()
     care       = state.get("Care", {})
     care_index = safe_int(care.get("CareIndex"), 0)
-    content = f"""<div class="grid2">
-  <div class="label">System Care Score</div><div class="value">{safe_int(care.get('SystemCareScore'))}%</div>
-  <div class="label">Operator Care Score</div><div class="value">{safe_int(care.get('OperatorCareScore'))}%</div>
-  <div class="label">Care Index</div><div class="value"><b>{care_index}%</b></div>
-</div>{render_bar(care_index, "blue")}
-<div class="reason" style="margin-top:10px;">The Care Index rewards operators who keep their system healthy over time. A higher score means fewer surprises and better reliability.</div>"""
-    panel  = render_panel("OKi Care", content)
-    panel += render_button("+ Log Care Task", "/care/task")
+    sys_score  = safe_int(care.get("SystemCareScore"), 0)
+    op_score   = safe_int(care.get("OperatorCareScore"), 0)
+    cooldowns  = care.get("TaskCooldowns") or {}
+    now_ts     = datetime.now(timezone.utc).timestamp()
+    cooldown_s = 24 * 3600
+
+    # Care index color
+    if care_index >= 75:
+        idx_color = "#4caf50"
+    elif care_index >= 50:
+        idx_color = "#ffb300"
+    else:
+        idx_color = "#ff5252"
+
+    # Score summary panel
+    summary = f"""<div class="grid2">
+  <div class="label">System Care Score</div><div class="value">{sys_score}%</div>
+  <div class="label">Operator Care Score</div><div class="value">{op_score}%</div>
+  <div class="label">Care Index</div><div class="value"><b style="color:{idx_color}">{care_index}%</b></div>
+</div>{render_bar(care_index, "blue" if care_index >= 75 else "amber" if care_index >= 50 else "red")}
+<div class="reason" style="margin-top:10px;">
+  The Care Index rewards operators who maintain the vessel actively. It rises when you take action
+  and decays slowly over time. Alerts and failures lower it. Recovery raises it.
+</div>"""
+
+    panel = render_panel("OKi Care", summary)
+
+    # Task list
+    tasks_html = ""
+    for task_id, label, description, points in CARE_TASKS:
+        last_done = cooldowns.get(task_id)
+        on_cooldown = bool(last_done and (now_ts - float(last_done)) < cooldown_s)
+
+        if on_cooldown:
+            hours_left = int((cooldown_s - (now_ts - float(last_done))) / 3600) + 1
+            tasks_html += f"""
+<div style="background:#1a1d23;border-radius:10px;padding:12px 14px;margin-bottom:6px;opacity:0.5;">
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <div>
+      <div style="color:#cad8e3;font-size:14px;">{label}</div>
+      <div style="color:#6a8aa0;font-size:11px;margin-top:3px;">{description}</div>
+    </div>
+    <div style="text-align:right;flex-shrink:0;margin-left:12px;">
+      <div style="color:#6a8aa0;font-size:11px;">+{points} pts</div>
+      <div style="color:#6a8aa0;font-size:10px;margin-top:2px;">in {hours_left}h</div>
+    </div>
+  </div>
+</div>"""
+        else:
+            tasks_html += f"""
+<a href="/care/task/{task_id}" style="display:block;text-decoration:none;margin-bottom:6px;">
+  <div style="background:#1a2e1a;border:1px solid #2a4a2a;border-radius:10px;padding:12px 14px;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='#243824'" onmouseout="this.style.background='#1a2e1a'">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="color:#4caf50;font-size:14px;">{label}</div>
+        <div style="color:#6a8aa0;font-size:11px;margin-top:3px;">{description}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;margin-left:12px;">
+        <div style="color:#4caf50;font-size:13px;font-weight:bold;">+{points}</div>
+        <div style="color:#6a8aa0;font-size:10px;">points</div>
+      </div>
+    </div>
+  </div>
+</a>"""
+
+    panel += f'<div style="margin-top:8px;"><div style="color:#9aa8b5;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">Log a care task</div>{tasks_html}</div>'
     panel += render_button("← Back", "/")
     return panel
 
@@ -1193,6 +1253,8 @@ def _case_system_group(case_id: str) -> str:
         "BAT": "Battery", "SOL": "Solar", "GEN": "Generator", "AC": "AC Power",
         "FUEL": "Fuel", "CAN": "CAN Bus", "SYS": "System", "ENG": "Engine",
         "INV": "Inverter", "CHG": "Charger", "VES": "Vessel",
+        "EVO": "Propulsion", "MOT": "Propulsion", "TRQ": "Propulsion",
+        "NET": "Network", "NAV": "Navigation",
     }
     return mapping.get(prefix, "General")
 
@@ -1211,6 +1273,9 @@ def render_knowledge_page():
         title      = getattr(case, "title",      "") or case_id
         root_cause = getattr(case, "root_cause", "") or ""
         symptoms   = getattr(case, "symptoms",   []) or []
+        conditions = getattr(case, "conditions", []) or []
+        actions    = getattr(case, "actions",    []) or []
+        solution   = getattr(case, "solution",   "") or ""
         snippet    = (root_cause[:100] + "…") if len(root_cause) > 100 else root_cause
         group      = _case_system_group(case_id)
 
@@ -1222,7 +1287,11 @@ def render_knowledge_page():
             tags_html = f'<div class="kb-tags">{tags_html}</div>'
 
         # data-search attribute enables JS filtering without re-rendering
-        searchable = f"{case_id} {title} {root_cause} {' '.join(symptoms)}".lower()
+        # Includes all fields: title, root_cause, solution, symptoms, conditions, actions
+        searchable = " ".join([
+            case_id, title, root_cause, solution,
+            " ".join(symptoms), " ".join(conditions), " ".join(actions)
+        ]).lower()
         cards_html += (
             f'<a class="kb-case" href="/knowledge/{case_id}" data-search="{searchable}">'
             f'<div class="kb-case-id">{group} · {case_id}</div>'
@@ -1240,9 +1309,11 @@ def render_knowledge_page():
   if(!inp) return;
   inp.addEventListener('input',function(){
     var q=inp.value.trim().toLowerCase();
+    var tokens=q.split(/\s+/).filter(function(t){return t.length>0;});
     var visible=0;
     cards.forEach(function(c){
-      var match=!q||c.getAttribute('data-search').indexOf(q)!==-1;
+      var text=c.getAttribute('data-search');
+      var match=!q||tokens.every(function(t){return text.indexOf(t)!==-1;});
       c.style.display=match?'':'none';
       if(match) visible++;
     });
@@ -1506,9 +1577,9 @@ def answer(choice: str):
 def care_page():
     return render_layout(render_care_page(), auto_refresh=False)
 
-@app.get("/care/task")
-def care_task():
-    apply_care_task(app.state.state_manager, increment=3)
+@app.get("/care/task/{task_id}")
+def care_task(task_id: str):
+    result = apply_care_task(app.state.state_manager, task_id)
     return RedirectResponse("/care", 302)
 
 @app.get("/knowledge")

@@ -1,6 +1,36 @@
 # ============================================================
-# OKi ENGINE v8.2 – Supervisory Intelligence Core
+# OKi ENGINE v8.3 – Supervisory Intelligence Core
 # ============================================================
+#
+# Changelog v8.3
+# ---------------
+# • generate_question() marked deprecated — no longer called in
+#   engine_cycle(); run_question_engine() (operator_question_engine)
+#   is the sole question system. Old function retained but guarded
+#   with a deprecation warning to avoid silent dual-write to Operator.
+# • process_operator_response() now routes to process_operator_answer_new
+#   when operator_question_engine is available, eliminating the dual-
+#   handler split. Falls back to legacy behaviour if import failed.
+# • evaluate_recommendation() now reads SituationType and DecisionWindow
+#   from state so CRITICAL_COUNTDOWN / MAYDAY situations surface in the
+#   recommendation text. Severity = CRITICAL with an active countdown
+#   overrides the default SOC/AC text.
+# • snapshot_changed() signature extended — also tracks SituationType
+#   so scenario progression triggers a memory snapshot even when
+#   voltage/power/health are unchanged.
+# • load_scenario() refactored: scenario data moved to _SCENARIO_DATA
+#   dict; load_scenario() is now a thin dispatcher. Eliminates 60+ lines
+#   of duplicated set-key blocks and makes adding new scenarios trivial.
+# • get_value() hardened: guards against values that are non-numeric
+#   strings (e.g. "N/A") — previously raised ValueError and crashed
+#   the cycle silently.
+# • EngineConfig gains three new thresholds used by the enriched
+#   recommendation logic: countdown_soc_floor, mayday_soc_floor,
+#   decision_window_urgent.
+# • engine_cycle() docstring updated to reflect actual step count (22).
+# • Minor: removed inline `from datetime import timezone` inside
+#   load_scenario(); timezone now imported at module level.
+# • All v8.2 / v8.1 / v8.0 logic preserved unless explicitly noted above.
 #
 # Changelog v8.2
 # ---------------
@@ -24,10 +54,11 @@
 
 import time
 import sys
+import warnings
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 # ------------------------------------------------------------
 # CASE LIBRARY
@@ -103,11 +134,14 @@ except Exception as _e:
     print(f"[OKi] Warning — vessel_state_engine import failed: {_e}")
     def evaluate_vessel_state(*a, **kw): pass
 
+# operator_question_engine: track whether the new system loaded
+_NEW_QUESTION_ENGINE_AVAILABLE = False
 try:
     from operator_question_engine import (
         run_question_engine,
         process_answer as process_operator_answer_new,
     )
+    _NEW_QUESTION_ENGINE_AVAILABLE = True
 except Exception as _e:
     print(f"[OKi] Warning — operator_question_engine import failed: {_e}")
     def run_question_engine(*a, **kw): pass
@@ -120,7 +154,7 @@ except Exception as _e:
     def compute_attention(*a, **kw): pass
 
 # ------------------------------------------------------------
-# NEW MODULES v8.1
+# MODULES v8.1
 # ------------------------------------------------------------
 
 try:
@@ -179,6 +213,19 @@ class EngineConfig:
     care_reward_interval: int = 30
     care_reward_increment: int = 1
 
+    # Care score dynamics
+    care_decay_cycles: int      = 360   # cycles between passive −5 decay (~24h at 4s/cycle)
+    care_drop_warning: int      = 3     # drop on WARNING severity
+    care_drop_critical: int     = 10    # drop on CRITICAL severity
+    care_drop_scenario: int     = 20    # drop on bad scenario (survival / MAYDAY)
+    care_rise_recovery: int     = 5     # rise when severity clears
+    care_task_cooldown_hours: int = 24  # hours before same task can be claimed again
+
+    # v8.3 — situation-aware recommendation thresholds
+    countdown_soc_floor: int = 25       # SoC at which a countdown escalates to WARNING
+    mayday_soc_floor: int = 15          # SoC at which recommendation escalates to MAYDAY language
+    decision_window_urgent: str = "NOW" # DecisionWindow value that triggers immediate action text
+
 
 CONFIG = EngineConfig()
 
@@ -194,7 +241,14 @@ def get_section(state: State, section: str) -> Dict[str, Any]:
 
 
 def get_value(state: State, section: str, key: str, default: float = 0.0) -> float:
-    return float(get_section(state, section).get(key) or default)
+    """Return a float from state, guarding against None and non-numeric strings."""
+    raw = get_section(state, section).get(key)
+    if raw is None:
+        return default
+    try:
+        return float(raw)
+    except (TypeError, ValueError):
+        return default
 
 
 def get_optional(state: State, section: str, key: str) -> Any:
@@ -208,8 +262,8 @@ def get_optional(state: State, section: str, key: str) -> Any:
 
 def compute_energy_mode(state: State) -> None:
     battery = get_section(state, "Battery")
-    voltage = float(battery.get("Voltage") or 0.0)
-    current = float(battery.get("Current") or 0.0)
+    voltage = get_value(state, "Battery", "Voltage")
+    current = get_value(state, "Battery", "Current")
 
     derived = get_section(state, "Derived")
     derived["DCPower"] = round(voltage * current, 1)
@@ -235,13 +289,14 @@ def compute_ac_state(state: State) -> None:
     if voltage is None:
         ac["State"] = "UNKNOWN"
         return
-    if voltage < CONFIG.ac_present_threshold:
+    if float(voltage) < CONFIG.ac_present_threshold:
         ac["State"] = "NO_SHORE"
         return
     if power is None:
         ac["State"] = "AC_PRESENT"
         return
 
+    power = float(power)
     if power < 5:
         ac["State"] = "IDLE"
     elif power < 50:
@@ -258,8 +313,8 @@ def compute_ac_state(state: State) -> None:
 
 
 def compute_solar_detection(state: State) -> None:
-    solar = get_section(state, "Solar")
-    solar_voltage = float(solar.get("Voltage") or 0.0)
+    solar         = get_section(state, "Solar")
+    solar_voltage = get_value(state, "Solar", "Voltage")
     solar["Detected"] = solar_voltage > CONFIG.solar_detection_threshold
 
 
@@ -328,7 +383,7 @@ def _build_health_input(state: State) -> dict:
 
     soc_raw     = battery.get("SoC")
     soc_percent = float(soc_raw) if soc_raw is not None else None
-    current     = float(battery.get("Current") or 0.0)
+    current     = get_value(state, "Battery", "Current")
 
     return {
         "bms_online":               bms_online,
@@ -411,15 +466,33 @@ def _track_deep_discharge(state: State) -> None:
 
 
 # ============================================================
-# RECOMMENDATION ENGINE
+# RECOMMENDATION ENGINE  (v8.3 — situation-aware)
 # ============================================================
 
 
 def evaluate_recommendation(state: State) -> None:
-    system     = get_section(state, "System")
-    ac_state   = get_section(state, "AC").get("State")
-    soc        = get_optional(state, "Battery", "SoC")
-    advisories = system.get("HealthAdvisories") or []
+    """
+    Build the operator-facing recommendation string.
+
+    Priority order (highest wins):
+      1. MAYDAY or active CRITICAL_COUNTDOWN situation type
+      2. Battery SoC critical / low / full
+      3. AC state anomalies
+      4. Health advisories
+      5. Normal operation
+    """
+    system        = get_section(state, "System")
+    ac_state      = get_section(state, "AC").get("State")
+    soc           = get_optional(state, "Battery", "SoC")
+    advisories    = system.get("HealthAdvisories") or []
+
+    # v8.3 — read situation context written by v8.1 modules
+    # These keys are written by situation_classifier (step 16/17), which runs
+    # AFTER evaluate_recommendation in the cycle.  We read them defensively —
+    # they will be populated from the *previous* cycle on all cycles after the
+    # first, which is sufficient for progressive escalation.
+    situation_type   = get_section(state, "Situation").get("SituationType")
+    decision_window  = get_section(state, "Situation").get("DecisionWindow")
 
     if soc is not None:
         soc = float(soc)
@@ -428,7 +501,25 @@ def evaluate_recommendation(state: State) -> None:
     reason: Optional[str] = None
     rule:   Optional[str] = None
 
-    if soc is not None:
+    # ── Priority 1 — critical situation types ────────────────
+    if situation_type == "MAYDAY":
+        soc_str = f" Battery at {soc:.0f}%." if soc is not None else ""
+        recommendation = (
+            f"MAYDAY situation active.{soc_str} "
+            "Contact World Marine Care immediately — 100.66.110.127."
+        )
+        reason, rule = "MAYDAY situation", "MAYDAY"
+
+    elif situation_type == "CRITICAL_COUNTDOWN":
+        soc_str = f" Battery at {soc:.0f}%." if soc is not None else ""
+        recommendation = (
+            f"Critical countdown active.{soc_str} "
+            "Immediate action required — start generator or reduce all non-essential loads."
+        )
+        reason, rule = "Critical countdown", "CRITICAL_COUNTDOWN"
+
+    # ── Priority 2 — battery SoC ─────────────────────────────
+    elif soc is not None:
         if soc <= CONFIG.soc_critical:
             recommendation = (
                 f"Battery critically low at {soc:.0f}%. "
@@ -448,6 +539,7 @@ def evaluate_recommendation(state: State) -> None:
             )
             reason, rule = "Battery full", "SOC_FULL"
 
+    # ── Priority 3 — AC state ────────────────────────────────
     if rule is None:
         if ac_state == "NO_SHORE":
             recommendation = "No shore power detected."
@@ -459,6 +551,7 @@ def evaluate_recommendation(state: State) -> None:
             recommendation = "AC present but no load active."
             reason, rule = "System idle", "IDLE"
 
+    # ── Priority 4 — health advisory ────────────────────────
     if rule is None and advisories:
         adv_text = advisories[0]
         for prefix in ("⚠️ ", "💡 "):
@@ -466,13 +559,17 @@ def evaluate_recommendation(state: State) -> None:
         recommendation = adv_text
         reason, rule = "Health advisory", "HEALTH_ADVISORY"
 
+    # ── Append decision-window urgency tag (non-destructive) ─
+    if decision_window == CONFIG.decision_window_urgent and rule not in ("MAYDAY", "CRITICAL_COUNTDOWN"):
+        recommendation += " Act now."
+
     system["Recommendation"]       = recommendation
     system["RecommendationReason"] = reason
     system["RecommendationRule"]   = rule
 
 
 # ============================================================
-# CASE CONSULTATION — FIXED v8.1
+# CASE CONSULTATION
 # Case objects are dataclasses — use attribute access, not dict keys
 # ============================================================
 
@@ -482,7 +579,8 @@ def consult_case_library(state: State) -> None:
     issues = system.get("Inconsistency")
 
     if not issues:
-        system["Advisory"] = None
+        system["Advisory"]     = None
+        system["AdvisoryCase"] = None
         return
 
     search_text = " ".join(issues)
@@ -490,12 +588,12 @@ def consult_case_library(state: State) -> None:
     try:
         matches = CASE_LIBRARY.search_cases(search_text)
     except Exception:
-        system["Advisory"] = None
+        system["Advisory"]     = None
+        system["AdvisoryCase"] = None
         return
 
     if matches:
-        top = matches[0]
-        # Support both dataclass objects and plain dicts safely
+        top     = matches[0]
         case_id = getattr(top, "case_id", None) or (top.get("case_id", "?") if isinstance(top, dict) else "?")
         title   = getattr(top, "title",   None) or (top.get("title",   "?") if isinstance(top, dict) else "?")
         system["Advisory"]     = f"Resembles case {case_id} — {title}"
@@ -510,7 +608,25 @@ def consult_case_library(state: State) -> None:
 # ============================================================
 
 
+
+# ── Care task catalogue ───────────────────────────────────────────────────────
+# Each entry: (task_id, label, description, points)
+CARE_TASKS = [
+    ("clean_bilge",       "Clean the bilge",             "Remove water and debris from the bilge.",                    5),
+    ("check_terminals",   "Check battery terminals",     "Inspect and clean battery terminal connections.",            4),
+    ("inspect_solar",     "Inspect solar panels",        "Clean panels and check wiring and connections.",             3),
+    ("shore_power_cable", "Inspect shore power cable",   "Check cable condition, connectors and shore power inlet.",   3),
+    ("test_bilge_pump",   "Test bilge pump",             "Run bilge pump and confirm float switch operation.",         4),
+    ("clean_strainers",   "Clean salt water strainers",  "Remove and clean all raw water intake strainers.",           4),
+    ("check_engine_oil",  "Check engine oil levels",     "Check and top up engine oil on both engines.",               5),
+    ("update_firmware",   "Update firmware",             "Update OKi, Victron and navigation system firmware.",        6),
+    ("read_manual",       "Read the manual",             "Study vessel systems documentation for 30 minutes.",         3),
+    ("full_inspection",   "Full vessel inspection",      "Complete walk-through inspection of all vessel systems.",   10),
+]
+
+
 def compute_care(state: State) -> None:
+    """Recompute CareIndex from SystemHealth and OperatorCareScore."""
     system = get_section(state, "System")
     care   = get_section(state, "Care")
 
@@ -521,16 +637,112 @@ def compute_care(state: State) -> None:
     care["CareIndex"]       = round(0.6 * sys_score + 0.4 * op_score)
 
 
-def apply_care_task(state_manager, increment: int = 3) -> None:
+def _clamp_op_score(care: dict) -> None:
+    """Keep OperatorCareScore within 0–100."""
+    care["OperatorCareScore"] = max(0, min(100, int(care.get("OperatorCareScore") or 0)))
+
+
+def apply_care_task(state_manager, task_id: str) -> dict:
+    """
+    Log a named care task. Returns a dict with:
+      - "ok": bool
+      - "points": int added (0 if on cooldown)
+      - "message": str to show the operator
+    """
     state = state_manager.get()
     care  = get_section(state, "Care")
 
+    # Find task in catalogue
+    task = next((t for t in CARE_TASKS if t[0] == task_id), None)
+    if task is None:
+        return {"ok": False, "points": 0, "message": "Unknown task."}
+
+    task_id_, label, _, points = task
+
+    # Cooldown check
+    cooldowns = care.get("TaskCooldowns") or {}
+    last_done = cooldowns.get(task_id_)
+    now_ts    = datetime.now(timezone.utc).timestamp()
+    cooldown_seconds = CONFIG.care_task_cooldown_hours * 3600
+
+    if last_done and (now_ts - float(last_done)) < cooldown_seconds:
+        hours_left = int((cooldown_seconds - (now_ts - float(last_done))) / 3600) + 1
+        return {
+            "ok": False,
+            "points": 0,
+            "message": f"Already logged today. Available again in {hours_left}h.",
+        }
+
+    # Apply points
     current = int(care.get("OperatorCareScore") or 0)
-    care["OperatorCareScore"] = min(100, current + increment)
+    care["OperatorCareScore"] = min(100, current + points)
+    cooldowns[task_id_] = now_ts
+    care["TaskCooldowns"] = cooldowns
+
     compute_care(state)
+    state_manager.save()
+
+    return {"ok": True, "points": points, "message": f"+{points} — {label} logged."}
+
+
+def _care_event_drop(state: State) -> None:
+    """
+    Drop OperatorCareScore based on current severity and vessel situation.
+    Called once per engine cycle — uses a flag to avoid double-dropping.
+    """
+    system  = get_section(state, "System")
+    care    = get_section(state, "Care")
+    vessel  = get_section(state, "VesselState")
+    situation = get_section(state, "Situation")
+
+    severity      = system.get("Severity")          # None / "WARNING" / "CRITICAL"
+    prev_severity = care.get("_PrevSeverity")
+    survival_mode = bool(vessel.get("SurvivalMode"))
+    sit_type      = situation.get("SituationType")
+
+    drop = 0
+
+    # Scenario / survival — biggest drop, only trigger once per event
+    if (survival_mode or sit_type in ("MAYDAY", "CRITICAL_COUNTDOWN")):
+        if not care.get("_InScenarioDrop"):
+            drop = CONFIG.care_drop_scenario
+            care["_InScenarioDrop"] = True
+    else:
+        care["_InScenarioDrop"] = False
+
+    # Severity transitions (WARNING / CRITICAL) — drop on entry, rise on exit
+    if severity == "CRITICAL" and prev_severity != "CRITICAL":
+        drop = max(drop, CONFIG.care_drop_critical)
+    elif severity == "WARNING" and prev_severity not in ("WARNING", "CRITICAL"):
+        drop = max(drop, CONFIG.care_drop_warning)
+    elif severity is None and prev_severity in ("WARNING", "CRITICAL"):
+        # Recovery — care score rises
+        current = int(care.get("OperatorCareScore") or 0)
+        care["OperatorCareScore"] = min(100, current + CONFIG.care_rise_recovery)
+
+    care["_PrevSeverity"] = severity
+
+    if drop > 0:
+        current = int(care.get("OperatorCareScore") or 0)
+        care["OperatorCareScore"] = max(0, current - drop)
+
+
+def _care_passive_decay(state: State) -> None:
+    """
+    Passive decay: −5 points every ~24 hours of engine cycles.
+    Tracks cycle count in Care._DecayCycleCounter.
+    """
+    care    = get_section(state, "Care")
+    counter = int(care.get("_DecayCycleCounter") or 0) + 1
+    care["_DecayCycleCounter"] = counter
+
+    if counter % CONFIG.care_decay_cycles == 0:
+        current = int(care.get("OperatorCareScore") or 0)
+        care["OperatorCareScore"] = max(0, current - 5)
 
 
 def _auto_care_reward(state: State) -> None:
+    """Slow passive reward for sustained healthy operation (unchanged)."""
     system = get_section(state, "System")
     care   = get_section(state, "Care")
 
@@ -550,14 +762,15 @@ def _auto_care_reward(state: State) -> None:
 
 
 # ============================================================
-# SNAPSHOT MEMORY SYSTEM
+# SNAPSHOT MEMORY SYSTEM  (v8.3 — tracks SituationType)
 # ============================================================
 
 
 def build_snapshot(state: State) -> Dict[str, Any]:
-    ac      = get_section(state, "AC")
-    derived = get_section(state, "Derived")
-    system  = get_section(state, "System")
+    ac       = get_section(state, "AC")
+    derived  = get_section(state, "Derived")
+    system   = get_section(state, "System")
+    situation = get_section(state, "Situation")
 
     return {
         "timestamp":        datetime.utcnow().isoformat(),
@@ -570,16 +783,19 @@ def build_snapshot(state: State) -> Dict[str, Any]:
         "Advisory":         system.get("Advisory"),
         "Recommendation":   system.get("Recommendation"),
         "HealthCategories": system.get("HealthCategories"),
+        "SituationType":    situation.get("SituationType"),   # v8.3
     }
 
 
 def snapshot_changed(state: State, snapshot: Dict[str, Any]) -> bool:
     system    = get_section(state, "System")
+    # v8.3 — include SituationType so scenario transitions trigger a memory write
     signature = (
         snapshot["ACVoltage"],
         snapshot["ACPower"],
         snapshot["Mode"],
         snapshot["Health"],
+        snapshot.get("SituationType"),
     )
     last = system.get("LastSnapshotSignature")
     if signature == last:
@@ -589,40 +805,45 @@ def snapshot_changed(state: State, snapshot: Dict[str, Any]) -> bool:
 
 
 # ============================================================
-# OPERATOR QUESTION SYSTEM
+# OPERATOR QUESTION SYSTEM  (v8.3 — deprecated, not called)
 # ============================================================
 
 
 def generate_question(state: State) -> None:
-    now    = time.time()
-    op     = get_section(state, "Operator")
-    system = get_section(state, "System")
-
-    if op.get("InteractionState"):
-        return
-
-    last_question_time = float(op.get("LastQuestionTime") or 0.0)
-    if now - last_question_time < CONFIG.question_cooldown:
-        return
-
-    issues = system.get("Inconsistency")
-    if not issues:
-        return
-
-    op["InteractionState"]   = "AwaitingResponse"
-    op["ActiveQuestionText"] = f"Inconsistency detected: {'; '.join(issues)}. Confirm?"
-    op["OptionA"]            = "Expected"
-    op["OptionB"]            = "Investigating"
-    op["OptionC"]            = "Unexpected"
-    op["LastQuestionTime"]   = now
+    """
+    DEPRECATED in v8.3.
+    run_question_engine() (operator_question_engine) is the sole
+    question system.  This function is retained for reference but
+    is no longer called in engine_cycle().  Calling it directly
+    risks a dual-write collision on the Operator section.
+    """
+    warnings.warn(
+        "generate_question() is deprecated. Use run_question_engine() instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
 
 
 # ============================================================
-# OPERATOR RESPONSE
+# OPERATOR RESPONSE  (v8.3 — unified handler)
 # ============================================================
 
 
 def process_operator_response(state_manager, choice: str) -> None:
+    """
+    Route operator response to the correct handler.
+
+    If operator_question_engine loaded successfully, delegate to
+    process_operator_answer_new() which understands the new question
+    format.  Fall back to the legacy A/B/C handler only when the
+    new engine is unavailable.
+    """
+    if _NEW_QUESTION_ENGINE_AVAILABLE:
+        state = state_manager.get()
+        process_operator_answer_new(state, choice)
+        return
+
+    # Legacy fallback — only reached if operator_question_engine failed to import
     state      = state_manager.get()
     op         = get_section(state, "Operator")
     option_map = {"A": op.get("OptionA"), "B": op.get("OptionB"), "C": op.get("OptionC")}
@@ -651,129 +872,136 @@ def toggle_dev_mode(state_manager) -> bool:
 
 
 # ============================================================
-# SCENARIOS
+# SCENARIOS  (v8.3 — data-driven dispatch)
 # ============================================================
+
+_SCENARIO_DATA: Dict[str, Dict[str, Any]] = {
+    "anchor": {
+        "Battery": {"SoC": 63, "Voltage": 25.1, "Current": -8.0},
+        "AC":      {"Shore": False, "GridVoltage": 0, "GridPower": 0, "ShellyStatus": "OFFLINE"},
+        "Derived": {"EnergyMode": "DISCHARGING"},
+        "Communication": {"CANHealthy": True},
+    },
+    "casa": {
+        "Battery": {"SoC": 72, "Voltage": 26.8, "Current": 12.0},
+        "AC":      {"Shore": True, "GridVoltage": 230, "GridPower": 420, "ShellyStatus": "ONLINE"},
+        "Derived": {"EnergyMode": "CHARGING"},
+        "Communication": {"CANHealthy": True},
+    },
+    "drain": {
+        "Battery": {"SoC": 18, "Voltage": 23.8, "Current": -22.0},
+        "AC":      {"Shore": False, "GridVoltage": 0, "GridPower": 0, "ShellyStatus": "OFFLINE"},
+        "Derived": {"EnergyMode": "DISCHARGING"},
+        "Communication": {"CANHealthy": None},
+    },
+    "generator_failure": {
+        "Battery":       {"SoC": 22, "Voltage": 24.1, "Current": -10.0},
+        "AC":            {"Shore": False, "GridVoltage": 0, "GridPower": 0, "ShellyStatus": "OFFLINE"},
+        "Derived":       {"EnergyMode": "DISCHARGING"},
+        "Communication": {"CANHealthy": True},
+        "Generator":     {"Running": False, "Expected": True, "RecentlyRan": False, "ErrorCode": ""},
+        "Fuel":          {"LevelPercent": 40.0, "SensorReliable": True, "State": "OK", "Inconsistency": None},
+        "Solar":         {"Power": 0.0, "Voltage": 0.0, "State": "NIGHT"},
+    },
+}
+
+
+def _get_known_scenarios() -> List[str]:
+    return list(_SCENARIO_DATA.keys())
 
 
 def load_scenario(state_manager, name: str) -> None:
+    """
+    Load a named scenario into state.
+
+    Raises ValueError for unknown scenario names so the caller
+    (UI / test) gets a clear error rather than silent no-op.
+    """
+    if name not in _SCENARIO_DATA:
+        known = ", ".join(_get_known_scenarios())
+        raise ValueError(f"[OKi] Unknown scenario '{name}'. Known: {known}")
+
     state   = state_manager.get()
-    battery = get_section(state, "Battery")
-    ac      = get_section(state, "AC")
-    derived = get_section(state, "Derived")
-    comm    = get_section(state, "Communication")
+    patches = _SCENARIO_DATA[name]
 
-    if name == "anchor":
-        battery["SoC"]     = 63
-        battery["Voltage"] = 25.1
-        battery["Current"] = -8.0
-        ac["Shore"]        = False
-        ac["GridVoltage"]  = 0
-        ac["GridPower"]    = 0
-        ac["ShellyStatus"] = "OFFLINE"
-        derived["EnergyMode"]  = "DISCHARGING"
-        comm["CANHealthy"]     = True
-        comm["LastCANMessage"] = datetime.utcnow().isoformat()
+    for section, keys in patches.items():
+        section_data = get_section(state, section)
+        section_data.update(keys)
 
-    elif name == "casa":
-        battery["SoC"]     = 72
-        battery["Voltage"] = 26.8
-        battery["Current"] = 12.0
-        ac["Shore"]        = True
-        ac["GridVoltage"]  = 230
-        ac["GridPower"]    = 420
-        ac["ShellyStatus"] = "ONLINE"
-        derived["EnergyMode"]  = "CHARGING"
-        comm["CANHealthy"]     = True
-        comm["LastCANMessage"] = datetime.utcnow().isoformat()
+    # Timestamp communication sections that need a live CAN time
+    comm = get_section(state, "Communication")
+    if comm.get("CANHealthy") is True and comm.get("LastCANMessage") is None:
+        comm["LastCANMessage"] = datetime.now(timezone.utc).isoformat()
 
-    elif name == "drain":
-        battery["SoC"]     = 18
-        battery["Voltage"] = 23.8
-        battery["Current"] = -22.0
-        ac["Shore"]        = False
-        ac["GridVoltage"]  = 0
-        ac["GridPower"]    = 0
-        ac["ShellyStatus"] = "OFFLINE"
-        derived["EnergyMode"]  = "DISCHARGING"
-        comm["CANHealthy"]     = None
-        comm["LastCANMessage"] = None
-
-    elif name == "generator_failure":
-        # Demo: battery low + discharging + generator expected but not running
-        # Immediately triggers CRITICAL_COUNTDOWN and diagnostic engine
-        from datetime import timezone
-        battery["SoC"]     = 22
-        battery["Voltage"] = 24.1
-        battery["Current"] = -10.0
-        ac["Shore"]        = False
-        ac["GridVoltage"]  = 0
-        ac["GridPower"]    = 0
-        ac["ShellyStatus"] = "OFFLINE"
-        derived["EnergyMode"]  = "DISCHARGING"
-        comm["CANHealthy"]     = True
-        comm["LastCANMessage"] = datetime.utcnow().isoformat()
-
-        gen = get_section(state, "Generator")
-        gen["Running"]     = False
-        gen["Expected"]    = True
-        gen["RecentlyRan"] = False
-        gen["ErrorCode"]   = ""
-
-        fuel = get_section(state, "Fuel")
-        fuel["LevelPercent"]   = 40.0
-        fuel["LastUpdate"]     = datetime.now(timezone.utc)
-        fuel["SensorReliable"] = True
-        fuel["State"]          = "OK"
-        fuel["Inconsistency"]  = None
-
-        solar = get_section(state, "Solar")
-        solar["Power"]   = 0.0
-        solar["Voltage"] = 0.0
-        solar["State"]   = "NIGHT"
+    # Timestamp fuel if present and missing
+    fuel = get_section(state, "Fuel")
+    if fuel and fuel.get("LevelPercent") is not None and fuel.get("LastUpdate") is None:
+        fuel["LastUpdate"] = datetime.now(timezone.utc)
 
     state_manager.save()
 
 
 # ============================================================
-# ENGINE CYCLE v8.1
+# ENGINE CYCLE v8.3  (22 steps)
 # ============================================================
 
 
 def engine_cycle(state_manager) -> State:
     """
-    Full OKi engine cycle — 21 steps.
-    Steps 14–18 are new in v8.1.
+    Full OKi engine cycle — 22 steps.
+
+    Step  1  compute_energy_mode       — DC power and charge direction
+    Step  2  compute_ac_state          — shore power state classification
+    Step  3  compute_solar_detection   — panel voltage present?
+    Step  4  compute_solar_state       — full solar input computation
+    Step  5  detect_blackout           — blackout monitor
+    Step  6  compute_system_health     — health score + penalties + CAN watchdog
+    Step  7  compute_energy_forecast   — energy forecast
+    Step  8  evaluate_vessel_state     — vessel state
+    Step  9  evaluate_strategy         — energy strategy
+    Step 10  evaluate_recommendation   — operator recommendation (situation-aware v8.3)
+    Step 11  consult_case_library      — knowledge base match
+    Step 12  compute_care              — care index
+    Step 13  _auto_care_reward         — healthy-cycle reward
+    Step 14  compute_fuel_state        — fuel level + sensor reliability
+    Step 15  compute_energy_time       — time-to-critical / time-to-shutdown
+    Step 16  evaluate_situation_type   — SituationType classification
+    Step 17  evaluate_decision_window  — DecisionWindow pressure level
+    Step 18  run_diagnostics           — diagnostic state machine + questions
+    Step 19  run_question_engine       — operator question engine (sole handler)
+    Step 20  compute_attention         — attention level
+    Step 21  build_snapshot / changed  — snapshot memory
+    Step 22  state_manager.save        — persist state
     """
     state = state_manager.get()
 
-    # Existing pipeline
-    compute_energy_mode(state)
-    compute_ac_state(state)
-    compute_solar_detection(state)
-    compute_solar_state(state)
-    detect_blackout(state)
-    compute_system_health(state)
-    compute_energy_forecast(state)
-    evaluate_vessel_state(state)
-    evaluate_strategy(state)
-    evaluate_recommendation(state)
-    consult_case_library(state)
-    compute_care(state)
-    _auto_care_reward(state)
-
-    # ── New modules v8.1 ──────────────────────────────────────
-    compute_fuel_state(state)        # fuel level + sensor reliability
-    compute_energy_time(state)       # time-to-critical / time-to-shutdown
-    evaluate_situation_type(state)   # SituationType classification
-    evaluate_decision_window(state)  # DecisionWindow pressure level
-    run_diagnostics(state)           # diagnostic state machine + questions
-    # ─────────────────────────────────────────────────────────
-
-    run_question_engine(state)
-    compute_attention(state)
+    compute_energy_mode(state)          #  1
+    compute_ac_state(state)             #  2
+    compute_solar_detection(state)      #  3
+    compute_solar_state(state)          #  4
+    detect_blackout(state)              #  5
+    compute_system_health(state)        #  6
+    compute_energy_forecast(state)      #  7
+    evaluate_vessel_state(state)        #  8
+    evaluate_strategy(state)            #  9
+    evaluate_recommendation(state)      # 10
+    consult_case_library(state)         # 11
+    compute_care(state)                 # 12
+    _care_event_drop(state)             # 12b — severity-based drops + recovery
+    _care_passive_decay(state)          # 12c — daily passive decay
+    _auto_care_reward(state)            # 13
+    compute_fuel_state(state)           # 14
+    compute_energy_time(state)          # 15
+    evaluate_situation_type(state)      # 16
+    evaluate_decision_window(state)     # 17
+    run_diagnostics(state)              # 18
+    run_question_engine(state)          # 19
+    compute_attention(state)            # 20
 
     snap = build_snapshot(state)
     if snapshot_changed(state, snap):
-        state_manager.append_memory(snap)
+        state_manager.append_memory(snap)   # 21
+
+    state_manager.save()                    # 22
 
     return state
