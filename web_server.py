@@ -146,8 +146,8 @@ def _startup():
 
     if _ENGINE_AVAILABLE and app.state.state_manager is not None:
         try:
-            load_scenario(app.state.state_manager, "generator_failure")
-            print("[OKi] Demo scenario loaded: generator_failure")
+            load_scenario(app.state.state_manager, "casa_azul")
+            print("[OKi] Demo scenario loaded: casa_azul")
         except Exception as _se:
             print(f"[OKi] Demo scenario skipped: {_se}")
 

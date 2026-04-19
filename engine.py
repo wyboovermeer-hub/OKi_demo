@@ -888,6 +888,15 @@ _SCENARIO_DATA: Dict[str, Dict[str, Any]] = {
         "Derived": {"EnergyMode": "CHARGING"},
         "Communication": {"CANHealthy": True},
     },
+    "casa_azul": {
+        "Battery": {"SoC": 85, "Voltage": 27.2, "Current": 15.0},
+        "AC":      {"Shore": True, "GridVoltage": 230, "GridPower": 380, "ShellyStatus": "ONLINE"},
+        "Solar":   {"Power": 320.0, "Voltage": 34.5, "State": "PRODUCING"},
+        "Derived": {"EnergyMode": "CHARGING"},
+        "Generator": {"Running": False, "Expected": False, "RecentlyRan": False, "ErrorCode": ""},
+        "Fuel":    {"LevelPercent": 75.0, "SensorReliable": True, "State": "OK", "Inconsistency": None},
+        "Communication": {"CANHealthy": True},
+    },
     "drain": {
         "Battery": {"SoC": 18, "Voltage": 23.8, "Current": -22.0},
         "AC":      {"Shore": False, "GridVoltage": 0, "GridPower": 0, "ShellyStatus": "OFFLINE"},
