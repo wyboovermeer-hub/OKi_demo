@@ -1611,6 +1611,12 @@ def api_toggle_demo():
     from fastapi.responses import JSONResponse
     global DEMO_MODE
     DEMO_MODE = not DEMO_MODE
+    # Reset care state when demo is turned on so tasks are fresh and score starts at 60
+    if DEMO_MODE and _ENGINE_AVAILABLE and app.state.state_manager is not None:
+        try:
+            load_scenario(app.state.state_manager, "casa_azul")
+        except Exception:
+            pass
     return JSONResponse({"ok": True, "focusMode": FOCUS_MODE, "devMode": False, "demoMode": DEMO_MODE, "psychedelic": PSYCHEDELIC_MODE})
 
 @app.get("/api/toggle-psychedelic")
