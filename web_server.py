@@ -571,7 +571,16 @@ body::after{
   border-radius:0 18px 18px 0;z-index:3;
 }
 
-.header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;margin-bottom:6px;gap:6px;position:relative;z-index:2}
+.header{
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+  margin-bottom:6px;gap:6px;position:relative;z-index:2;
+  border:1px solid rgba(0,229,255,0.25);
+  border-radius:12px;
+  padding:6px;
+  box-shadow:
+    0 0 10px rgba(0,229,255,0.2),
+    inset 0 0 12px rgba(0,229,255,0.06);
+}
 .header-left{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
 .header-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
 .title-block{text-align:center}
@@ -634,7 +643,7 @@ input:checked+.slider:before{transform:translateX(18px);background:#00e5ff}
 .soc-label{font-family:'Orbitron',monospace;font-size:clamp(8px,1.6vw,10px);color:#3a6a8a;letter-spacing:0.3em;margin-top:2px;text-transform:uppercase}
 
 /* SoC bar — bright lime green beam like reference */
-.soc-bar-outer{width:100%;height:10px;background:rgba(0,0,0,0.6);border-radius:5px;overflow:hidden;margin-top:10px;border:1px solid rgba(0,255,136,0.2)}
+.soc-bar-outer{width:100%;height:8px;background:rgba(0,0,0,0.8);border-radius:4px;overflow:hidden;margin-top:10px;border:1px solid rgba(0,255,136,0.35)}
 .soc-bar-fill{height:100%;border-radius:5px;transition:width 0.6s ease}
 .soc-bar-discharging{
   background:linear-gradient(90deg,#00cc44,#44ff44,#aaff00)!important;
@@ -657,19 +666,19 @@ input:checked+.slider:before{transform:translateX(18px);background:#00e5ff}
 
 /* ── Panels — plasma tendril border like reference ── */
 .panel{
-  background:rgba(4,1,22,0.88);
+  background:rgba(5,0,25,0.9);
   padding:clamp(8px,2vw,12px);
-  border-radius:14px;
-  margin-bottom:8px;
+  border-radius:16px;
+  margin-bottom:10px;
   position:relative;
   overflow:visible;
-  /* Multi-layer plasma glow border */
+  border:1px solid rgba(0,229,255,0.3);
   box-shadow:
-    0 0 0 1.5px rgba(0,229,255,0.7),
-    0 0 0 3px rgba(255,0,200,0.25),
-    0 0 15px rgba(0,229,255,0.12),
-    0 0 30px rgba(200,0,255,0.06),
-    inset 0 0 20px rgba(0,0,30,0.5);
+    0 0 10px rgba(0,229,255,0.25),
+    0 0 30px rgba(255,0,200,0.18),
+    0 0 60px rgba(0,229,255,0.06),
+    inset 0 0 25px rgba(0,0,50,0.6),
+    inset 0 0 60px rgba(0,0,30,0.4);
 }
 
 /* Panel top plasma edge */
@@ -702,7 +711,7 @@ input:checked+.slider:before{transform:translateX(18px);background:#00e5ff}
 .badge-critical{background:rgba(40,0,12,0.9);color:#ff2255;border:1px solid rgba(255,34,85,0.7)}
 .badge-ok{background:rgba(0,30,12,0.9);color:#00ff88;border:1px solid rgba(0,255,136,0.7)}
 
-/* ── Operator buttons — exactly like reference image ── */
+/* ── Operator buttons — glass neon, exactly per reference ── */
 /* Expected — neon green */
 .op-button{
   display:block;width:92%;margin:6px auto;
@@ -711,35 +720,43 @@ input:checked+.slider:before{transform:translateX(18px);background:#00e5ff}
   font-size:clamp(13px,2.5vw,16px);
   font-family:'Exo 2',sans-serif;font-weight:600;
   letter-spacing:0.05em;cursor:pointer;touch-action:manipulation;min-height:52px;
-  background:rgba(0,20,8,0.85);
+  background:linear-gradient(135deg,rgba(0,40,20,0.9),rgba(0,10,5,0.9));
   color:#00ff88;
-  border:2px solid rgba(0,255,136,0.8);
-  box-shadow:0 0 18px rgba(0,255,136,0.4),0 0 40px rgba(0,255,136,0.15),inset 0 0 20px rgba(0,255,136,0.05);
-  text-shadow:0 0 10px rgba(0,255,136,0.8);
+  border:2px solid #00ff88;
+  box-shadow:
+    0 0 12px #00ff88,
+    0 0 30px rgba(0,255,136,0.4),
+    inset 0 0 25px rgba(0,255,136,0.08);
+  text-shadow:0 0 8px #00ff88;
   transition:all 0.15s ease;
 }
 .op-button:hover,.op-button:active{
-  box-shadow:0 0 28px rgba(0,255,136,0.6),inset 0 0 30px rgba(0,255,136,0.1);
-  border-color:rgba(0,255,136,1);
+  box-shadow:0 0 24px #00ff88,0 0 50px rgba(0,255,136,0.5),inset 0 0 35px rgba(0,255,136,0.12);
 }
-/* Investigating — amber/orange */
+/* Investigating — amber */
 .op-button-b{
-  background:rgba(20,12,0,0.85);
+  background:linear-gradient(135deg,rgba(40,25,0,0.9),rgba(10,5,0,0.9));
   color:#ffcc00;
-  border-color:rgba(255,180,0,0.8);
-  box-shadow:0 0 18px rgba(255,180,0,0.35),0 0 40px rgba(255,100,0,0.15),inset 0 0 20px rgba(255,160,0,0.05);
-  text-shadow:0 0 10px rgba(255,200,0,0.8);
+  border-color:#ffcc00;
+  box-shadow:
+    0 0 12px #ffcc00,
+    0 0 30px rgba(255,180,0,0.4),
+    inset 0 0 25px rgba(255,180,0,0.08);
+  text-shadow:0 0 8px #ffcc00;
 }
-.op-button-b:hover,.op-button-b:active{box-shadow:0 0 28px rgba(255,180,0,0.55),inset 0 0 30px rgba(255,160,0,0.1)}
-/* Unexpected — pink/magenta */
+.op-button-b:hover,.op-button-b:active{box-shadow:0 0 24px #ffcc00,0 0 50px rgba(255,180,0,0.5),inset 0 0 35px rgba(255,180,0,0.12)}
+/* Unexpected — magenta */
 .op-button-c{
-  background:rgba(20,0,14,0.85);
+  background:linear-gradient(135deg,rgba(40,0,25,0.9),rgba(10,0,10,0.9));
   color:#ff44cc;
-  border-color:rgba(255,60,200,0.8);
-  box-shadow:0 0 18px rgba(255,60,200,0.35),0 0 40px rgba(255,0,150,0.15),inset 0 0 20px rgba(255,40,180,0.05);
-  text-shadow:0 0 10px rgba(255,60,200,0.8);
+  border-color:#ff44cc;
+  box-shadow:
+    0 0 12px #ff44cc,
+    0 0 30px rgba(255,60,200,0.4),
+    inset 0 0 25px rgba(255,60,200,0.08);
+  text-shadow:0 0 8px #ff44cc;
 }
-.op-button-c:hover,.op-button-c:active{box-shadow:0 0 28px rgba(255,60,200,0.55),inset 0 0 30px rgba(255,40,180,0.1)}
+.op-button-c:hover,.op-button-c:active{box-shadow:0 0 24px #ff44cc,0 0 50px rgba(255,60,200,0.5),inset 0 0 35px rgba(255,60,200,0.12)}
 
 /* Regular nav buttons */
 .button{
