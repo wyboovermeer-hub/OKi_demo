@@ -956,7 +956,7 @@ function logoPress(e){
     _holdInterval=setInterval(function(){
       var elapsed=Date.now()-_holdStart;
       var progress=Math.min(elapsed/HOLD_DURATION,1);
-      if(ring) ring.style.strokeDashoffset=389.6*(1-progress);
+      if(ring) ring.style.strokeDashoffset=301.6*(1-progress);
       var glow=Math.round(progress*22)+4;
       if(img) img.style.filter='drop-shadow(0 0 '+glow+'px #ff00ff) drop-shadow(0 0 '+Math.round(glow/2)+'px #00d4ff)';
     },40);
@@ -984,7 +984,7 @@ function logoRelease(){
     var ring=document.getElementById('ring-arc');
     var ringEl=document.getElementById('logo-ring');
     var img=document.getElementById('oki-logo-img');
-    if(ring) ring.style.strokeDashoffset='389.6';
+    if(ring) ring.style.strokeDashoffset='301.6';
     if(ringEl) setTimeout(function(){ringEl.style.opacity='0';},300);
     if(img){img.style.filter='drop-shadow(0 0 4px rgba(31,111,181,0.5))';img.style.opacity='0.85';}
   } else {
@@ -1125,10 +1125,10 @@ def render_footer():
         ' onmousedown="logoPress(event)" onmouseup="logoRelease()" onmouseleave="logoRelease()" onclick="logoTap()"'
         ' ontouchstart="logoPress(event)" ontouchend="logoRelease();logoTap();" ontouchcancel="logoRelease()">'
         # Progress ring SVG
-        '<svg id="logo-ring" width="140" height="140" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;opacity:0;transition:opacity 0.3s;">'
-        '<circle cx="70" cy="70" r="62" fill="none" stroke-width="3" stroke="url(#ringGrad)" stroke-linecap="round"'
-        ' stroke-dasharray="389.6" stroke-dashoffset="389.6" id="ring-arc"'
-        ' style="transform:rotate(-90deg);transform-origin:70px 70px;transition:stroke-dashoffset 0.05s linear"/>'
+        '<svg id="logo-ring" width="104" height="104" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;opacity:0;transition:opacity 0.3s;">'
+        '<circle cx="52" cy="52" r="48" fill="none" stroke-width="3" stroke="url(#ringGrad)" stroke-linecap="round"'
+        ' stroke-dasharray="301.6" stroke-dashoffset="301.6" id="ring-arc"'
+        ' style="transform:rotate(-90deg);transform-origin:52px 52px;transition:stroke-dashoffset 0.05s linear"/>'
         '<defs><linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">'
         '<stop offset="0%" stop-color="#ff00ff"/>'
         '<stop offset="50%" stop-color="#00d4ff"/>'
