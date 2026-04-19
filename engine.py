@@ -540,14 +540,15 @@ def evaluate_recommendation(state: State) -> None:
             reason, rule = "Battery full", "SOC_FULL"
 
     # ── Priority 3 — AC state ────────────────────────────────
-    if rule is None:
-        if ac_state == "NO_SHORE":
+    # Only fires if battery SoC is not already critical or low
+    if rule is None or rule == "SOC_LOW":
+        if ac_state == "NO_SHORE" and rule is None:
             recommendation = "No shore power detected."
             reason, rule = "AC disconnected", "AC_DISCONNECTED"
-        elif ac_state == "HIGH_LOAD":
+        elif ac_state == "HIGH_LOAD" and rule is None:
             recommendation = "High AC load detected. Verify connected equipment."
             reason, rule = "High power consumption", "HIGH_LOAD"
-        elif ac_state == "IDLE":
+        elif ac_state == "IDLE" and rule is None:
             recommendation = "AC present but no load active."
             reason, rule = "System idle", "IDLE"
 

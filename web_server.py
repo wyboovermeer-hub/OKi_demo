@@ -84,7 +84,7 @@ from pathlib import Path
 
 # ── Engine import — safe guard ────────────────────────────────────────────────
 try:
-    from engine import process_operator_response, load_scenario, toggle_dev_mode, apply_care_task, CARE_TASKS
+    from engine import process_operator_response, load_scenario, toggle_dev_mode, apply_care_task, CARE_TASKS, engine_cycle
     _ENGINE_AVAILABLE = True
 except Exception as _engine_err:
     print(f"[OKi] Warning — engine import failed: {_engine_err}")
@@ -93,6 +93,7 @@ except Exception as _engine_err:
     def load_scenario(*a, **kw): pass
     def toggle_dev_mode(*a, **kw): pass
     def apply_care_task(*a, **kw): return {"ok": False, "points": 0, "message": "Engine unavailable."}
+    def engine_cycle(*a, **kw): pass
     CARE_TASKS = []
 
 app = FastAPI()
@@ -1563,6 +1564,10 @@ def toggle_wicked():
 @app.get("/scenario/{name}")
 def scenario(name: str):
     load_scenario(app.state.state_manager, name)
+    try:
+        engine_cycle(app.state.state_manager)
+    except Exception as _e:
+        print(f"[OKi] engine_cycle after scenario failed: {_e}")
     return RedirectResponse("/", 302)
 
 @app.get("/answer/{choice}")
