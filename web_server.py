@@ -270,8 +270,8 @@ body{background:#0f1115;color:#cad8e3;font-family:Segoe UI,sans-serif;display:fl
 .outer{width:100%;max-width:720px;display:flex;flex-direction:column}
 .frame{flex:1;border:3px solid #cad8e3;border-radius:16px;padding:10px 12px 6px 12px;display:flex;flex-direction:column;overflow:hidden;background:#0f1115}
 .header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;margin-bottom:6px;gap:6px}
-.header-left{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
-.header-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.header-left{display:flex;flex-direction:row;align-items:center;gap:8px}
+.header-right{display:flex;flex-direction:row;align-items:center;justify-content:flex-end;gap:8px}
 .title-block{text-align:center}
 .title-oki{font-size:clamp(22px,5vw,32px);font-weight:bold;color:#1f6fb5;letter-spacing:0.1em;line-height:1}
 .title-sub{font-size:clamp(8px,1.4vw,10px);color:#4a7a9a;letter-spacing:0.15em;text-transform:uppercase;margin-top:2px}
@@ -379,8 +379,8 @@ body{background:radial-gradient(ellipse at top,#0a1628 0%,#050810 60%,#000 100%)
 .frame{flex:1;border:2px solid #1f6fb5;border-radius:16px;padding:10px 12px 6px 12px;display:flex;flex-direction:column;overflow:hidden;background:linear-gradient(180deg,#0d1520 0%,#080c14 100%);box-shadow:0 0 30px rgba(31,111,181,0.15);position:relative}
 .frame::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent 0%,#1f6fb5 20%,#00d4ff 50%,#1f6fb5 80%,transparent 100%)}
 .header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;margin-bottom:6px;gap:6px}
-.header-left{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
-.header-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.header-left{display:flex;flex-direction:row;align-items:center;gap:8px}
+.header-right{display:flex;flex-direction:row;align-items:center;justify-content:flex-end;gap:8px}
 .title-block{text-align:center}
 .title-oki{font-family:'Orbitron',monospace;font-size:clamp(24px,5.5vw,36px);font-weight:900;color:#1f6fb5;letter-spacing:0.18em;line-height:1;text-shadow:0 0 20px rgba(31,111,181,0.8),0 0 40px rgba(31,111,181,0.4)}
 .title-sub{font-size:clamp(8px,1.4vw,10px);color:#3a5a7a;letter-spacing:0.2em;text-transform:uppercase;margin-top:2px}
@@ -631,8 +631,8 @@ body::after{
     0 0 10px rgba(0,229,255,0.2),
     inset 0 0 12px rgba(0,229,255,0.06);
 }
-.header-left{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
-.header-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.header-left{display:flex;flex-direction:row;align-items:center;gap:8px}
+.header-right{display:flex;flex-direction:row;align-items:center;justify-content:flex-end;gap:8px}
 .title-block{text-align:center}
 
 /* OKi title — electric cyan */
