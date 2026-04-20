@@ -1,7 +1,15 @@
 # ============================================================
 # OKi – Onboard Knowledge Interface
-# ENTERPRISE WEB LAYER v21.14
+# ENTERPRISE WEB LAYER v21.28
 # ============================================================
+#
+# Changelog v21.28
+# -----------------
+# • FIRMWARE identity block — OKi-FW-001.008.005.021.027
+#   Single source of truth for unit, engine, web server versions
+# • /version endpoint — returns full firmware identity as JSON
+# • Firmware badge — fixed bottom-right in UI, subtle mono text
+#   shows OKi-FW-001.008.005.021.027 · 2026-04-19, fades on hover
 #
 # Changelog v21.14
 # -----------------
@@ -76,7 +84,7 @@
 # ============================================================
 
 from fastapi import FastAPI
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 import sys
 import os
@@ -103,6 +111,34 @@ FOCUS_MODE       = False
 PSYCHEDELIC_MODE = False
 WICKED_MODE      = False
 DEMO_MODE        = False
+
+# ── Firmware identity — OKi-FW-001.008.005.021.027 ───────────────────────────
+FIRMWARE = {
+    "unit":         "001",
+    "engine_major": "008",
+    "engine_minor": "005",
+    "ws_major":     "021",
+    "ws_minor":     "027",
+    "build_date":   "2026-04-19",
+    "vessel":       "Casa Azul",
+    "display":      "OKi 001 — v8.5 / ws21.27",
+    "full":         "OKi-FW-001.008.005.021.027",
+}
+
+_FIRMWARE_BADGE = (
+    '<style>'
+    '#fw-badge{'
+    'position:fixed;bottom:10px;right:14px;'
+    'font-family:"Share Tech Mono",monospace;'
+    'font-size:9px;letter-spacing:0.10em;'
+    'color:rgba(129,164,196,0.30);'
+    'pointer-events:none;user-select:none;z-index:9999;'
+    'transition:opacity 0.4s;'
+    '}'
+    '#fw-badge:hover{opacity:0;}'
+    '</style>'
+    f'<div id="fw-badge">OKi-FW-001.008.005.021.027 &nbsp;·&nbsp; 2026-04-19</div>'
+)
 
 # ── Knowledge path ─────────────────────────────────────────────────────────────
 # Pi layout:  15_OKi/05_OKi_Engine/ ← parents[0], 02_OKi_Knowledge ← parents[1]
@@ -1788,12 +1824,17 @@ def render_layout(content, auto_refresh=True):
         + '<div class="refresh-note">&#8635; auto-refresh every 3s</div>'
         + "<div class='content'>" + content + "</div>"
         + render_footer()
-        + "</div></div></body></html>"
+        + _FIRMWARE_BADGE + "</div></div></body></html>"
     )
 
 # ══════════════════════════════════════════════════════════════════════════════
 # ROUTES
 # ══════════════════════════════════════════════════════════════════════════════
+
+@app.get("/version")
+def version():
+    """Return full OKi firmware identity as JSON."""
+    return JSONResponse(FIRMWARE)
 
 @app.get("/")
 def home():
