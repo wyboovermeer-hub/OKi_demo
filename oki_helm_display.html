@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>OKi — Helm Display</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   RESET & ROOT
+═══════════════════════════════════════════════ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  --bg:           #0A0D10;
+  --bg-panel:     #0E1218;
+  --bg-card:      #121820;
+  --border:       rgba(84,139,172,0.18);
+  --border-bright:rgba(84,139,172,0.45);
+
+  --accent:       #548bac;
+  --accent-dim:   #3a6882;
+  --accent-bright:#7ab8d4;
+  --accent-glow:  rgba(84,139,172,0.25);
+
+  --text-primary: #cad8e3;
+  --text-mid:     #81a4c4;
+  --text-dim:     #3d5568;
+  --text-muted:   #273845;
+
+  --green:        #4caf50;
+  --green-dim:    rgba(76,175,80,0.15);
+  --amber:        #ffb300;
+  --amber-dim:    rgba(255,179,0,0.15);
+  --red:          #ff5252;
+  --red-dim:      rgba(255,82,82,0.15);
+
+  --font-data:    'Barlow Condensed', sans-serif;
+  --font-ui:      'DM Sans', sans-serif;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+body {
+  font-family: var(--font-ui);
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+}
+
+/* ═══════════════════════════════════════════════
+   STAR FIELD (SPACE easter egg)
+═══════════════════════════════════════════════ */
+#starfield {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+.space-mode #starfield { opacity: 1; }
+
+/* ═══════════════════════════════════════════════
+   HEADER BAR
+═══════════════════════════════════════════════ */
+#header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 10px 18px 8px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.led-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.led-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.led-row-label {
+  font-family: var(--font-data);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  width: 24px;
+}
+.led {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+.led.green  { background: var(--green); }
+.led.amber  { background: var(--amber); animation: pulse-amber 2s ease-in-out infinite; }
+.led.red    { background: var(--red);   animation: pulse-red 1.2s ease-in-out infinite; }
+.led.off    { background: var(--text-muted); border: 1px solid var(--text-dim); }
+
+@keyframes pulse-amber { 0%,100%{opacity:1} 50%{opacity:0.35} }
+@keyframes pulse-red   { 0%,100%{opacity:1} 50%{opacity:0.25} }
+
+/* OKi logo / title */
+.title-block {
+  text-align: center;
+}
+.title-oki {
+  font-family: var(--font-data);
+  font-size: clamp(22px, 4vw, 30px);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  line-height: 1;
+  text-transform: uppercase;
+}
+.title-sub {
+  font-family: var(--font-data);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+.vessel-name {
+  font-family: var(--font-data);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent-dim);
+  margin-top: 3px;
+}
+
+/* Clock / right header */
+.header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+.clock-time {
+  font-family: var(--font-data);
+  font-size: clamp(20px, 3.5vw, 28px);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--text-primary);
+  line-height: 1;
+}
+.clock-date {
+  font-family: var(--font-data);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+/* Mode toggles strip */
+.mode-toggles {
+  display: flex;
+  gap: 6px;
+  margin-top: 5px;
+}
+.mode-btn {
+  font-family: var(--font-data);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.mode-btn.active {
+  border-color: var(--accent);
+  color: var(--accent-bright);
+  background: rgba(84,139,172,0.1);
+}
+.mode-btn:hover { color: var(--text-mid); border-color: var(--accent-dim); }
+
+/* ═══════════════════════════════════════════════
+   MAIN CONTENT — THREE COLUMNS
+═══════════════════════════════════════════════ */
+#main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1.15fr 1fr;
+  gap: 10px;
+  padding: 10px 14px;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+  min-height: 0;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════════
+   CARDS
+═══════════════════════════════════════════════ */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(84,139,172,0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.card-label {
+  font-family: var(--font-data);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+
+/* ═══════════════════════════════════════════════
+   SOC ARC — left column hero
+═══════════════════════════════════════════════ */
+.soc-card {
+  flex-shrink: 0;
+}
+
+.soc-arc-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 0 2px;
+  position: relative;
+}
+
+.soc-arc-wrap svg {
+  width: clamp(100px, 16vw, 140px);
+  height: clamp(56px, 9vw, 78px);
+  overflow: visible;
+}
+
+.soc-track {
+  fill: none;
+  stroke: var(--text-muted);
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+
+.soc-fill {
+  fill: none;
+  stroke-width: 5;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s ease, stroke 0.6s ease;
+}
+
+.soc-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -34%);
+  text-align: center;
+  line-height: 1;
+}
+
+.soc-value {
+  font-family: var(--font-data);
+  font-size: clamp(28px, 5vw, 40px);
+  font-weight: 700;
+  line-height: 1;
+}
+.soc-pct {
+  font-family: var(--font-data);
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-mid);
+  margin-left: 1px;
+}
+.soc-label-below {
+  font-family: var(--font-data);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-align: center;
+  margin-top: 2px;
+}
+
+.soc-green { color: var(--green); }
+.soc-amber { color: var(--amber); }
+.soc-red   { color: var(--red); }
+
+/* Charging pulse */
+@keyframes soc-breathe {
+  0%,100% { filter: drop-shadow(0 0 3px currentColor); }
+  50%      { filter: drop-shadow(0 0 8px currentColor); }
+}
+.charging .soc-fill { animation: soc-breathe 1.8s ease-in-out infinite; }
+.discharging .soc-fill { animation: soc-breathe 1.2s ease-in-out infinite; }
+
+/* Battery metrics row */
+.bat-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 4px;
+  margin-top: 8px;
+}
+.bat-metric {
+  text-align: center;
+}
+.bat-metric-val {
+  font-family: var(--font-data);
+  font-size: clamp(14px, 2.5vw, 18px);
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1;
+}
+.bat-metric-lbl {
+  font-family: var(--font-data);
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+/* ═══════════════════════════════════════════════
+   POWER SOURCES — compact rows
+═══════════════════════════════════════════════ */
+.source-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border);
+}
+.source-row:last-child { border-bottom: none; }
+
+.source-name {
+  font-family: var(--font-data);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+}
+.source-val {
+  font-family: var(--font-data);
+  font-size: clamp(14px, 2.5vw, 17px);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.source-state {
+  font-family: var(--font-data);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+.state-on  { color: var(--green); background: var(--green-dim); }
+.state-off { color: var(--text-dim); background: transparent; }
+.state-warn{ color: var(--amber); background: var(--amber-dim); }
+
+/* ═══════════════════════════════════════════════
+   CENTRE COLUMN — STATUS
+═══════════════════════════════════════════════ */
+
+/* Health ring */
+.health-card {
+  flex-shrink: 0;
+}
+.health-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.health-ring-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+.health-ring-wrap svg {
+  width: clamp(52px, 8vw, 68px);
+  height: clamp(52px, 8vw, 68px);
+}
+.health-track { fill: none; stroke: var(--text-muted); stroke-width: 4; }
+.health-fill  {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s ease, stroke 0.6s ease;
+  transform-origin: center;
+  transform: rotate(-90deg);
+}
+.health-center-val {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-data);
+  font-size: clamp(14px, 2.5vw, 18px);
+  font-weight: 700;
+}
+
+.health-info { flex: 1; min-width: 0; }
+.health-mode {
+  font-family: var(--font-data);
+  font-size: clamp(12px, 2vw, 15px);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--accent-bright);
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.health-severity {
+  font-family: var(--font-data);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-top: 3px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  display: inline-block;
+}
+.sev-ok       { color: var(--green); background: var(--green-dim); }
+.sev-warning  { color: var(--amber); background: var(--amber-dim); }
+.sev-critical { color: var(--red);   background: var(--red-dim); }
+
+/* Recommendation card */
+.rec-card { flex: 1; min-height: 0; }
+.rec-text {
+  font-family: var(--font-ui);
+  font-size: clamp(12px, 2vw, 14px);
+  font-weight: 400;
+  color: var(--text-primary);
+  line-height: 1.55;
+}
+.rec-reason {
+  font-family: var(--font-ui);
+  font-size: clamp(10px, 1.6vw, 11px);
+  color: var(--text-dim);
+  margin-top: 6px;
+  line-height: 1.5;
+}
+.advisory-bar {
+  margin-top: 8px;
+  padding: 6px 10px;
+  background: rgba(255,179,0,0.07);
+  border-left: 2px solid var(--amber);
+  border-radius: 0 6px 6px 0;
+  font-family: var(--font-ui);
+  font-size: clamp(10px, 1.6vw, 11px);
+  color: var(--amber);
+  line-height: 1.5;
+}
+.silence-note {
+  font-family: var(--font-data);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 8px 0;
+}
+
+/* Operator question */
+.question-card {
+  border-color: rgba(84,139,172,0.35);
+  background: rgba(14,18,24,0.95);
+}
+.question-card::before {
+  background: linear-gradient(135deg, rgba(84,139,172,0.08) 0%, transparent 60%);
+}
+.question-text {
+  font-family: var(--font-ui);
+  font-size: clamp(12px, 2vw, 13px);
+  color: var(--text-primary);
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+.op-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.op-btn {
+  font-family: var(--font-data);
+  font-size: clamp(11px, 1.8vw, 13px);
+  letter-spacing: 0.06em;
+  padding: 9px 14px;
+  border-radius: 20px;
+  border: 1px solid;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s;
+  touch-action: manipulation;
+  text-decoration: none;
+  display: block;
+  color: var(--green);
+  border-color: rgba(76,175,80,0.4);
+}
+.op-btn:hover { background: var(--green-dim); }
+.op-btn.b { color: var(--amber); border-color: rgba(255,179,0,0.4); }
+.op-btn.b:hover { background: var(--amber-dim); }
+.op-btn.c { color: var(--red); border-color: rgba(255,82,82,0.4); }
+.op-btn.c:hover { background: var(--red-dim); }
+
+/* ═══════════════════════════════════════════════
+   RIGHT COLUMN — METRICS
+═══════════════════════════════════════════════ */
+.metric-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.metric-tile {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+.metric-tile-val {
+  font-family: var(--font-data);
+  font-size: clamp(18px, 3vw, 24px);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--text-primary);
+}
+.metric-tile-lbl {
+  font-family: var(--font-data);
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 3px;
+}
+
+/* Time-to-critical bar */
+.ttc-bar-outer {
+  width: 100%;
+  height: 3px;
+  background: var(--text-muted);
+  border-radius: 2px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+.ttc-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.8s ease;
+}
+
+/* Nav buttons */
+.nav-btn {
+  display: block;
+  text-align: center;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-mid);
+  font-family: var(--font-data);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.nav-btn:hover {
+  border-color: var(--accent-dim);
+  color: var(--text-primary);
+  background: rgba(84,139,172,0.06);
+}
+
+/* Compass strip */
+.compass-strip {
+  position: relative;
+  height: 28px;
+  overflow: hidden;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.compass-track {
+  position: absolute;
+  white-space: nowrap;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-data);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--text-dim);
+}
+.compass-n { color: var(--accent-bright); font-weight: 600; }
+.compass-cursor {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--accent);
+  transform: translateX(-50%);
+}
+.compass-cursor::after {
+  content: '▾';
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--accent);
+  font-size: 8px;
+}
+
+/* ═══════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════ */
+#footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 18px 8px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+.footer-left, .footer-right {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.footer-note {
+  font-family: var(--font-data);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+.demo-pill {
+  font-family: var(--font-data);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  padding: 3px 9px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+.demo-pill:hover {
+  border-color: var(--accent-dim);
+  color: var(--text-mid);
+}
+
+/* ═══════════════════════════════════════════════
+   SPACE MODE OVERRIDES
+═══════════════════════════════════════════════ */
+.space-mode {
+  --bg:           #06090F;
+  --bg-panel:     #080C14;
+  --bg-card:      #0A0E18;
+  --border:       rgba(60,120,200,0.18);
+  --border-bright:rgba(80,160,255,0.4);
+  --accent:       #4a8fd4;
+  --accent-dim:   #2a5a90;
+  --accent-bright:#7ab8ff;
+  --accent-glow:  rgba(74,143,212,0.3);
+  --text-primary: #c8d8f0;
+  --text-mid:     #6090c0;
+  --text-dim:     #2a4060;
+  --text-muted:   #141e2c;
+}
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE TWEAKS
+═══════════════════════════════════════════════ */
+@media (max-width: 600px) {
+  #main { grid-template-columns: 1fr; overflow-y: auto; }
+  .column { overflow: visible; }
+}
+
+@media (max-height: 500px) {
+  #header { padding: 6px 14px; }
+  #main   { padding: 6px 10px; gap: 6px; }
+  .card   { padding: 7px 10px; }
+}
+
+/* ═══════════════════════════════════════════════
+   SCAN LINE OVERLAY (subtle CRT effect)
+═══════════════════════════════════════════════ */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.06) 2px,
+    rgba(0,0,0,0.06) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+</style>
+</head>
+<body>
+
+<!-- Star field canvas (SPACE mode) -->
+<canvas id="starfield"></canvas>
+
+<!-- ═══════════════ HEADER ═══════════════ -->
+<div id="header">
+  <div class="header-left">
+    <div class="led-group">
+      <div class="led-row">
+        <span class="led-row-label">SYS</span>
+        <div class="led" id="led-sg"></div>
+        <div class="led" id="led-sa"></div>
+        <div class="led" id="led-sr"></div>
+      </div>
+      <div class="led-row">
+        <span class="led-row-label">BAT</span>
+        <div class="led" id="led-bg"></div>
+        <div class="led" id="led-ba"></div>
+        <div class="led" id="led-br"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="title-block">
+    <div class="title-oki" id="logo-tap">OKi</div>
+    <div class="title-sub">Onboard Knowledge Interface</div>
+    <div class="vessel-name" id="vessel-name">ALUNA</div>
+  </div>
+
+  <div class="header-right">
+    <div class="clock-time" id="clock">00:00:00</div>
+    <div class="clock-date" id="clock-date">—</div>
+    <div class="mode-toggles">
+      <button class="mode-btn" id="btn-focus" onclick="toggleMode('focus')">FOCUS</button>
+      <button class="mode-btn" id="btn-space" onclick="toggleMode('space')">SPACE</button>
+      <button class="mode-btn" id="btn-dev"   onclick="window.location='/toggle-dev'">DEV</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<div id="main">
+
+  <!-- ── LEFT: ENERGY ── -->
+  <div class="column" id="col-left">
+
+    <!-- SoC Arc -->
+    <div class="card soc-card" id="soc-wrap">
+      <div class="card-label">State of Charge</div>
+      <div class="soc-arc-wrap">
+        <svg viewBox="0 0 140 78" id="soc-svg">
+          <!-- 180° arc, centre 70,72, radius 58 -->
+          <path class="soc-track" id="soc-track-path"
+            d="M 12 72 A 58 58 0 0 1 128 72"
+          />
+          <path class="soc-fill" id="soc-fill-path"
+            d="M 12 72 A 58 58 0 0 1 128 72"
+            stroke="#4caf50"
+            stroke-dasharray="182"
+            stroke-dashoffset="0"
+          />
+        </svg>
+        <div class="soc-center">
+          <span class="soc-value soc-green" id="soc-val">—</span><span class="soc-pct" id="soc-pct">%</span>
+        </div>
+      </div>
+      <div class="soc-label-below" id="soc-mode-label">—</div>
+      <div class="bat-metrics">
+        <div class="bat-metric">
+          <div class="bat-metric-val" id="bat-voltage">—</div>
+          <div class="bat-metric-lbl">Volts</div>
+        </div>
+        <div class="bat-metric">
+          <div class="bat-metric-val" id="bat-current">—</div>
+          <div class="bat-metric-lbl">Amps</div>
+        </div>
+        <div class="bat-metric">
+          <div class="bat-metric-val" id="bat-power">—</div>
+          <div class="bat-metric-lbl">Watts</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Power sources -->
+    <div class="card">
+      <div class="card-label">Power Sources</div>
+      <div class="source-row">
+        <span class="source-name">Solar</span>
+        <span class="source-val" id="src-solar">—</span>
+        <span class="source-state" id="src-solar-state">—</span>
+      </div>
+      <div class="source-row">
+        <span class="source-name">Shore</span>
+        <span class="source-val" id="src-shore">—</span>
+        <span class="source-state" id="src-shore-state">—</span>
+      </div>
+      <div class="source-row">
+        <span class="source-name">Generator</span>
+        <span class="source-val" id="src-gen">—</span>
+        <span class="source-state" id="src-gen-state">—</span>
+      </div>
+      <div class="source-row">
+        <span class="source-name">Fuel</span>
+        <span class="source-val" id="src-fuel">—</span>
+        <span class="source-state" id="src-fuel-state">—</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── CENTRE: STATUS ── -->
+  <div class="column" id="col-centre">
+
+    <!-- Health + mode -->
+    <div class="card health-card">
+      <div class="health-row">
+        <div class="health-ring-wrap">
+          <svg viewBox="0 0 68 68" id="health-svg">
+            <circle class="health-track" cx="34" cy="34" r="28"/>
+            <circle class="health-fill" id="health-fill" cx="34" cy="34" r="28"
+              stroke="#4caf50"
+              stroke-dasharray="176"
+              stroke-dashoffset="0"
+            />
+          </svg>
+          <div class="health-center-val" id="health-val">—</div>
+        </div>
+        <div class="health-info">
+          <div class="health-mode" id="energy-mode">—</div>
+          <div class="health-severity sev-ok" id="severity-badge">OK</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recommendation / OKi intelligence -->
+    <div class="card rec-card">
+      <div class="card-label">OKi Status</div>
+      <div id="rec-block">
+        <div class="rec-text" id="rec-text">Awaiting data…</div>
+        <div class="rec-reason" id="rec-reason"></div>
+        <div class="advisory-bar" id="advisory-bar" style="display:none"></div>
+      </div>
+      <div class="silence-note" id="silence-note" style="display:none">— Monitoring —</div>
+    </div>
+
+    <!-- Operator question (shown when active) -->
+    <div class="card question-card" id="question-card" style="display:none">
+      <div class="card-label">OKi asks</div>
+      <div class="question-text" id="question-text"></div>
+      <div class="op-buttons">
+        <a class="op-btn"   id="op-a" href="/answer/A"></a>
+        <a class="op-btn b" id="op-b" href="/answer/B"></a>
+        <a class="op-btn c" id="op-c" href="/answer/C"></a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── RIGHT: METRICS ── -->
+  <div class="column" id="col-right">
+
+    <!-- Metric tiles -->
+    <div class="card">
+      <div class="card-label">Energy Forecast</div>
+      <div class="metric-grid">
+        <div class="metric-tile">
+          <div class="metric-tile-val" id="ttc-val">—</div>
+          <div class="metric-tile-lbl">To Critical</div>
+          <div class="ttc-bar-outer">
+            <div class="ttc-bar-fill" id="ttc-bar" style="width:100%;background:var(--green)"></div>
+          </div>
+        </div>
+        <div class="metric-tile">
+          <div class="metric-tile-val" id="tts-val">—</div>
+          <div class="metric-tile-lbl">To Shutdown</div>
+        </div>
+        <div class="metric-tile">
+          <div class="metric-tile-val" id="discharge-rate">—</div>
+          <div class="metric-tile-lbl">%/hr Drain</div>
+        </div>
+        <div class="metric-tile">
+          <div class="metric-tile-val" id="care-index">—</div>
+          <div class="metric-tile-lbl">Care Index</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vessel state -->
+    <div class="card">
+      <div class="card-label">Vessel</div>
+      <div class="source-row">
+        <span class="source-name">Movement</span>
+        <span class="source-val" id="vessel-move" style="font-size:13px">—</span>
+      </div>
+      <div class="source-row">
+        <span class="source-name">Location</span>
+        <span class="source-val" id="vessel-loc" style="font-size:13px">—</span>
+      </div>
+      <div class="source-row">
+        <span class="source-name">Survival</span>
+        <span class="source-state" id="vessel-surv">—</span>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div style="display:flex;flex-direction:column;gap:6px;margin-top:auto">
+      <a class="nav-btn" href="/knowledge">Knowledge Base</a>
+      <a class="nav-btn" href="/care">Care &amp; Maintenance</a>
+    </div>
+
+    <!-- Demo scenarios -->
+    <div class="card" style="margin-top:auto">
+      <div class="card-label">Scenarios</div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">
+        <a class="demo-pill" href="/scenario/anchor">Anchor</a>
+        <a class="demo-pill" href="/scenario/casa">Casa</a>
+        <a class="demo-pill" href="/scenario/drain">Drain</a>
+        <a class="demo-pill" href="/scenario/generator_failure">Gen Fail</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<div id="footer">
+  <div class="footer-left">
+    <span class="footer-note" id="last-update">Connecting…</span>
+  </div>
+  <div class="footer-right">
+    <span class="footer-note">OKi v1 · Casa Azul</span>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// CLOCK
+// ═══════════════════════════════════════════════
+(function tickClock() {
+  var el = document.getElementById('clock');
+  var del = document.getElementById('clock-date');
+  var days = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  var months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  function update() {
+    var n = new Date();
+    var h = String(n.getHours()).padStart(2,'0');
+    var m = String(n.getMinutes()).padStart(2,'0');
+    var s = String(n.getSeconds()).padStart(2,'0');
+    if (el) el.textContent = h+':'+m+':'+s;
+    if (del) del.textContent = days[n.getDay()]+' '+String(n.getDate()).padStart(2,'0')+' '+months[n.getMonth()]+' '+n.getFullYear();
+  }
+  update();
+  setInterval(update, 1000);
+})();
+
+// ═══════════════════════════════════════════════
+// SOC ARC
+// The arc is a 180° semicircle. Total length ≈ 182px.
+// ═══════════════════════════════════════════════
+var ARC_LEN = 182;
+
+function setSoC(soc, mode) {
+  var fill = document.getElementById('soc-fill-path');
+  var valEl = document.getElementById('soc-val');
+  var wrap = document.getElementById('soc-wrap');
+
+  if (!fill) return;
+
+  var offset = ARC_LEN - (soc / 100) * ARC_LEN;
+  fill.style.strokeDashoffset = offset;
+
+  var color = soc < 15 ? 'var(--red)' : soc < 30 ? 'var(--amber)' : 'var(--green)';
+  fill.style.stroke = color;
+
+  if (valEl) {
+    valEl.textContent = soc;
+    valEl.className = 'soc-value ' + (soc < 15 ? 'soc-red' : soc < 30 ? 'soc-amber' : 'soc-green');
+  }
+
+  var modeUp = (mode || '').toUpperCase();
+  wrap.classList.remove('charging','discharging');
+  if (modeUp.indexOf('CHARG') >= 0) wrap.classList.add('charging');
+  else if (modeUp.indexOf('DISCHARG') >= 0) wrap.classList.add('discharging');
+}
+
+// ═══════════════════════════════════════════════
+// HEALTH RING
+// Full circle circumference ≈ 176px
+// ═══════════════════════════════════════════════
+var HEALTH_CIRC = 176;
+
+function setHealth(health, color) {
+  var fill = document.getElementById('health-fill');
+  var val  = document.getElementById('health-val');
+  if (!fill) return;
+  var offset = HEALTH_CIRC - (health / 100) * HEALTH_CIRC;
+  fill.style.strokeDashoffset = offset;
+  var c = color === 'red' ? 'var(--red)' : color === 'amber' ? 'var(--amber)' : 'var(--green)';
+  fill.style.stroke = c;
+  if (val) { val.textContent = health + '%'; val.style.color = c; }
+}
+
+// ═══════════════════════════════════════════════
+// LED HELPERS
+// ═══════════════════════════════════════════════
+function setLed(id, cls) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.className = 'led ' + cls;
+}
+
+function applyLeds(leds) {
+  if (!leds) return;
+  var sc = leds.sys || ['off','off','off'];
+  var bc = leds.bat || ['off','off','off'];
+  setLed('led-sg', sc[0]); setLed('led-sa', sc[1]); setLed('led-sr', sc[2]);
+  setLed('led-bg', bc[0]); setLed('led-ba', bc[1]); setLed('led-br', bc[2]);
+}
+
+// ═══════════════════════════════════════════════
+// STATE APPLICATION
+// ═══════════════════════════════════════════════
+function applyState(d) {
+  // SoC
+  setSoC(d.soc || 0, d.mode || '');
+  setText('soc-mode-label', d.mode || '—');
+  setText('bat-voltage', d.voltage !== undefined ? d.voltage + ' V' : '—');
+  setText('bat-current', d.current !== undefined ? d.current + ' A' : '—');
+  setText('bat-power',   d.power   !== undefined ? d.power   + ' W' : '—');
+
+  // LEDs
+  applyLeds(d.leds);
+
+  // Health
+  setHealth(d.health || 0, d.healthColor || 'green');
+  setText('energy-mode', d.mode || '—');
+
+  // Severity badge
+  var sevEl = document.getElementById('severity-badge');
+  if (sevEl) {
+    var sev = (d.severity || 'ok').toLowerCase();
+    sevEl.textContent = sev.toUpperCase();
+    sevEl.className = 'health-severity ' + (sev === 'critical' ? 'sev-critical' : sev === 'warning' ? 'sev-warning' : 'sev-ok');
+  }
+
+  // Recommendation
+  var rec = d.rec || '';
+  setText('rec-text', rec || 'Monitoring…');
+  setText('rec-reason', d.recReason || '');
+  var advEl = document.getElementById('advisory-bar');
+  if (advEl) {
+    if (d.advisory) { advEl.style.display = 'block'; advEl.textContent = d.advisory; }
+    else { advEl.style.display = 'none'; }
+  }
+
+  // Operator question
+  var qCard = document.getElementById('question-card');
+  if (qCard) {
+    if (d.showQuestion) {
+      qCard.style.display = 'block';
+      setText('question-text', d.questionText || '');
+      var a = document.getElementById('op-a');
+      var b = document.getElementById('op-b');
+      var c = document.getElementById('op-c');
+      if (a) a.textContent = d.optionA || '';
+      if (b) b.textContent = d.optionB || '';
+      if (c) { c.textContent = d.optionC || ''; c.style.display = d.optionC ? 'block' : 'none'; }
+    } else {
+      qCard.style.display = 'none';
+    }
+  }
+
+  // Dev data
+  var dev = d.dev || {};
+  var sol = dev.solar || {};
+  var ac  = dev.ac    || {};
+  var gen = dev.generator || {};
+  var fuel = dev.fuel  || {};
+  var sys  = dev.system || {};
+
+  // Solar
+  setText('src-solar', sol.power || '—');
+  setSourceState('src-solar-state', sol.state || '—');
+
+  // Shore
+  setText('src-shore', ac.gridPower ? ac.gridPower + ' W' : '—');
+  setSourceState('src-shore-state', ac.shore === 'True' || ac.shore === true ? 'ON' : 'OFF');
+
+  // Generator
+  setText('src-gen', '—');
+  setSourceState('src-gen-state', gen.running || 'OFF');
+
+  // Fuel
+  setText('src-fuel', fuel.level || '—');
+  setSourceState('src-fuel-state', fuel.state || '—');
+
+  // Forecast
+  setText('ttc-val', sys.timeToCritical || '—');
+  setText('tts-val', sys.timeToShutdown || '—');
+  setText('discharge-rate', sys.dischargeRate || '—');
+  setText('care-index', d.careIndex !== undefined ? d.careIndex : '—');
+
+  // TTC bar
+  var ttcBar = document.getElementById('ttc-bar');
+  if (ttcBar) {
+    var ttcH = parseFloat(sys.timeToCritical) || 0;
+    var pct = Math.min(100, Math.max(0, (ttcH / 24) * 100));
+    ttcBar.style.width = pct + '%';
+    ttcBar.style.background = ttcH < 2 ? 'var(--red)' : ttcH < 6 ? 'var(--amber)' : 'var(--green)';
+  }
+
+  // Vessel
+  setText('vessel-move', sys.vesselMove || '—');
+  setText('vessel-loc',  sys.location   || '—');
+  var survEl = document.getElementById('vessel-surv');
+  if (survEl) {
+    var surv = sys.survivalMode === 'YES';
+    survEl.textContent = surv ? 'SURVIVAL' : 'Normal';
+    survEl.className = 'source-state ' + (surv ? 'state-warn' : 'state-off');
+  }
+
+  // Timestamp
+  setText('last-update', 'Updated ' + new Date().toLocaleTimeString());
+}
+
+function setText(id, val) {
+  var el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+function setSourceState(id, state) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = state;
+  var s = (state || '').toUpperCase();
+  el.className = 'source-state ' + (
+    s === 'ON' || s === 'CONNECTED' || s === 'ACTIVE' || s === 'OK' ? 'state-on' :
+    s === 'WARN' || s === 'WARNING' || s === 'LOW' ? 'state-warn' : 'state-off'
+  );
+}
+
+// ═══════════════════════════════════════════════
+// POLLING
+// ═══════════════════════════════════════════════
+function poll() {
+  fetch('/api/state')
+    .then(function(r) { return r.json(); })
+    .then(function(d) { applyState(d); })
+    .catch(function() { setText('last-update', 'Connection lost…'); });
+}
+
+poll();
+setInterval(poll, 3000);
+
+// ═══════════════════════════════════════════════
+// MODE TOGGLES
+// ═══════════════════════════════════════════════
+var spaceMode = false;
+var focusMode = false;
+
+function toggleMode(mode) {
+  if (mode === 'space') {
+    spaceMode = !spaceMode;
+    document.body.classList.toggle('space-mode', spaceMode);
+    document.getElementById('btn-space').classList.toggle('active', spaceMode);
+    if (spaceMode) initStars(); else clearStars();
+  } else if (mode === 'focus') {
+    focusMode = !focusMode;
+    document.getElementById('btn-focus').classList.toggle('active', focusMode);
+    document.getElementById('col-left').style.display  = focusMode ? 'none' : '';
+    document.getElementById('col-right').style.display = focusMode ? 'none' : '';
+    document.getElementById('main').style.gridTemplateColumns = focusMode ? '1fr' : '1fr 1.15fr 1fr';
+  }
+}
+
+// ═══════════════════════════════════════════════
+// STAR FIELD
+// ═══════════════════════════════════════════════
+var starsAnimId = null;
+
+function initStars() {
+  var canvas = document.getElementById('starfield');
+  var ctx = canvas.getContext('2d');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  var stars = [];
+  for (var i = 0; i < 180; i++) {
+    stars.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.2 + 0.2,
+      speed: Math.random() * 0.3 + 0.05,
+      opacity: Math.random() * 0.7 + 0.2,
+      twinkleSpeed: Math.random() * 0.02 + 0.005,
+      twinklePhase: Math.random() * Math.PI * 2
+    });
+  }
+
+  var frame = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    frame++;
+    for (var i = 0; i < stars.length; i++) {
+      var s = stars[i];
+      s.twinklePhase += s.twinkleSpeed;
+      var alpha = s.opacity * (0.6 + 0.4 * Math.sin(s.twinklePhase));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(180,210,255,' + alpha + ')';
+      ctx.fill();
+      s.y += s.speed;
+      if (s.y > canvas.height) { s.y = 0; s.x = Math.random() * canvas.width; }
+    }
+    if (spaceMode) starsAnimId = requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+function clearStars() {
+  if (starsAnimId) cancelAnimationFrame(starsAnimId);
+  var canvas = document.getElementById('starfield');
+  var ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+// ═══════════════════════════════════════════════
+// LOGO TAP → SPACE MODE easter egg (7 taps)
+// ═══════════════════════════════════════════════
+var tapCount = 0, tapTimer = null;
+document.getElementById('logo-tap').addEventListener('click', function() {
+  tapCount++;
+  clearTimeout(tapTimer);
+  if (tapCount >= 7) {
+    tapCount = 0;
+    if (!spaceMode) {
+      spaceMode = true;
+      document.body.classList.add('space-mode');
+      document.getElementById('btn-space').classList.add('active');
+      initStars();
+    } else {
+      spaceMode = false;
+      document.body.classList.remove('space-mode');
+      document.getElementById('btn-space').classList.remove('active');
+      clearStars();
+    }
+  } else {
+    tapTimer = setTimeout(function() { tapCount = 0; }, 1200);
+  }
+});
+
+// Initial poll complete — hide connecting note
+setTimeout(function() {
+  var el = document.getElementById('last-update');
+  if (el && el.textContent === 'Connecting…') el.textContent = 'No data yet';
+}, 4000);
+</script>
+</body>
+</html>
