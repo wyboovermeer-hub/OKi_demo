@@ -1,6 +1,22 @@
 # ============================================================
-# OKi ENGINE v8.3 – Supervisory Intelligence Core
+# OKi ENGINE v8.6 – Supervisory Intelligence Core
 # ============================================================
+#
+# Changelog v8.6
+# ---------------
+# • ePropulsion motor state added as virtual subsystem
+# • Motor section: Port and Starboard motors with ErrorCode, Status,
+#   SOCAtFault, ThrottleAtFault, LayUpRisk, NoiseSuspected, PropDrag
+# • compute_motor_state() — detects E06 under load and writes
+#   Motor advisory + PropulsionAdvisory flag to System
+# • evaluate_recommendation() — Priority 0 added: PropulsionAdvisory
+#   surfaces E06 motor fault above all energy recommendations
+# • CARE_TASKS extended: motor_runup task (+4 pts, 25-day cooldown)
+# • _SCENARIO_DATA extended: "evo_e06" scenario — virtual ePropulsion
+#   twin motor installation, port motor E06 fault with lay-up history
+# • engine_cycle() step count updated to 23 (compute_motor_state added
+#   as step 6b after compute_system_health)
+# • All v8.3 / v8.2 / v8.1 / v8.0 logic fully preserved
 #
 # Changelog v8.3
 # ---------------
@@ -466,6 +482,88 @@ def _track_deep_discharge(state: State) -> None:
 
 
 # ============================================================
+# MOTOR STATE  (v8.6 — ePropulsion virtual subsystem)
+# ============================================================
+
+
+def compute_motor_state(state: State) -> None:
+    """
+    Evaluate ePropulsion motor state for each motor (Port / Starboard).
+
+    E06 under load is the primary fault detected here.
+    E06 at key-on (before running) is a different fault — not handled here.
+
+    Detection logic:
+      - ErrorCode == "E06"  AND
+      - Status == "SHUTDOWN"  AND
+      - ThrottleAtFault is not None (confirms fault happened under load)
+
+    Risk amplifiers (increase confidence in pod/mechanical cause):
+      - LayUpRisk == True  (motor left immersed without regular run-ups)
+      - NoiseSuspected == True  (operator reported abnormal noise)
+      - PropDrag == True  (propeller stiff or resistant to hand spin)
+
+    Outputs written to System:
+      - PropulsionAdvisory: True/False — surfaces in recommendation
+      - MotorFaultCode: "E06" or None
+      - MotorFaultSide: "Port" / "Starboard" / "Both" / None
+      - MotorFaultCause: short cause string for recommendation text
+    """
+    system = get_section(state, "System")
+    motors = get_section(state, "Motor")
+
+    faults = []
+
+    for side in ("Port", "Starboard"):
+        motor = motors.get(side)
+        if not motor:
+            continue
+
+        error_code   = motor.get("ErrorCode")
+        status       = motor.get("Status")
+        throttle     = motor.get("ThrottleAtFault")  # None = fault at key-on
+        lay_up       = bool(motor.get("LayUpRisk", False))
+        noise        = bool(motor.get("NoiseSuspected", False))
+        prop_drag    = bool(motor.get("PropDrag", False))
+
+        # E06 under load only — skip if no throttle data (key-on fault)
+        if error_code == "E06" and status == "SHUTDOWN" and throttle is not None:
+
+            # Build cause string — most specific first
+            if noise or prop_drag:
+                cause = "mechanical resistance in pod — do not run under load"
+            elif lay_up:
+                cause = "lay-up in water suspected — pod inspection required"
+            else:
+                cause = "DC voltage sag under load — check battery and DC path"
+
+            faults.append({
+                "side":  side,
+                "code":  "E06",
+                "cause": cause,
+                "risk":  "HIGH" if (noise or prop_drag) else ("MEDIUM" if lay_up else "LOW"),
+            })
+
+    if faults:
+        sides = " and ".join(f["side"] for f in faults)
+        system["PropulsionAdvisory"] = True
+        system["MotorFaultCode"]     = "E06"
+        system["MotorFaultSide"]     = sides
+        system["MotorFaultCause"]    = faults[0]["cause"]  # use worst fault
+
+        # Escalate severity if mechanical risk is HIGH
+        if any(f["risk"] == "HIGH" for f in faults):
+            system["Severity"] = "CRITICAL"
+        elif system.get("Severity") is None:
+            system["Severity"] = "WARNING"
+    else:
+        system["PropulsionAdvisory"] = False
+        system["MotorFaultCode"]     = None
+        system["MotorFaultSide"]     = None
+        system["MotorFaultCause"]    = None
+
+
+# ============================================================
 # RECOMMENDATION ENGINE  (v8.3 — situation-aware)
 # ============================================================
 
@@ -475,6 +573,7 @@ def evaluate_recommendation(state: State) -> None:
     Build the operator-facing recommendation string.
 
     Priority order (highest wins):
+      0. PropulsionAdvisory — motor E06 fault (v8.6)
       1. MAYDAY or active CRITICAL_COUNTDOWN situation type
       2. Battery SoC critical / low / full
       3. AC state anomalies
@@ -501,8 +600,20 @@ def evaluate_recommendation(state: State) -> None:
     reason: Optional[str] = None
     rule:   Optional[str] = None
 
+    # ── Priority 0 — propulsion fault (v8.6) ─────────────────
+    # Motor E06 under load overrides all energy recommendations.
+    # A vessel that cannot move is more urgent than a low battery.
+    if system.get("PropulsionAdvisory"):
+        side  = system.get("MotorFaultSide", "Motor")
+        cause = system.get("MotorFaultCause", "fault detected")
+        recommendation = (
+            f"⚠️ {side} motor E06 — {cause}. "
+            "Do not run motor under load. Contact World Marine Care."
+        )
+        reason, rule = f"{side} motor E06 fault", "MOTOR_E06"
+
     # ── Priority 1 — critical situation types ────────────────
-    if situation_type == "MAYDAY":
+    if rule is None and situation_type == "MAYDAY":
         soc_str = f" Battery at {soc:.0f}%." if soc is not None else ""
         recommendation = (
             f"MAYDAY situation active.{soc_str} "
@@ -510,7 +621,7 @@ def evaluate_recommendation(state: State) -> None:
         )
         reason, rule = "MAYDAY situation", "MAYDAY"
 
-    elif situation_type == "CRITICAL_COUNTDOWN":
+    elif rule is None and situation_type == "CRITICAL_COUNTDOWN":
         soc_str = f" Battery at {soc:.0f}%." if soc is not None else ""
         recommendation = (
             f"Critical countdown active.{soc_str} "
@@ -519,7 +630,7 @@ def evaluate_recommendation(state: State) -> None:
         reason, rule = "Critical countdown", "CRITICAL_COUNTDOWN"
 
     # ── Priority 2 — battery SoC ─────────────────────────────
-    elif soc is not None:
+    elif rule is None and soc is not None:
         if soc <= CONFIG.soc_critical:
             recommendation = (
                 f"Battery critically low at {soc:.0f}%. "
@@ -623,6 +734,7 @@ CARE_TASKS = [
     ("update_firmware",   "Update firmware",             "Update OKi, Victron and navigation system firmware.",        6),
     ("read_manual",       "Read the manual",             "Study vessel systems documentation for 30 minutes.",         3),
     ("full_inspection",   "Full vessel inspection",      "Complete walk-through inspection of all vessel systems.",   10),
+    ("motor_runup",       "Monthly motor run-up",        "Run ePropulsion motor for 15 minutes — prevents pod fouling and seal degradation.", 4),
 ]
 
 
@@ -913,6 +1025,60 @@ _SCENARIO_DATA: Dict[str, Dict[str, Any]] = {
         "Fuel":          {"LevelPercent": 40.0, "SensorReliable": True, "State": "OK", "Inconsistency": None},
         "Solar":         {"Power": 0.0, "Voltage": 0.0, "State": "NIGHT"},
     },
+    # ── EVO-002 — ePropulsion Navy 6.0 Evo E06 under load ────────────────────
+    # Virtual scenario: Sun Concept EVO 7.0 twin motor installation.
+    # Port motor shut down with E06 after winter lay-up in river water.
+    # Starboard motor healthy. Battery full. Lay-up risk confirmed.
+    # Mirrors the Pinhão / Aveiro field case — 20/04/2026.
+    "evo_e06": {
+        "Battery": {"SoC": 85, "Voltage": 27.1, "Current": -2.0},
+        "AC":      {"Shore": False, "GridVoltage": 0, "GridPower": 0, "ShellyStatus": "OFFLINE"},
+        "Solar":   {"Power": 180.0, "Voltage": 33.2, "State": "PRODUCING"},
+        "Derived": {"EnergyMode": "DISCHARGING"},
+        "Generator": {"Running": False, "Expected": False, "RecentlyRan": False, "ErrorCode": ""},
+        "Fuel":    {"LevelPercent": 60.0, "SensorReliable": True, "State": "OK", "Inconsistency": None},
+        "Communication": {"CANHealthy": True},
+        "Care":    {
+            "_OperatorOffset": 0,
+            "CareScore": 65,
+            "TaskCooldowns": {},
+            "_PrevSeverity": "WARNING",
+            "_InScenarioDrop": False,
+        },
+        # ── Motor subsystem (virtual — no live CAN input) ─────────────────────
+        "Motor": {
+            "Port": {
+                "Status":         "SHUTDOWN",     # Motor shut down on E06
+                "ErrorCode":      "E06",           # Battery voltage too low (under load)
+                "SOCAtFault":     85,              # Battery was full — confirms not a simple low-SOC fault
+                "ThrottleAtFault": "LOW",          # Fault occurred at low throttle on gear engagement
+                "LayUpRisk":      True,            # Motor left in river water all winter, not run monthly
+                "NoiseSuspected": True,            # Operator reported abnormal sound on engagement
+                "PropDrag":       False,           # Propeller spin test not yet performed
+                "Environment":    "river_sandy",   # Sandy river water — high fouling/ingress risk
+                "LayUpMonths":    5,               # Approximately 5 months unused in water
+            },
+            "Starboard": {
+                "Status":         "OK",
+                "ErrorCode":      None,
+                "SOCAtFault":     None,
+                "ThrottleAtFault": None,
+                "LayUpRisk":      True,            # Same lay-up history — monitor but not faulted yet
+                "NoiseSuspected": False,
+                "PropDrag":       False,
+                "Environment":    "river_sandy",
+                "LayUpMonths":    5,
+            },
+        },
+        # ── Trim arm advisory (starboard mechanical — secondary to E06) ───────
+        "System": {
+            "PropulsionAdvisory": True,
+            "MotorFaultCode":     "E06",
+            "MotorFaultSide":     "Port",
+            "MotorFaultCause":    "lay-up in water suspected — pod inspection required",
+            "TrimArmAdvisory":    "Starboard trim arm damaged — requires repair before solo operation.",
+        },
+    },
 }
 
 
@@ -958,7 +1124,7 @@ def load_scenario(state_manager, name: str) -> None:
 
 def engine_cycle(state_manager) -> State:
     """
-    Full OKi engine cycle — 22 steps.
+    Full OKi engine cycle — 23 steps.
 
     Step  1  compute_energy_mode       — DC power and charge direction
     Step  2  compute_ac_state          — shore power state classification
@@ -966,6 +1132,7 @@ def engine_cycle(state_manager) -> State:
     Step  4  compute_solar_state       — full solar input computation
     Step  5  detect_blackout           — blackout monitor
     Step  6  compute_system_health     — health score + penalties + CAN watchdog
+    Step  6b compute_motor_state       — ePropulsion motor fault detection (v8.6)
     Step  7  compute_energy_forecast   — energy forecast
     Step  8  evaluate_vessel_state     — vessel state
     Step  9  evaluate_strategy         — energy strategy
@@ -991,6 +1158,7 @@ def engine_cycle(state_manager) -> State:
     compute_solar_state(state)          #  4
     detect_blackout(state)              #  5
     compute_system_health(state)        #  6
+    compute_motor_state(state)          #  6b — motor fault detection (v8.6)
     compute_energy_forecast(state)      #  7
     evaluate_vessel_state(state)        #  8
     evaluate_strategy(state)            #  9
