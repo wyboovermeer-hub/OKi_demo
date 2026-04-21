@@ -603,11 +603,32 @@ def compute_motor_state(state: State) -> None:
             system["Severity"] = "CRITICAL"
         elif system.get("Severity") is None:
             system["Severity"] = "WARNING"
+
+        # Resolve physical location via vessel spatial engine (v8.8)
+        system_id = "MOTOR-PORT" if faults[0]["side"] != "Starboard" else "MOTOR-STBD"
+        if VESSEL_SPATIAL.is_loaded():
+            system["AdvisorySystemId"] = system_id
+            system["AdvisoryLocation"] = VESSEL_SPATIAL.location_advisory(system_id)
+            ga = VESSEL_SPATIAL.resolve_ga_coordinates(system_id)
+            system["AdvisoryGADeck"]   = ga.get("deck") if ga else None
+            system["AdvisoryGAX"]      = ga.get("x")    if ga else None
+            system["AdvisoryGAY"]      = ga.get("y")    if ga else None
+        else:
+            system["AdvisorySystemId"] = system_id
+            system["AdvisoryLocation"] = None
+            system["AdvisoryGADeck"]   = None
+            system["AdvisoryGAX"]      = None
+            system["AdvisoryGAY"]      = None
     else:
         system["PropulsionAdvisory"] = False
         system["MotorFaultCode"]     = None
         system["MotorFaultSide"]     = None
         system["MotorFaultCause"]    = None
+        system["AdvisorySystemId"]   = None
+        system["AdvisoryLocation"]   = None
+        system["AdvisoryGADeck"]     = None
+        system["AdvisoryGAX"]        = None
+        system["AdvisoryGAY"]        = None
 
 
 # ============================================================
