@@ -1,7 +1,15 @@
 # ============================================================
 # OKi – Onboard Knowledge Interface
-# ENTERPRISE WEB LAYER v21.29
+# ENTERPRISE WEB LAYER v21.30
 # ============================================================
+#
+# Changelog v21.30
+# -----------------
+# • DEMO block — 5th scenario button added: E06 Motor Fault (evo_e06)
+# • DEV block — 5th scenario button added: E06 Motor
+# • casa → casa_azul corrected in both DEMO and DEV scenario links
+#   (casa_azul is the correct scenario key in engine v8.6)
+# • Firmware identity updated: engine 008.006 / ws 021.030
 #
 # Changelog v21.29
 # -----------------
@@ -130,13 +138,13 @@ DEMO_MODE        = False
 FIRMWARE = {
     "unit":         "001",
     "engine_major": "008",
-    "engine_minor": "005",
+    "engine_minor": "006",
     "ws_major":     "021",
-    "ws_minor":     "027",
-    "build_date":   "2026-04-19",
+    "ws_minor":     "030",
+    "build_date":   "2026-04-21",
     "vessel":       "Casa Azul",
-    "display":      "OKi 001 — v8.5 / ws21.27",
-    "full":         "OKi-FW-001.008.005.021.027",
+    "display":      "OKi 001 — v8.6 / ws21.30",
+    "full":         "OKi-FW-001.008.006.021.030",
 }
 
 _FIRMWARE_BADGE = (
@@ -151,7 +159,7 @@ _FIRMWARE_BADGE = (
     '}'
     '#fw-badge:hover{opacity:0;}'
     '</style>'
-    f'<div id="fw-badge">OKi-FW-001.008.005.021.027 &nbsp;·&nbsp; 2026-04-19</div>'
+    f'<div id="fw-badge">OKi-FW-001.008.006.021.030 &nbsp;·&nbsp; 2026-04-21</div>'
 )
 
 # ── Knowledge path ─────────────────────────────────────────────────────────────
@@ -1311,10 +1319,11 @@ def render_dev_block(state: dict) -> str:
     # ── 4. Scenarios ──────────────────────────────────────────────────────────
     scenarios_html = (
         '<div style="text-align:center;padding-top:4px;">'
-        '<a class="dev-scenario-btn" href="/scenario/casa">Casa Azul</a>'
+        '<a class="dev-scenario-btn" href="/scenario/casa_azul">Casa Azul</a>'
         '<a class="dev-scenario-btn" href="/scenario/anchor">Anchor</a>'
         '<a class="dev-scenario-btn" href="/scenario/drain">Drain</a>'
         '<a class="dev-scenario-btn" href="/scenario/generator_failure">Gen Failure</a>'
+        '<a class="dev-scenario-btn" href="/scenario/evo_e06">E06 Motor</a>'
         '</div>'
     )
 
@@ -1341,10 +1350,11 @@ def render_demo_block() -> str:
         '<div class="demo-section">'
         '<div class="demo-label">&#127918; DEMO — Load Scenario</div>'
         '<div style="text-align:center;">'
-        '<a class="demo-scenario-btn" href="/scenario/casa">&#128211; Casa Azul</a>'
+        '<a class="demo-scenario-btn" href="/scenario/casa_azul">&#128211; Casa Azul</a>'
         '<a class="demo-scenario-btn" href="/scenario/anchor">&#9875; Anchor</a>'
         '<a class="demo-scenario-btn" href="/scenario/drain">&#9889; Suspicious Drain</a>'
         '<a class="demo-scenario-btn" href="/scenario/generator_failure">&#128268; Generator Failure</a>'
+        '<a class="demo-scenario-btn" href="/scenario/evo_e06">&#9889; E06 Motor Fault</a>'
         '</div>'
         '</div>'
     )
