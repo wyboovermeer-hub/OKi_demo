@@ -1,6 +1,14 @@
 # ============================================================
-# OKi ENGINE v8.6 – Supervisory Intelligence Core
+# OKi ENGINE v8.7 – Supervisory Intelligence Core
 # ============================================================
+#
+# Changelog v8.7
+# ---------------
+# • consult_case_library() extended: now searches by MotorFaultCode
+#   in addition to Inconsistency issues — E06 and all ePropulsion
+#   error codes now surface correctly in knowledge base lookups
+# • MotorFaultSide also added to search tokens for richer matching
+# • No other logic modified — all v8.6 / v8.3 / v8.0 behaviour preserved
 #
 # Changelog v8.6
 # ---------------
@@ -688,14 +696,25 @@ def evaluate_recommendation(state: State) -> None:
 
 def consult_case_library(state: State) -> None:
     system = get_section(state, "System")
-    issues = system.get("Inconsistency")
+    issues = system.get("Inconsistency") or []
 
-    if not issues:
+    # Build search text from health inconsistencies + active motor fault code (v8.6)
+    motor_fault = system.get("MotorFaultCode")  # e.g. "E06"
+    motor_side  = system.get("MotorFaultSide")  # e.g. "Port"
+
+    search_tokens = list(issues)
+    if motor_fault:
+        # Add the error code directly so "E06" matches EP-E06 case
+        search_tokens.append(motor_fault)
+        if motor_side:
+            search_tokens.append(motor_side.lower())
+
+    if not search_tokens:
         system["Advisory"]     = None
         system["AdvisoryCase"] = None
         return
 
-    search_text = " ".join(issues)
+    search_text = " ".join(search_tokens)
 
     try:
         matches = CASE_LIBRARY.search_cases(search_text)
