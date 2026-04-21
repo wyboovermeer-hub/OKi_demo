@@ -1,7 +1,18 @@
 # ============================================================
 # OKi – Onboard Knowledge Interface
-# ENTERPRISE WEB LAYER v21.30
+# ENTERPRISE WEB LAYER v21.32
 # ============================================================
+#
+# Changelog v21.32
+# -----------------
+# • Advisory panel extended: AdvisoryLocation shown below case advisory
+#   with 'Show on plan →' link opening ga_viewer.html?alert=SYSTEM_ID
+# • /api/state extended: advisorySystemId, advisoryLocation, advisoryGADeck
+#
+# Changelog v21.31
+# -----------------
+# • Static files mount fixed: now serves from ./static/ subfolder
+#   ga_viewer.html accessible at /static/ga_viewer.html
 #
 # Changelog v21.30
 # -----------------
@@ -127,7 +138,13 @@ except Exception as _engine_err:
     CARE_TASKS = []
 
 app = FastAPI()
-app.mount("/static", StaticFiles(directory="."), name="static")
+
+# Serve static files from ./static/ subfolder if it exists, else fall back to "."
+import os as _os
+_static_dir = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "static")
+if not _os.path.isdir(_static_dir):
+    _static_dir = "."
+app.mount("/static", StaticFiles(directory=_static_dir), name="static")
 
 FOCUS_MODE       = False
 PSYCHEDELIC_MODE = False
@@ -144,7 +161,7 @@ FIRMWARE = {
     "build_date":   "2026-04-21",
     "vessel":       "Casa Azul",
     "display":      "OKi 001 — v8.6 / ws21.30",
-    "full":         "OKi-FW-001.008.006.021.030",
+    "full":         "OKi-FW-001.008.008.021.032",
 }
 
 _FIRMWARE_BADGE = (
@@ -159,7 +176,7 @@ _FIRMWARE_BADGE = (
     '}'
     '#fw-badge:hover{opacity:0;}'
     '</style>'
-    f'<div id="fw-badge">OKi-FW-001.008.006.021.030 &nbsp;·&nbsp; 2026-04-21</div>'
+    f'<div id="fw-badge">OKi-FW-001.008.008.021.032 &nbsp;·&nbsp; 2026-04-21</div>'
 )
 
 # ── Knowledge path ─────────────────────────────────────────────────────────────
@@ -1409,10 +1426,15 @@ def render_supervisory_view(state):
         r = f"<div style='font-size:clamp(12px,2vw,13px);'>{rec}</div>"
         if reason:   r += f'<div class="reason">Reason: {reason}</div>'
         if advisory:
+            advisory_location  = state["System"].get("AdvisoryLocation")
+            advisory_system_id = state["System"].get("AdvisorySystemId")
             if advisory_case:
                 r += f'<div class="advisory">&#128203; {advisory} &nbsp;<a href="/knowledge/{advisory_case}" style="color:#ffb300;text-decoration:underline;font-size:clamp(10px,1.8vw,11px);">View case →</a></div>'
             else:
                 r += f'<div class="advisory">&#128203; {advisory}</div>'
+            if advisory_location and advisory_system_id:
+                ga_url = f'/static/ga_viewer.html?alert={advisory_system_id}'
+                r += f'<div class="advisory" style="margin-top:4px;">&#128205; {advisory_location} &nbsp;<a href="{ga_url}" style="color:#81a4c4;text-decoration:underline;font-size:clamp(10px,1.8vw,11px);">Show on plan →</a></div>'
         content += f'<div id="rec-panel"><div class="panel"><div class="panel-title">Recommendation</div><div id="rec-inner">{r}</div></div></div>'
     else:
         content += '<div id="rec-panel" style="display:none;"><div class="panel"><div class="panel-title">Recommendation</div><div id="rec-inner"></div></div></div>'
@@ -2087,6 +2109,9 @@ def api_state():
         "recReason": system.get("RecommendationReason") or "",
         "advisory":  system.get("Advisory") or "",
         "advisoryCase": system.get("AdvisoryCase") or "",
+        "advisorySystemId": system.get("AdvisorySystemId") or "",
+        "advisoryLocation": system.get("AdvisoryLocation") or "",
+        "advisoryGADeck": system.get("AdvisoryGADeck") or "",
 
         # Care
         "careScore":       care_score,

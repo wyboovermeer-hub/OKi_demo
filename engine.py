@@ -1,6 +1,16 @@
 # ============================================================
-# OKi ENGINE v8.7 – Supervisory Intelligence Core
+# OKi ENGINE v8.8 – Supervisory Intelligence Core
 # ============================================================
+#
+# Changelog v8.8
+# ---------------
+# • VESSEL_SPATIAL imported — vessel_spatial_engine.py loaded as singleton
+# • _CASE_SYSTEM_MAP added — maps case IDs to vessel system IDs
+# • consult_case_library() extended: on case match, resolves physical
+#   location via VESSEL_SPATIAL and writes to System:
+#   AdvisorySystemId, AdvisoryLocation, AdvisoryGADeck, AdvisoryGAX, AdvisoryGAY
+# • Motor fault cases (EP-E06 etc.) resolve port vs stbd from MotorFaultSide
+# • No other logic modified — all v8.7 / v8.6 / v8.0 behaviour preserved
 #
 # Changelog v8.7
 # ---------------
@@ -98,6 +108,35 @@ except Exception as _e:
         cases = {}
         def search_cases(self, *a, **kw): return []
     CASE_LIBRARY = _EmptyLibrary()
+
+# ------------------------------------------------------------
+# VESSEL SPATIAL ENGINE
+# ------------------------------------------------------------
+
+try:
+    from vessel_spatial_engine import VESSEL_SPATIAL
+except Exception as _e:
+    print(f"[OKi] Warning — vessel_spatial_engine import failed: {_e}")
+    class _NoSpatial:
+        def location_advisory(self, *a, **kw): return None
+        def resolve_ga_coordinates(self, *a, **kw): return None
+        def is_loaded(self): return False
+    VESSEL_SPATIAL = _NoSpatial()
+
+# Map: case_id -> vessel system_id
+# When a case matches, OKi resolves the physical location of the relevant system.
+_CASE_SYSTEM_MAP = {
+    "HW-001":   "HW-FWD",
+    "HW-002":   "HW-FWD",
+    "EP-E06":   "MOTOR-PORT",
+    "EP-E02":   "MOTOR-PORT",
+    "EP-E10":   "MOTOR-PORT",
+    "EP-E11":   "MOTOR-PORT",
+    "EP-E12":   "MOTOR-PORT",
+    "EP-E01":   "BATT-HOUSE",
+    "EP-E56":   "BATT-HOUSE",
+    "EP-E57":   "BATT-HOUSE",
+}
 
 # ------------------------------------------------------------
 # HEALTH ENGINE
@@ -729,9 +768,37 @@ def consult_case_library(state: State) -> None:
         title   = getattr(top, "title",   None) or (top.get("title",   "?") if isinstance(top, dict) else "?")
         system["Advisory"]     = f"Resembles case {case_id} — {title}"
         system["AdvisoryCase"] = case_id
+
+        # Resolve physical location via vessel spatial engine (v8.8)
+        system_id = _CASE_SYSTEM_MAP.get(case_id)
+
+        # Motor fault cases: override port/stbd from active fault side
+        if system_id in ("MOTOR-PORT", "MOTOR-STBD"):
+            fault_side = system.get("MotorFaultSide", "Port")
+            system_id  = "MOTOR-PORT" if fault_side != "Starboard" else "MOTOR-STBD"
+
+        if system_id and VESSEL_SPATIAL.is_loaded():
+            location    = VESSEL_SPATIAL.location_advisory(system_id)
+            ga_coords   = VESSEL_SPATIAL.resolve_ga_coordinates(system_id)
+            system["AdvisorySystemId"]  = system_id
+            system["AdvisoryLocation"]  = location
+            system["AdvisoryGADeck"]    = ga_coords.get("deck") if ga_coords else None
+            system["AdvisoryGAX"]       = ga_coords.get("x")    if ga_coords else None
+            system["AdvisoryGAY"]       = ga_coords.get("y")    if ga_coords else None
+        else:
+            system["AdvisorySystemId"]  = None
+            system["AdvisoryLocation"]  = None
+            system["AdvisoryGADeck"]    = None
+            system["AdvisoryGAX"]       = None
+            system["AdvisoryGAY"]       = None
     else:
-        system["Advisory"]     = None
-        system["AdvisoryCase"] = None
+        system["Advisory"]          = None
+        system["AdvisoryCase"]      = None
+        system["AdvisorySystemId"]  = None
+        system["AdvisoryLocation"]  = None
+        system["AdvisoryGADeck"]    = None
+        system["AdvisoryGAX"]       = None
+        system["AdvisoryGAY"]       = None
 
 
 # ============================================================
